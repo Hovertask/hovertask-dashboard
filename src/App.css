@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+	--color-primary: #4b70f5;
+	--color-success: #009a49;
+	--color-danger: #ff5449;
+	--breakpoint-mobile: 821px;
+}
+
+@font-face {
+	font-family: Outfit;
+	src: url("/fonts/outfit.ttf") format(truetype);
+	font-display: swap;
+}
+
+* {
+	font-family: Outfit, sans-serif;
+}
+
+.bg-container {
+	background-image: url("/images/hero-background.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+button:not(:disabled) {
+	cursor: pointer;
+}
+
+body,
+html {
+	user-select: none;
+}
+
+*::-webkit-scrollbar {
+	display: none;
+	-webkit-appearance: none;
+}
+
+* {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+#edit-profile-board {
+	background-image: url("/images/edit-profile-bg.png");
+	background-size: cover;
+	background-position: center center;
+}
