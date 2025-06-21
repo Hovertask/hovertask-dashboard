@@ -1,9 +1,9 @@
 import { Link } from "react-router";
-import MarketplaceSearchForm from "../../components/MarketplaceSearchForm";
+import MarketplaceSearchForm from "../_shared/components/MarketplaceSearchForm";
 import { ArrowLeft } from "lucide-react";
-import ProductsSection from "../../components/ProductsSection";
-import CarouselAdBanner from "../../components/CarouselAdBanner";
-import MarketplaceAside from "../../components/MarketplaceAside";
+import ProductsSection from "./components/ProductsSection";
+import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
+import MarketplaceAside from "./components/MarketplaceAside";
 import useProducts from "../../hooks/useProducts";
 import Loading from "../_shared/components/Loading";
 import EmptyMapErr from "../_shared/components/EmptyMapErr";

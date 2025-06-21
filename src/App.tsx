@@ -1,6 +1,6 @@
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
-import RootLayout from "./components/layout";
+import RootLayout from "./components/Layout";
 import store from "./redux/store";
 import "./App.css";
 import "material-icons/iconfont/material-icons.css";

@@ -1,6 +1,6 @@
 import { Gift } from "lucide-react";
-import { ContactCardProps } from "../../types";
-import cn from "../utils/cn";
+import type { ContactCardProps } from "../../../../types";
+import cn from "../../../utils/cn";
 
 export default function ContactCard(props: ContactCardProps) {
 	return (
@@ -31,6 +31,7 @@ export default function ContactCard(props: ContactCardProps) {
 					<Gift size={16} /> {props.points_required}p
 				</p>
 				<button
+					type="button"
 					onClick={props.onButtonClickAction}
 					className="p-2 text-xs rounded-xl transition-all hover:bg-primary/80 active:scale-95 bg-primary text-white"
 				>

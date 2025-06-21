@@ -1,6 +1,6 @@
 import { ArrowLeft, Gift, ShoppingCart } from "lucide-react";
 import { Link } from "react-router";
-import AddMeUpAside from "../../components/AddMeUpAside";
+import AddMeUpAside from "../_shared/components/AddMeUpAside";
 
 export default function PointsPage() {
 	return (

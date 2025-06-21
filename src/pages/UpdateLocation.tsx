@@ -1,13 +1,13 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router";
-import MarketplaceSearchForm from "../components/MarketplaceSearchForm";
-import CustomSelect from "../components/Select";
+import MarketplaceSearchForm from "./_shared/components/MarketplaceSearchForm";
+import CustomSelect from "./_shared/components/Select";
 import states from "../utils/states";
 import { useState } from "react";
 import Loading from "./_shared/components/Loading";
 import { toast } from "sonner";
 import lgas from "../utils/lgas";
-import UserProfileCard from "../components/UserProfileCard";
+import UserProfileCard from "./_shared/components/UserProfileCard";
 
 export default function UpdateLocationPage() {
 	const [isLoading, setIsLoading] = useState(false);

@@ -4,7 +4,7 @@ import PaymentOptionCard from "./components/PaymentOptionCard";
 import paymentOptions from "./utils/paymentOptions";
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
-import SellerInfoAside from "../../components/SellerInfoAside";
+import SellerInfoAside from "../_shared/components/SellerInfoAside";
 
 export default function ChoosePaymentMethodPage() {
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(

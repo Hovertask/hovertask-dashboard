@@ -1,7 +1,7 @@
 import { Bookmark, Heart, Star } from "lucide-react";
 import { useState } from "react";
 import cn from "../../utils/cn";
-import Feedback from "../../components/Feedback";
+import Feedback from "../_shared/components/Feedback";
 // import SellerInfoAside from "../../components/SellerInfoAside";
 
 export default function SellerPage() {

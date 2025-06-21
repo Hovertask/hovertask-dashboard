@@ -1,4 +1,4 @@
-import EditPassword from "../components/EditPassword";
+import EditPassword from "./_shared/components/EditPassword";
 
 export default function ChangePasswordPage() {
 	return (

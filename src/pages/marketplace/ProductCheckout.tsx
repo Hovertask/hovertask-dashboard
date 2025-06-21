@@ -8,7 +8,7 @@ import { updateQuantity } from "../../redux/slices/cart";
 import getPercentageValue from "../../utils/getPercentageValue";
 import Loading from "../_shared/components/Loading";
 import useSeller from "../../hooks/useProductSeller";
-import SellerInfoAside from "../../components/SellerInfoAside";
+import SellerInfoAside from "../_shared/components/SellerInfoAside";
 
 export default function ProductCheckoutPage() {
 	const { id } = useParams();

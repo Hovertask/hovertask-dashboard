@@ -11,17 +11,17 @@ import {
 	Speaker,
 	User,
 } from "lucide-react";
-import CustomSelect from "../../../components/Select";
+import CustomSelect from "../../_shared/components/Select";
 import {
 	genders,
 	religions,
 	socialMedia,
 	states,
 } from "../../../utils/selectAndAutocompletOptions";
-import ImageInput from "../../../components/ImageInput";
+import ImageInput from "../../_shared/components/ImageInput";
 import AdvertSummaryModal from "./AdvertSummaryModal";
 import { toast } from "sonner";
-import InsufficientFundsModal from "../../../components/InsufficientFundsModal";
+import InsufficientFundsModal from "./InsufficientFundsModal";
 import cn from "../../../utils/cn";
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../utils/getAuthorization";

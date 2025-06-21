@@ -3,7 +3,7 @@ import { Link, type NavigateFunction, useNavigate } from "react-router";
 import cn from "../../utils/cn";
 import { useState } from "react";
 import EmptyMapErr from "../_shared/components/EmptyMapErr";
-import AddMeUpAside from "../../components/AddMeUpAside";
+import AddMeUpAside from "../_shared/components/AddMeUpAside";
 
 export default function ListProfile() {
 	const [activeTab, setActiveTab] = useState<"active" | "inactive">("active");

@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router";
 import cn from "../../utils/cn";
-import MarketplaceAside from "../../components/MarketplaceAside";
+import MarketplaceAside from "./components/MarketplaceAside";
 
 export default function ProductListingsPage() {
 	return (

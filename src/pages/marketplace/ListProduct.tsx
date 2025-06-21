@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import productCategories from "../../utils/productCategories";
 import { useForm } from "react-hook-form";
-import ProductCard from "../../components/ProductCard";
+import ProductCard from "../_shared/components/ProductCard";
 import Loading from "../_shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 

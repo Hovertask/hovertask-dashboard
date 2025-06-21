@@ -1,7 +1,7 @@
 import { ArrowLeft, Hexagon, Megaphone } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import LinkAccountsModal from "../../components/LinkAccountsModal";
+import LinkAccountsModal from "./components/LinkAccountsModal";
 import cn from "../../utils/cn";
 import AvailableTasks from "../_shared/components/AvailableTasks";
 import tasksCategories from "./utils/tasksCategories";

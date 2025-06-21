@@ -1,9 +1,9 @@
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { Link } from "react-router";
-import MarketplaceSearchForm from "../../components/MarketplaceSearchForm";
+import MarketplaceSearchForm from "../_shared/components/MarketplaceSearchForm";
 import { useState } from "react";
 import cn from "../../utils/cn";
-import ProductCard from "../../components/ProductCard";
+import ProductCard from "../_shared/components/ProductCard";
 import type { Product } from "../../../types";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import useWindowDimensions from "../../hooks/useWindowDimesions";

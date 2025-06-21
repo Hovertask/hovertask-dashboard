@@ -1,14 +1,14 @@
-import { useRef } from "react";
-import useDraggable from "../hooks/useDraggable";
 import { Link } from "react-router";
-import cn from "../utils/cn";
-import ContactCard from "./ContactCard";
-import type { ContactSectionProps } from "../../types";
+import ProductCard from "../../_shared/components/ProductCard";
+import type { ProductSectionProps } from "../../../../types";
+import cn from "../../../utils/cn";
+import { useRef } from "react";
+import useDraggable from "../../../hooks/useDraggable";
 
-export default function ContactsSection(props: ContactSectionProps) {
+const ProductsSection = (props: ProductSectionProps) => {
 	const {
 		heading,
-		contacts,
+		products,
 		vertical,
 		startComponent,
 		link,
@@ -16,8 +16,8 @@ export default function ContactsSection(props: ContactSectionProps) {
 		useResponsiveCard,
 		loadAsyncProducts,
 	} = props;
-	const contactsViewsSection = useRef<HTMLDivElement>(null);
-	const { isDragging } = useDraggable(contactsViewsSection);
+	const productViewsSection = useRef<HTMLDivElement>(null);
+	const { isDragging } = useDraggable(productViewsSection);
 
 	return (
 		<div className="space-y-4">
@@ -29,7 +29,7 @@ export default function ContactsSection(props: ContactSectionProps) {
 							to={link}
 							className="font-light text-primary text-sm hover:underline"
 						>
-							{props.isGroup ? "See All Groups" : "See All Contacts"}
+							View All
 						</Link>
 					)}
 				</div>
@@ -61,16 +61,15 @@ export default function ContactsSection(props: ContactSectionProps) {
 							"cursor-grab": !isDragging && !grid,
 						},
 					)}
-					ref={contactsViewsSection}
+					ref={productViewsSection}
 				>
-					{contacts.map((contact) => (
-						<ContactCard
+					{products.map((product) => (
+						<ProductCard
 							horizontal={vertical}
-							key={contact.id}
-							{...contact}
+							key={product.id}
+							{...product}
 							responsive={useResponsiveCard}
-							linkOverrideURL={`/marketplace/p/${contact.id}`}
-							onButtonClickAction={props.onClickAction}
+							linkOverrideURL={`/marketplace/p/${product.id}`}
 						/>
 					))}
 				</div>
@@ -81,10 +80,12 @@ export default function ContactsSection(props: ContactSectionProps) {
 						type="button"
 						className="flex items-center justify-center rounded-full h-[28.92px] border border-base text-base cursor-pointer text-[14.39px] p-[7.2px]"
 					>
-						Load more contacts
+						Load more products
 					</button>
 				</div>
 			)}
 		</div>
 	);
-}
+};
+
+export default ProductsSection;

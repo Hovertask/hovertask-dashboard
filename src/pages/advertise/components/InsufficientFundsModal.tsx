@@ -1,4 +1,9 @@
-import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	type useDisclosure,
+} from "@heroui/react";
 import { Link } from "react-router";
 
 export default function InsufficientFundsModal(

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Input from "../pages/_shared/components/Input";
+import Input from "./Input";
 import { Lock, User, X } from "lucide-react";
 
 export default function EditPassword() {
@@ -14,6 +14,7 @@ export default function EditPassword() {
 					<User size={28} className="text-primary" />
 					<p className="flex-1 line-clamp-1">Change your password</p>
 					<button
+						type="button"
 						onClick={() => setIsEditing(true)}
 						className="px-4 py-2 rounded-full text-sm transition-all active:scale-95 bg-primary text-white"
 					>
@@ -34,6 +35,7 @@ function EditPasswordForm(props: {
 		<div className="shadow-md rounded-3xl p-6 space-y-6">
 			<div className="flex justify-end">
 				<button
+					type="button"
 					onClick={() => props.setIsOpen(false)}
 					className="p-2 rounded-full hover:bg-zinc-100 active:scale-95 transition-transform"
 				>

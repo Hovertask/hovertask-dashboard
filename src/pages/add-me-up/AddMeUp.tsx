@@ -1,12 +1,12 @@
 import { ArrowLeft, Gift } from "lucide-react";
 import { Link } from "react-router";
-import CarouselAdBanner from "../../components/CarouselAdBanner";
+import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
 import { useSelector } from "react-redux";
 import type { AuthUserDTO, ContactCardProps } from "../../../types";
-import HorizontalLine from "../../components/HorizontalLine";
-import ContactsSection from "../../components/ContactSection";
-import AddMeUpAside from "../../components/AddMeUpAside";
+import ContactsSection from "./components/ContactSection";
+import AddMeUpAside from "../_shared/components/AddMeUpAside";
 import { toast } from "sonner";
+import HorizontalLine from "./components/HorizontalLine";
 
 export const contacts: ContactCardProps[] = [
 	{
@@ -129,8 +129,8 @@ export default function AddMeUp() {
 }
 
 function UserInfoSection() {
-	const authUser = useSelector<any, AuthUserDTO>(
-		(state: any) => state.auth.value,
+	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
+		(state) => state.auth.value,
 	);
 
 	return (

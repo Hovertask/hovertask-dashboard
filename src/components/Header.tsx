@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
-import type { AuthUserDTO, MenuDropdownProps } from "../../types";
+import type { AuthUserDTO, CartProduct, MenuDropdownProps } from "../../types";
 import menu from "../utils/menu";
 import cn from "../utils/cn";
 import { type SetStateAction, useEffect, useState } from "react";
@@ -27,10 +27,13 @@ import useActiveLink from "../hooks/useActiveLink";
 
 export default function Header() {
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-	const authUser = useSelector<any, AuthUserDTO>((state) => state.auth.value);
-	const cartItemsLength = useSelector<any, number>(
-		(state) => state.cart.value.length,
+	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
+		(state) => state.auth.value,
 	);
+	const cartItemsLength = useSelector<
+		{ cart: { value: CartProduct[] } },
+		number
+	>((state) => state.cart.value.length);
 	const requiredMenuItems = [
 		"Dashboard",
 		"Earn",
@@ -164,7 +167,9 @@ function MobileNav({
 	isOpen,
 }: { setIsOpen: React.Dispatch<SetStateAction<boolean>>; isOpen: boolean }) {
 	const activeLink = useActiveLink();
-	const authUser = useSelector<any, AuthUserDTO>((state) => state.auth.value);
+	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
+		(state) => state.auth.value,
+	);
 
 	return (
 		<>
@@ -327,7 +332,7 @@ function ProfileMenu({
 }: {
 	authUser: AuthUserDTO;
 	isMobile?: boolean;
-	onLinkClick?: () => any;
+	onLinkClick?: () => void;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 

@@ -6,7 +6,7 @@ import { type FormEvent, useState } from "react";
 import Loading from "../_shared/components/Loading";
 import { toast } from "sonner";
 import Input from "../_shared/components/Input";
-import AddMeUpAside from "../../components/AddMeUpAside";
+import AddMeUpAside from "../_shared/components/AddMeUpAside";
 
 export default function Profile() {
 	const authUser = useSelector<any, AuthUserDTO>(

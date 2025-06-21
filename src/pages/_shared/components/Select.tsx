@@ -1,12 +1,12 @@
 import {
 	Autocomplete,
 	AutocompleteItem,
-	AutocompleteProps,
+	type AutocompleteProps,
 	Select,
 	SelectItem,
-	SelectProps,
+	type SelectProps,
 } from "@heroui/react";
-import cn from "../utils/cn";
+import cn from "../../../utils/cn";
 
 export default function CustomSelect(
 	props: Omit<SelectProps & AutocompleteProps, "children"> & {

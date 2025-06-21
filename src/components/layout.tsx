@@ -6,7 +6,7 @@ import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
 import Loading from "../pages/_shared/components/Loading";
-import type { AuthUserDTO } from "../../types.d";
+import type { AuthUserDTO } from "../../types";
 
 export default function RootLayout() {
 	const dispatch = useDispatch();

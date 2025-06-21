@@ -1,10 +1,10 @@
 import { Link, useParams } from "react-router";
-import CarouselAdBanner from "../../components/CarouselAdBanner";
+import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
 import { ArrowLeft } from "lucide-react";
-import ProductsSection from "../../components/ProductsSection";
+import ProductsSection from "./components/ProductsSection";
 import { useSelector } from "react-redux";
 import { Product } from "../../../types";
-import MarketplaceAside from "../../components/MarketplaceAside";
+import MarketplaceAside from "./components/MarketplaceAside";
 
 export default function CategoryPage() {
 	const products = useSelector<any, Product[]>(

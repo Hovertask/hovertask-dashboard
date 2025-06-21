@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import cn from "../utils/cn";
+import cn from "../../../utils/cn";
 
 export default function Carousel({
 	children,
@@ -19,20 +19,18 @@ export default function Carousel({
 				behavior: "smooth",
 			});
 		}
-	}, [childrenLength, activeWindow, carouselWidth]);
+	}, [activeWindow, carouselWidth]);
 
 	useEffect(() => {
 		const intervalId = setInterval(
 			() =>
-				setActiveWindow(
-					(activeWindow) =>
-						(activeWindow =
-							activeWindow + 1 > childrenLength ? 1 : activeWindow + 1),
-				),
+				setActiveWindow((activeWindow) => {
+					return activeWindow + 1 > childrenLength ? 1 : activeWindow + 1;
+				}),
 			3000,
 		);
 		return () => clearInterval(intervalId);
-	}, []);
+	}, [childrenLength]);
 
 	useLayoutEffect(() => {
 		setCarouselWidth(carouselRef.current?.clientWidth || 0);
@@ -44,13 +42,13 @@ export default function Carousel({
 		return () => {
 			window.removeEventListener("resize", handleResize);
 		};
-	}, [carouselRef.current?.clientWidth]);
+	}, []);
 
 	return (
 		<div className="max-w-full min-w-full">
 			<div ref={carouselRef} className="flex max-w-full overflow-hidden">
-				{children.map((child, i) => (
-					<div key={i} className="w-full min-w-full">
+				{children.map((child) => (
+					<div key={Math.random()} className="w-full min-w-full">
 						{child}
 					</div>
 				))}
@@ -58,12 +56,12 @@ export default function Carousel({
 			<div className="flex items-center justify-center gap-0.5">
 				{children.map((_, i) => (
 					<div
-						key={i}
+						key={Math.random()}
 						className={cn("w-6 h-0.5", {
 							"bg-primary": activeWindow - 1 === i,
 							"bg-gray-300": activeWindow - 1 !== i,
 						})}
-					></div>
+					/>
 				))}
 			</div>
 		</div>

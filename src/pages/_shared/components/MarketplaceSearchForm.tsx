@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes } from "react";
 
 export default function MarketplaceSearchForm(
 	props: InputHTMLAttributes<HTMLInputElement>,
@@ -12,7 +12,7 @@ export default function MarketplaceSearchForm(
 					{...props}
 					className="min-w-0 max-w-none flex-1 w-full outline-none"
 				/>
-				<button>
+				<button type="submit">
 					<Search size={12} />
 				</button>
 				<button type="button">

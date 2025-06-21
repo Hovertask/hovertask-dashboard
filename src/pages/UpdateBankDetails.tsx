@@ -1,7 +1,7 @@
 import { ArrowLeft, CheckCircle, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import CustomSelect from "../components/Select";
+import CustomSelect from "./_shared/components/Select";
 import banks from "../utils/banks";
 import Input from "./_shared/components/Input";
 import { useForm } from "react-hook-form";
@@ -9,7 +9,7 @@ import Loading from "./_shared/components/Loading";
 import { useSelector } from "react-redux";
 import { AuthUserDTO } from "../../types";
 import cn from "../utils/cn";
-import UserProfileCard from "../components/UserProfileCard";
+import UserProfileCard from "./_shared/components/UserProfileCard";
 
 export default function UpdateBankDetailsPage() {
 	const authUser = useSelector<any, AuthUserDTO>((state) => state.auth.value);

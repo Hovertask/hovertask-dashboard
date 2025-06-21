@@ -1,11 +1,11 @@
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import ImageInput from "../../components/ImageInput";
+import ImageInput from "../_shared/components/ImageInput";
 import Input from "../_shared/components/Input";
 import { useState } from "react";
 import Loading from "../_shared/components/Loading";
-import AddMeUpAside from "../../components/AddMeUpAside";
-import CustomSelect from "../../components/Select";
+import AddMeUpAside from "../_shared/components/AddMeUpAside";
+import CustomSelect from "../_shared/components/Select";
 import { useForm } from "react-hook-form";
 import states from "../../utils/states";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";

@@ -1,4 +1,4 @@
-import Carousel from "./Carousel";
+import Carousel from "../../dashboard/components/Carousel";
 
 export default function CarouselAdBanner() {
 	return (

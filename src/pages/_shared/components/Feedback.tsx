@@ -1,4 +1,4 @@
-import cn from "../utils/cn";
+import cn from "../../../utils/cn";
 
 // TODO: Modify the props as necessary.
 export default function Feedback({
@@ -31,7 +31,7 @@ export default function Feedback({
 							className={cn("material-icons text-zinc-600", {
 								"text-warning": rating > i,
 							})}
-							key={i}
+							key={Math.random()}
 						>
 							star
 						</span>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import cn from "../../../utils/cn";
 import { useForm } from "react-hook-form";
-import CustomSelect from "../../../components/Select";
+import CustomSelect from "../../_shared/components/Select";
 import { BookUser } from "lucide-react";
 import Input from "../../_shared/components/Input";
 import { toast } from "sonner";

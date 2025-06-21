@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import MarketplaceAside from "../../components/MarketplaceAside";
+import MarketplaceAside from "./components/MarketplaceAside";
 import { Link } from "react-router";
 
 export default function ProductPerformancePage() {

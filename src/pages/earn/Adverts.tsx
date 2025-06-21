@@ -2,7 +2,7 @@ import { ArrowLeft, Check, Hexagon, Megaphone } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import type { Task } from "../../../types";
-import LinkAccountsModal from "../../components/LinkAccountsModal";
+import LinkAccountsModal from "./components/LinkAccountsModal";
 import TaskCard from "../_shared/components/TaskCard";
 
 export default function Adverts() {

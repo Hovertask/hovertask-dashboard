@@ -10,7 +10,6 @@ export default function SideNav() {
 	const activeLink = useActiveLink();
 	const updatedMenu = menu.map((menuItem) => {
 		if (menuItem.label === "Buy Followers") {
-			delete menuItem.options;
 			menuItem.path = menuItem.basePath;
 		}
 
@@ -23,7 +22,7 @@ export default function SideNav() {
 				<div className="border-1 border-[#FFFFFF33] pl-4 pr-2 py-10 rounded-2xl space-y-3">
 					{updatedMenu.map((menuItem) => {
 						return menuItem.options ? (
-							<MenuOptionDropdown {...menuItem} />
+							<MenuOptionDropdown key={menuItem.label} {...menuItem} />
 						) : (
 							<Link
 								className={cn(
@@ -97,6 +96,7 @@ function MenuOptionDropdown(props: MenuDropdownProps) {
 					{props.icon} {props.label}
 				</Link>
 				<button
+					type="button"
 					onClick={() => setIsOpen(!isOpen)}
 					className={cn(
 						"flex items-center transition-all active:scale-90 px-2",
@@ -110,7 +110,11 @@ function MenuOptionDropdown(props: MenuDropdownProps) {
 			</div>
 
 			{isOpen && (
-				<div className="fixed inset-0" onClick={() => setIsOpen(false)}></div>
+				<div
+					className="fixed inset-0"
+					onClick={() => setIsOpen(false)}
+					onKeyDown={() => setIsOpen(false)}
+				/>
 			)}
 
 			<div
@@ -127,8 +131,8 @@ function MenuOptionDropdown(props: MenuDropdownProps) {
 						key={option.label}
 						onClick={() => setIsOpen(false)}
 						className={cn("flex items-center gap-3 px-3 py-1.5 rounded-xl", {
-							"bg-primary text-white": option.path == activeLink,
-							"hover:text-primary": option.path != activeLink,
+							"bg-primary text-white": option.path === activeLink,
+							"hover:text-primary": option.path !== activeLink,
 						})}
 						to={option.path}
 					>

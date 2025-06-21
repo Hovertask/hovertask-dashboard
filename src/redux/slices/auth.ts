@@ -14,26 +14,7 @@ const authSlice = createSlice<
 >({
 	name: "auth",
 	initialState: {
-		value: {
-			id: 3,
-			fname: "Victor",
-			lname: "Onah",
-			email: "victoronah.dev@gmail.com",
-			username: "Victor13",
-			phone: "09035495410",
-			how_you_want_to_use: "earner",
-			country: "nigeria",
-			currency: "ngn",
-			avatar: null,
-			email_verified_at: "null",
-			referral_username: null,
-			referral_code: null,
-			referred_by: null,
-			created_at: "2025-03-12T18:39:07.000000Z",
-			updated_at: "2025-03-12T18:39:07.000000Z",
-			balance: 0,
-			account_status: "active",
-		},
+		value: null,
 	},
 	reducers: {
 		logout(state) {

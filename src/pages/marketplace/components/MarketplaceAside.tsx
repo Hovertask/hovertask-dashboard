@@ -1,15 +1,16 @@
 import { ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import useProductCategories from "../hooks/useProductCategories";
-import Loading from "../pages/_shared/components/Loading";
-import EmptyMapErr from "../pages/_shared/components/EmptyMapErr";
+import useProductCategories from "../../../hooks/useProductCategories";
+import Loading from "../../_shared/components/Loading";
+import EmptyMapErr from "../../_shared/components/EmptyMapErr";
 
 export default function MarketplaceAside({
 	omitCategories,
 }: { omitCategories?: boolean }) {
 	const [currentCategory, setCurrentCategory] = useState<string>("all");
-	let categories, refresh;
+	let categories = undefined;
+	let refresh = undefined;
 
 	if (!omitCategories) {
 		({ categories, refresh } = useProductCategories());
@@ -31,9 +32,10 @@ export default function MarketplaceAside({
 							categories.length > 0 ? (
 								categories.map((category) => (
 									<button
+										type="button"
 										onClick={() => setCurrentCategory(category.key)}
 										className={`${
-											currentCategory == category.key
+											currentCategory === category.key
 												? "bg-primary text-white"
 												: "bg-[#EBEBEB]"
 										} border-1 border-zinc-300 py-1 px-2 rounded-xl whitespace-nowrap text-sm`}

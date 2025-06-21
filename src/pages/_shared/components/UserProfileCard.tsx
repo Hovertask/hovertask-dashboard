@@ -1,11 +1,11 @@
 import { Mail, Phone, Copy, MessageSquare, CheckCircle } from "lucide-react";
 import { useSelector } from "react-redux";
-import { AuthUserDTO } from "../../types";
+import type { AuthUserDTO } from "../../../../types";
 import { Link } from "react-router";
 
 export default function UserProfileCard() {
-	const authUser = useSelector<any, AuthUserDTO>(
-		(state: any) => state.auth.value,
+	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
+		(state) => state.auth.value,
 	);
 
 	return (
@@ -40,7 +40,10 @@ export default function UserProfileCard() {
 
 				<p className="text-sm text-gray-600 mb-3">6 Followers - 1 Following</p>
 
-				<button className="border border-blue-500 text-blue-500 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-blue-50 transition mx-auto mt-16">
+				<button
+					type="button"
+					className="border border-blue-500 text-blue-500 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-blue-50 transition mx-auto mt-16"
+				>
 					<MessageSquare className="w-4 h-4" />
 					Start Chat
 				</button>

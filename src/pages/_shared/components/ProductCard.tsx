@@ -1,8 +1,8 @@
 import { Heart, ShoppingBag, StarIcon } from "lucide-react";
 import { Link } from "react-router";
-import { ProductCardProps } from "../../types";
-import cn from "../utils/cn";
-import getPercentageValue from "../utils/getPercentageValue";
+import type { ProductCardProps } from "../../../../types";
+import cn from "../../../utils/cn";
+import getPercentageValue from "../../../utils/getPercentageValue";
 
 export default function ProductCard(props: ProductCardProps) {
 	return (
@@ -28,7 +28,7 @@ export default function ProductCard(props: ProductCardProps) {
 						<h3 className="text-[11.28px] capitalize line-clamp-2">
 							{props.name}
 						</h3>
-						<button className="text-[#FF00FB]">
+						<button type="button" className="text-[#FF00FB]">
 							<Heart size={14} />
 						</button>
 					</div>
@@ -59,6 +59,7 @@ export default function ProductCard(props: ProductCardProps) {
 				</div>
 				<div className="flex items-center justify-between gap-2">
 					<button
+						type="button"
 						onClick={() => {
 							if (props.onButtonClickAction) props.onButtonClickAction();
 						}}

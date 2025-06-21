@@ -1,13 +1,13 @@
 import { Image } from "lucide-react";
 import {
-	DragEvent,
-	InputHTMLAttributes,
+	type DragEvent,
+	type InputHTMLAttributes,
 	useEffect,
 	useRef,
 	useState,
 } from "react";
 import { toast } from "sonner";
-import cn from "../utils/cn";
+import cn from "../../../utils/cn";
 
 export default function ImageInput(
 	props: Omit<
@@ -30,7 +30,7 @@ export default function ImageInput(
 				URL.createObjectURL(imageInputRef.current?.files?.item(0)!),
 			);
 		}
-	}, [imagesLength, draggedOver]);
+	}, [imagesLength, previewImageUrl]);
 
 	function handleDragOver(e: DragEvent<HTMLDivElement>) {
 		e.preventDefault();
@@ -51,15 +51,17 @@ export default function ImageInput(
 				return /image\/.*/.test(file.type);
 			}
 
-			if (files && files.length) {
+			if (files.length) {
 				const fileArr = Array.from(files);
 
 				if (!fileArr.every(verifyMimetype))
 					return toast.warning("Only images are allowed.");
 				if (files.length > 5)
 					return toast.error("Only a maximum of 5 images is allowed");
-				if (imageInputRef.current)
-					(imageInputRef.current.files = files), setImagesLength(files.length);
+				if (imageInputRef.current) {
+					imageInputRef.current.files = files;
+					setImagesLength(files.length);
+				}
 			}
 		} finally {
 			setDraggedOver(false);
@@ -84,6 +86,7 @@ export default function ImageInput(
 
 	return (
 		<div
+			onKeyUp={() => imageInputRef.current?.click()}
 			onClick={() => imageInputRef.current?.click()}
 			onDragOver={handleDragOver}
 			onDrop={handleDrop}
