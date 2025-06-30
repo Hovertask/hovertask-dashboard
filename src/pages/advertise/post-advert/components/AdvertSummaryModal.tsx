@@ -1,19 +1,22 @@
-import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	type useDisclosure,
+} from "@heroui/react";
 import type { FieldValues } from "react-hook-form";
+import submitAdvert from "../utils/submitAdvert";
 
 export default function AdvertSummaryModal(props: {
 	modalProps: ReturnType<typeof useDisclosure>;
+	successModalProps: ReturnType<typeof useDisclosure>;
 	getFormValue: () => FieldValues;
 }) {
 	const { platform, title, location, no_of_status_post } = props.getFormValue();
 
 	function initAdvertSubmission() {
-		const advertForm = document.getElementById(
-			"advert-form",
-		) as HTMLFormElement;
-
 		props.modalProps.onClose();
-		advertForm.submit();
+		submitAdvert(props.successModalProps);
 	}
 
 	return (

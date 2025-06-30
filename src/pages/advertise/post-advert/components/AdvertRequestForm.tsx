@@ -1,39 +1,29 @@
 import { useDisclosure } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../../../shared/components/Input";
-import {
-	ChevronDown,
-	Church,
-	Globe,
-	Hash,
-	LinkIcon,
-	Speaker,
-	User,
-} from "lucide-react";
-import CustomSelect from "../../../shared/components/Select";
+import Input from "../../../../shared/components/Input";
+import { Church, Globe, Hash, LinkIcon, Speaker, User } from "lucide-react";
+import CustomSelect from "../../../../shared/components/Select";
 import {
 	genders,
 	religions,
 	socialMedia,
 	states,
-} from "../../../utils/selectAndAutocompletOptions";
-import ImageInput from "../../../shared/components/ImageInput";
+} from "../../../../utils/selectAndAutocompletOptions";
+import ImageInput from "../../../../shared/components/ImageInput";
 import AdvertSummaryModal from "./AdvertSummaryModal";
-import { toast } from "sonner";
-import InsufficientFundsModal from "./InsufficientFundsModal";
-import cn from "../../../utils/cn";
-import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
-import getAuthorization from "../../../utils/getAuthorization";
 import AdvertUploadSuccessModal from "./AdvertUploadSuccessModal";
-import Loading from "../../../shared/components/Loading";
+import Loading from "../../../../shared/components/Loading";
 import {
 	descriptionValidation,
 	urlValidation,
-} from "../../../utils/inputValidationPatterns";
+} from "../../../../utils/inputValidationPatterns";
+import Label from "./Label";
+import SetPaymentMethod from "./SetPaymentMethod";
 
 /** Form for posting new adverts. */
 export default function AdvertRequestForm() {
+	const formRef = useRef<HTMLFormElement>(null);
 	const successModalProps = useDisclosure();
 	const modalProps = useDisclosure();
 	const isEngagementTask =
@@ -45,43 +35,15 @@ export default function AdvertRequestForm() {
 		trigger,
 		clearErrors,
 		formState: { errors, isValid, isSubmitting },
-		handleSubmit,
 	} = useForm();
 
 	useEffect(() => {
 		if (isValid) clearErrors();
 	}, [isValid, clearErrors]);
 
-	async function submitAdvert() {
-		try {
-			const form = document.getElementById("advert-form") as HTMLFormElement;
-			const response = await fetch(`${apiEndpointBaseURL}/advertise/create`, {
-				method: "POST",
-				body: new FormData(form),
-				headers: { authorization: getAuthorization() },
-			});
-
-			if (!response.ok)
-				return toast.error(
-					"We couldn't complete your request at the moment due. Please try again soon.",
-				);
-
-			toast.success("Your advert has been placed successfully");
-			successModalProps.onOpen();
-		} catch {
-			toast.error(
-				"We couldn't complete your request at the moment due. Please try again soon.",
-			);
-		}
-	}
-
 	return (
 		<>
-			<form
-				id="advert-form"
-				onSubmit={handleSubmit(submitAdvert)}
-				className="p-6 space-y-6"
-			>
+			<form id="advert-form" className="p-6 space-y-6" ref={formRef}>
 				<Input
 					className="rounded-full bg-white"
 					label={
@@ -266,6 +228,7 @@ export default function AdvertRequestForm() {
 					<AdvertSummaryModal
 						modalProps={modalProps}
 						getFormValue={getValues}
+						successModalProps={successModalProps}
 					/>
 				)}
 
@@ -274,124 +237,5 @@ export default function AdvertRequestForm() {
 
 			{isSubmitting && <Loading fixed />}
 		</>
-	);
-}
-
-function Label({ title, description }: { title: string; description: string }) {
-	return (
-		<div>
-			<p className="font-medium">{title}</p>
-			<p className="text-xs">{description}</p>
-		</div>
-	);
-}
-
-function SetPaymentMethod(props: {
-	onAdvertPreviewOpen: () => any;
-	isFormValid: boolean;
-	triggerValidationFn: () => any;
-}) {
-	const modalProps = useDisclosure();
-	const [selectedMethod, setSelectedMethod] = useState("");
-
-	return (
-		<div className="pb-12">
-			<div className="flex bg-white p-4 rounded-2xl justify-between items-center">
-				<PaymentMethodDropdown {...{ setSelectedMethod, selectedMethod }} />
-
-				<div className="flex gap-6 items-center">
-					<span className="font-medium">₦1,000</span>
-					<button
-						type="button"
-						onClick={() => {
-							if (selectedMethod === "wallet") modalProps.onOpen();
-							else if (props.isFormValid && selectedMethod)
-								props.onAdvertPreviewOpen();
-							else if (!selectedMethod && props.isFormValid)
-								toast.info("Select payment method");
-							else props.triggerValidationFn();
-						}}
-						className="p-2 rounded-2xl bg-primary text-white transition-transform active:scale-95"
-					>
-						Continue
-					</button>
-				</div>
-
-				<InsufficientFundsModal {...modalProps} />
-			</div>
-		</div>
-	);
-}
-
-function PaymentMethodDropdown({
-	selectedMethod,
-	setSelectedMethod,
-}: {
-	setSelectedMethod: React.Dispatch<React.SetStateAction<string>>;
-	selectedMethod: string;
-}) {
-	const [isOpen, setIsOpen] = useState(false);
-	const paymentMethods = {
-		wallet: "Pay With My Wallet",
-		online: "Use Online Payment",
-	};
-
-	return (
-		<div className="relative text-sm">
-			{/* Overlay */}
-			{isOpen && (
-				<div className="fixed inset-0" onClick={() => setIsOpen(false)} />
-			)}
-			<input
-				type="hidden"
-				value={selectedMethod}
-				name="payment_method"
-				required
-			/>
-			<button
-				type="button"
-				onClick={() => setIsOpen(true)}
-				className="flex items-center gap-1 transition-transform active:scale-95"
-			>
-				{selectedMethod
-					? paymentMethods[selectedMethod as keyof typeof paymentMethods]
-					: "Select Payment Method"}{" "}
-				<ChevronDown
-					className={cn("transition-transform", {
-						"rotate-180": isOpen,
-					})}
-					size={12}
-				/>
-			</button>
-			<div
-				className={cn(
-					"absolute bg-white flex flex-col whitespace-nowrap transition transform [transform-origin:top_center] p-2 rounded-lg shadow text-sm space-y-1 scale-0",
-					{
-						"scale-1": isOpen,
-					},
-				)}
-			>
-				<button
-					type="button"
-					className="hover:text-primary"
-					onClick={() => {
-						setIsOpen(false);
-						setSelectedMethod("wallet");
-					}}
-				>
-					Pay With My Wallet
-				</button>
-				<button
-					type="button"
-					className="hover:text-primary"
-					onClick={() => {
-						setIsOpen(false);
-						setSelectedMethod("online");
-					}}
-				>
-					Use Online Payment
-				</button>
-			</div>
-		</div>
 	);
 }
