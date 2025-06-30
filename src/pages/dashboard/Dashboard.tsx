@@ -17,7 +17,7 @@ export default function Dashboard() {
 
 	return (
 		<>
-			<div className="mobile:grid grid-cols-[1fr_214px] gap-4 min-h-full">
+			<div className="mobile:grid grid-cols-[1fr_182px] gap-4 min-h-full">
 				<div className="px-4 py-10 space-y-12 bg-white shadow min-h-full lg:max-w-[573px] overflow-x-hidden">
 					<Greeting
 						lname={authUser.lname}
