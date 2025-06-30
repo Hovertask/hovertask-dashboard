@@ -30,7 +30,7 @@ import ChoosePaymentMethodPage from "./pages/choose-online-payment-method/Choose
 import Dashboard from "./pages/dashboard/Dashboard";
 import AdvertsPage from "./pages/earn/Adverts";
 import ConnectAccountsPage from "./pages/earn/ConnectAccounts";
-import Earn from "./pages/earn/Earn";
+import Earn from "./pages/earn/earn/Earn";
 import ResellPage from "./pages/earn/Resell";
 import TaskInfoPage from "./pages/earn/TaskInfo";
 import Tasks from "./pages/earn/Tasks";
