@@ -1,44 +1,24 @@
-import { ArrowLeft, Check, Hexagon, Megaphone } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Check, Hexagon, Megaphone } from "lucide-react";
 import { Link } from "react-router";
-import type { Task } from "../../../types";
-import LinkAccountsModal from "./components/LinkAccountsModal";
-import TaskCard from "../../shared/components/TaskCard";
+import LinkAccountsModal from "../components/LinkAccountsModal";
+import Banner from "./components/Banner";
+import AvailableJobs from "./components/AvailableJobs";
+import { useSelector } from "react-redux";
 
 export default function Adverts() {
 	const hasNewlyLinkedAccount = new URLSearchParams(window.location.search).has(
 		"newlyLinkedAccounts",
+	);
+	// TODO: Update this
+	const isAccountLinked = useSelector(
+		(state: any) => state.auth.value.is_account_linked,
 	);
 
 	return (
 		<>
 			<div className="mobile:grid mobile:max-w-[724px] gap-4 min-h-full">
 				<div className="bg-white shadow p-4 pt-10 space-y-12 min-h-full">
-					<div className="flex">
-						<div className="flex gap-4 flex-1 max-w-[460px]">
-							<Link className="mt-1" to="/earn">
-								<ArrowLeft />
-							</Link>
-
-							<div>
-								<h1 className="text-xl font-semibold">
-									Turn Your Social Media Into an Earning Platform
-								</h1>
-								<p className="text-secondary font-light">
-									Pick from a variety of tasks or start posting adverts for
-									rewards.
-								</p>
-							</div>
-						</div>
-
-						<div className="max-sm:hidden">
-							<img
-								src="/images/0c3e01cf-a60e-4e42-8a1d-6ba21eb32eeb-removebg-preview 2.png"
-								width={212}
-								alt=""
-							/>
-						</div>
-					</div>
+					<Banner />
 
 					<div className="space-y-6">
 						<div className="p-6 shadow bg-white rounded-3xl space-y-3">
@@ -64,13 +44,14 @@ export default function Adverts() {
 						</div>
 					</div>
 
-					{/* Display either component based on if the user has just linked their social media accounts */}
-					{hasNewlyLinkedAccount ? (
+					{hasNewlyLinkedAccount && (
 						<div className="flex flex-col items-center text-center">
 							<Check strokeWidth={2} size={50} className="text-success" />
 							<h3 className="text-[27.21px]">Account Linked Successfully</h3>
 						</div>
-					) : (
+					)}
+
+					{!isAccountLinked && (
 						<div className="p-6 shadow bg-white rounded-3xl space-y-5 text-center">
 							<h3 className="text-2xl">Link Your Social Media Accounts</h3>
 							<p className="text-xs font-light text-secondary max-w-[494px] mx-auto">
@@ -86,9 +67,6 @@ export default function Adverts() {
 							</Link>
 						</div>
 					)}
-
-					{/* Display this after user has linked accounts (but not recently) */}
-					{!hasNewlyLinkedAccount && <div />}
 
 					<hr className="max-w-md mx-auto" />
 
@@ -112,23 +90,5 @@ export default function Adverts() {
 
 			<LinkAccountsModal />
 		</>
-	);
-}
-
-function AvailableJobs() {
-	const tasks = useSelector<{ tasks: { value: Task[] | null } }, Task[] | null>(
-		(state) => state.tasks.value,
-	);
-
-	return (
-		<div className="space-y-3">
-			<h2 className="text-[21.35px]">New Available Jobs</h2>
-
-			<div className="space-y-4">
-				{tasks?.map((task) => (
-					<TaskCard {...task} key={task.user_id} />
-				))}
-			</div>
-		</div>
 	);
 }
