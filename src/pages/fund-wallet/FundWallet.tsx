@@ -17,9 +17,9 @@ export default function FundWalletPage() {
 	} = useForm({ mode: "all" });
 
 	return (
-		<div className="mobile:grid grid-cols-[1fr_214px] gap-4 min-h-full">
-			<div className="px-4 py-6 space-y-6">
-				<div className="flex gap-4 max-w-[522px]">
+		<div className="mobile:grid grid-cols-[1fr_182px] gap-4 min-h-full">
+			<div className="px-4 py-6 space-y-6 bg-white">
+				<div className="flex gap-4">
 					<Link to="/" className="mt-1">
 						<ArrowLeft />
 					</Link>
