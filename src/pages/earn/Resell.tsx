@@ -1,15 +1,15 @@
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { Link } from "react-router";
-import MarketplaceSearchForm from "../_shared/components/MarketplaceSearchForm";
+import MarketplaceSearchForm from "../../shared/components/MarketplaceSearchForm";
 import { useState } from "react";
 import cn from "../../utils/cn";
-import ProductCard from "../_shared/components/ProductCard";
+import ProductCard from "../../shared/components/ProductCard";
 import type { Product } from "../../../types";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import useWindowDimensions from "../../hooks/useWindowDimesions";
 import useProducts from "../../hooks/useProducts";
-import Loading from "../_shared/components/Loading";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
+import Loading from "../../shared/components/Loading";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
 import useProductCategories from "../../hooks/useProductCategories";
 
 export default function ResellPage() {

@@ -1,9 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
-import Loading from "../_shared/components/Loading";
+import Loading from "../../shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
 import cn from "../../utils/cn";
 
 export default function TasksHistoryPage() {

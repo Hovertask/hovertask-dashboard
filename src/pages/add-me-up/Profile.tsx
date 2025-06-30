@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import type { AuthUserDTO } from "../../../types";
 import { type FormEvent, useState } from "react";
-import Loading from "../_shared/components/Loading";
+import Loading from "../../shared/components/Loading";
 import { toast } from "sonner";
-import Input from "../_shared/components/Input";
-import AddMeUpAside from "../_shared/components/AddMeUpAside";
+import Input from "../../shared/components/Input";
+import AddMeUpAside from "../../shared/components/AddMeUpAside";
 
 export default function Profile() {
 	const authUser = useSelector<any, AuthUserDTO>(

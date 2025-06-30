@@ -9,5 +9,5 @@ export default async function getTasks() {
 		},
 	});
 
-	return (await response.json()) as Task[];
+	return (await response.json()).data as Task[];
 }

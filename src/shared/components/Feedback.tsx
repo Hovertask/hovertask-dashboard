@@ -1,4 +1,4 @@
-import cn from "../../../utils/cn";
+import cn from "../../utils/cn";
 
 // TODO: Modify the props as necessary.
 export default function Feedback({

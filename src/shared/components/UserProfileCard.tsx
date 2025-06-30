@@ -1,6 +1,6 @@
 import { Mail, Phone, Copy, MessageSquare, CheckCircle } from "lucide-react";
 import { useSelector } from "react-redux";
-import type { AuthUserDTO } from "../../../../types";
+import type { AuthUserDTO } from "../../../types";
 import { Link } from "react-router";
 
 export default function UserProfileCard() {

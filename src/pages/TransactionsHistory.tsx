@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import type { Transaction } from "../../types";
-import UserProfileCard from "./_shared/components/UserProfileCard";
+import UserProfileCard from "../shared/components/UserProfileCard";
 import useTransactions from "../hooks/useTransactions";
 import cn from "../utils/cn";
 

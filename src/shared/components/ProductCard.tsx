@@ -1,8 +1,8 @@
 import { Heart, ShoppingBag, StarIcon } from "lucide-react";
 import { Link } from "react-router";
-import type { ProductCardProps } from "../../../../types";
-import cn from "../../../utils/cn";
-import getPercentageValue from "../../../utils/getPercentageValue";
+import type { ProductCardProps } from "../../../types";
+import cn from "../../utils/cn";
+import getPercentageValue from "../../utils/getPercentageValue";
 
 export default function ProductCard(props: ProductCardProps) {
 	return (

@@ -1,10 +1,10 @@
 import { ArrowLeft, Gift } from "lucide-react";
 import { Link } from "react-router";
-import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
+import CarouselAdBanner from "../../shared/components/CarouselAdBanner";
 import { useSelector } from "react-redux";
 import type { AuthUserDTO, ContactCardProps } from "../../../types";
 import ContactsSection from "./components/ContactSection";
-import AddMeUpAside from "../_shared/components/AddMeUpAside";
+import AddMeUpAside from "../../shared/components/AddMeUpAside";
 import { toast } from "sonner";
 import HorizontalLine from "./components/HorizontalLine";
 

@@ -1,9 +1,9 @@
 import {
 	createSlice,
-	SliceCaseReducers,
-	SliceSelectors,
+	type SliceCaseReducers,
+	type SliceSelectors,
 } from "@reduxjs/toolkit";
-import { CartProduct } from "../../../types";
+import type { CartProduct } from "../../../types.d";
 
 const cartSlice = createSlice<
 	{ value: CartProduct[] },
@@ -19,7 +19,7 @@ const cartSlice = createSlice<
 	reducers: {
 		addProduct(state, action: { payload: CartProduct }) {
 			const product = state.value.find(
-				(product) => product.id == action.payload.id,
+				(product) => product.id === action.payload.id,
 			);
 
 			if (product) product.cartQuantity++;
@@ -27,7 +27,7 @@ const cartSlice = createSlice<
 		},
 		removeProduct(state, action: { payload: string }) {
 			const productIndex = state.value.findIndex(
-				(product) => product.id == action.payload,
+				(product) => product.id === action.payload,
 			);
 
 			productIndex > -1 && state.value.splice(productIndex, 1);
@@ -38,7 +38,7 @@ const cartSlice = createSlice<
 		) {
 			const directions = [-2, 1];
 			const product = state.value.find(
-				(product) => product.id == action.payload.id,
+				(product) => product.id === action.payload.id,
 			);
 
 			if (product) product.cartQuantity += directions[action.payload.direction];

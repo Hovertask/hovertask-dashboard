@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 import type { AuthUserDTO } from "../../../types";
 import Carousel from "./components/Carousel";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
-import Loading from "../_shared/components/Loading";
-import ProductCard from "../_shared/components/ProductCard";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
+import Loading from "../../shared/components/Loading";
+import ProductCard from "../../shared/components/ProductCard";
 import useDraggable from "../../hooks/useDraggable";
 import useProducts from "../../hooks/useProducts";
 import cn from "../../utils/cn";
-import AvailableTasks from "../_shared/components/AvailableTasks";
+import AvailableTasks from "../../shared/components/AvailableTasks";
 import BecomeMemberModal from "./components/BecomeAMemberModal";
 import ContactGainModal from "./components/ContactGainModal";
 import autoVerifyAccountActivation from "./utils/autoVerifyAccountActivation";
@@ -144,10 +144,6 @@ function BalanceBoard({ balance }: { balance?: number }) {
 function WelcomeMessage(props: AuthUserDTO) {
 	const dispatch = useDispatch();
 
-	// If the user has not yet been verified,
-	// and they click on the `Verify Account` button,
-	// this effect checks their verification status on intervals
-	// auto-updates it. Useful to save client the need to refresh.
 	useEffect(() => {
 		const interval = setInterval(() => {
 			if (!props.email_verified_at) autoVerifyAccountActivation(dispatch);
@@ -207,7 +203,7 @@ function PopularProducts() {
 				/>
 			)}
 
-			{products?.length && (
+			{products?.length ? (
 				<div
 					ref={productsContainer}
 					className={cn(
@@ -227,7 +223,7 @@ function PopularProducts() {
 						/>
 					))}
 				</div>
-			)}
+			) : null}
 		</div>
 	);
 }

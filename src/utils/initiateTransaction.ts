@@ -1,11 +1,11 @@
-import { TransactionInitializationInfo } from "../../types";
+import type { TransactionInitializationInfo } from "../../types";
 import apiEndpointBaseURL from "./apiEndpointBaseURL";
 
 export default async function initiateTransaction(
 	info: TransactionInitializationInfo,
 ) {
 	const response = await fetch(
-		apiEndpointBaseURL + "/wallet/initialize-payment",
+		`${apiEndpointBaseURL}/wallet/initialize-payment`,
 		{
 			method: "post",
 			body: JSON.stringify(info),

@@ -7,7 +7,7 @@ import {
 	useState,
 } from "react";
 import { toast } from "sonner";
-import cn from "../../../utils/cn";
+import cn from "../../utils/cn";
 
 export default function ImageInput(
 	props: Omit<

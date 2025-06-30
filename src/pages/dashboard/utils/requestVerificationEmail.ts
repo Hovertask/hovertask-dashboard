@@ -1,28 +1,22 @@
 import { toast } from "sonner";
 import getAuthorization from "../../../utils/getAuthorization";
+import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
 export default function requestVerificationEmail(email: string) {
 	toast.promise(
 		() =>
-			new Promise(async (resolve, reject) => {
-				try {
-					const response = await fetch(
-						"https://hovertask.onrender.com/api/email/resend",
-						{
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: getAuthorization(),
-							},
+			new Promise((resolve, reject) => {
+				fetch(
+					`${apiEndpointBaseURL.replace("/v1", "")}/email/resend`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: getAuthorization(),
 						},
-					);
-					if (!response.ok) reject("Failed to send verification email");
-					else resolve(undefined);
-				} catch {
-					reject(
-						"We could not complete your request at this time. Please try again.",
-					);
-				}
+					},
+				).then(resolve)
+					.catch(() => reject("Failed to send verification email"));
 			}),
 		{
 			loading: "Sending verification email...",

@@ -1,7 +1,7 @@
 import { ArrowLeft, Share2 } from "lucide-react";
 import { Link } from "react-router";
 import { toast } from "sonner";
-import UserProfileCard from "./_shared/components/UserProfileCard";
+import UserProfileCard from "../shared/components/UserProfileCard";
 
 export default function SingleTransactionPage() {
 	async function share() {

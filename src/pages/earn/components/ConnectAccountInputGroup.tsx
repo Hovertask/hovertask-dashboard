@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 import cn from "../../../utils/cn";
-import Input from "../../_shared/components/Input";
+import Input from "../../../shared/components/Input";
 
 /** A concise and dynamic component for the link account form input groups. */
 export default function ConnectAccountInputGroup(props: {

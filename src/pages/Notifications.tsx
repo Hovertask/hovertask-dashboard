@@ -7,7 +7,7 @@ import {
 	Truck,
 } from "lucide-react";
 import { Link } from "react-router";
-import UserProfileCard from "./_shared/components/UserProfileCard";
+import UserProfileCard from "../shared/components/UserProfileCard";
 
 export default function NotificationsPage() {
 	return (

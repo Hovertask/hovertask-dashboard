@@ -1,6 +1,6 @@
 import { CircularProgress } from "@heroui/react";
 import { Link } from "react-router";
-import { type Task, TaskByline } from "../../../../types.d";
+import { type Task, TaskByline } from "../../../types.d";
 
 export default function TaskCard(props: Task) {
 	return (

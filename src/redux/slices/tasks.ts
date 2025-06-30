@@ -1,9 +1,9 @@
 import {
 	createSlice,
-	SliceCaseReducers,
-	SliceSelectors,
+	type SliceCaseReducers,
+	type SliceSelectors,
 } from "@reduxjs/toolkit";
-import { Task } from "../../../types";
+import type { Task } from "../../../types.d";
 
 const tasksSlice = createSlice<
 	{ value: Task[] | null },
@@ -23,5 +23,5 @@ const tasksSlice = createSlice<
 	},
 });
 
-export const { logout, setTasks } = tasksSlice.actions;
+export const { setTasks } = tasksSlice.actions;
 export default tasksSlice.reducer;

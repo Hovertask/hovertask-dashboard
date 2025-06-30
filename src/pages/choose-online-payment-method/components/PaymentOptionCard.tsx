@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../../types";
-import initiateFundWalletTransaction from "../../_shared/utils/initiateWalletTransaction";
-import verifyFundWalletTransaction from "../../_shared/utils/verifyFundWalletTransaction";
+import initiateFundWalletTransaction from "../../../shared/utils/initiateWalletTransaction";
+import verifyFundWalletTransaction from "../../../shared/utils/verifyFundWalletTransaction";
 import { toast } from "sonner";
 
 export default function PaymentOptionCard(props: {
@@ -11,35 +11,32 @@ export default function PaymentOptionCard(props: {
 	buttonText: string;
 }) {
 	const { icon, title, description, buttonText } = props;
-	const authUser = useSelector<any, AuthUserDTO>((state) => state.auth.value);
+	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
+		(state) => state.auth.value,
+	);
 
 	function initiatePaymentTransaction() {
 		toast.promise(
 			() =>
-				new Promise(async (resolve, reject) => {
-					try {
-						const response = await initiateFundWalletTransaction({
-							email: authUser.email,
-							amount: 1000,
-						});
-
-						if (!response.status) reject();
-						else {
+				new Promise((resolve, reject) => {
+					initiateFundWalletTransaction({
+						email: authUser.email,
+						amount: 1000,
+					})
+						.then((res) => res.json())
+						.then((response) => {
 							const newWindow = window.open(
 								response.data.authorization_url,
 								"_blank",
 							);
 
 							if (!newWindow) reject("Please allow popups for this website");
-							else
-								resolve(undefined),
-									verifyFundWalletTransaction(response.data.reference);
-						}
-					} catch (error: any) {
-						reject(
-							error.message || "An error occurred. Please try again later.",
-						);
-					}
+							else {
+								resolve(undefined);
+								verifyFundWalletTransaction(response.data.reference);
+							}
+						})
+						.catch(reject);
 				}),
 			{
 				loading: "Initiating transaction...",
@@ -57,6 +54,7 @@ export default function PaymentOptionCard(props: {
 				<p className="text-sm text-gray-500">{description}</p>
 			</div>
 			<button
+				type="button"
 				onClick={initiatePaymentTransaction}
 				className="bg-primary text-sm px-4 py-2 rounded-xl text-white"
 			>

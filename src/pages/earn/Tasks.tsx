@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import LinkAccountsModal from "./components/LinkAccountsModal";
 import cn from "../../utils/cn";
-import AvailableTasks from "../_shared/components/AvailableTasks";
+import AvailableTasks from "../../shared/components/AvailableTasks";
 import tasksCategories from "./utils/tasksCategories";
 
 export default function Tasks() {

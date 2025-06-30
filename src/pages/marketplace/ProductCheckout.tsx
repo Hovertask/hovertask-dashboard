@@ -6,9 +6,9 @@ import { CartProduct } from "../../../types";
 import { useDispatch } from "react-redux";
 import { updateQuantity } from "../../redux/slices/cart";
 import getPercentageValue from "../../utils/getPercentageValue";
-import Loading from "../_shared/components/Loading";
+import Loading from "../../shared/components/Loading";
 import useSeller from "../../hooks/useProductSeller";
-import SellerInfoAside from "../_shared/components/SellerInfoAside";
+import SellerInfoAside from "../../shared/components/SellerInfoAside";
 
 export default function ProductCheckoutPage() {
 	const { id } = useParams();

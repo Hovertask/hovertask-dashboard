@@ -1,12 +1,12 @@
-import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
-import getAuthorization from "../../../utils/getAuthorization";
+import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
+import getAuthorization from "../../utils/getAuthorization";
 
 export default async function initiateFundWalletTransaction(info: {
 	email: string;
 	amount: number;
 }) {
 	const response = await fetch(
-		apiEndpointBaseURL + "/wallet/initialize-payment",
+		`${apiEndpointBaseURL}/wallet/initialize-payment`,
 		{
 			method: "post",
 			body: JSON.stringify(info),

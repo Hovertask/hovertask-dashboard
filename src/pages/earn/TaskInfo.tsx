@@ -12,7 +12,7 @@ import {
 import { AlarmClock, Camera, Copy } from "lucide-react";
 import { TaskByline } from "../../../types.d";
 import { type FormEvent, useState } from "react";
-import Loading from "../_shared/components/Loading";
+import Loading from "../../shared/components/Loading";
 
 export default function TaskInfoPage() {
 	const { id } = useParams();

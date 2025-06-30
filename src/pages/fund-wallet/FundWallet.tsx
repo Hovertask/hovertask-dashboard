@@ -72,7 +72,7 @@ export default function FundWalletPage() {
 							/>
 						</div>
 						<button
-							type="button"
+							type="submit"
 							disabled={isSubmitting}
 							className="bg-primary p-2 rounded-xl text-white font-medium transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transition-none"
 						>

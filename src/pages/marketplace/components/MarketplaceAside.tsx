@@ -2,8 +2,8 @@ import { ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import useProductCategories from "../../../hooks/useProductCategories";
-import Loading from "../../_shared/components/Loading";
-import EmptyMapErr from "../../_shared/components/EmptyMapErr";
+import Loading from "../../../shared/components/Loading";
+import EmptyMapErr from "../../../shared/components/EmptyMapErr";
 
 export default function MarketplaceAside({
 	omitCategories,

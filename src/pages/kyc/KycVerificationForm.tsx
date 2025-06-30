@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router";
-import SellerInfoAside from "../_shared/components/SellerInfoAside";
+import SellerInfoAside from "../../shared/components/SellerInfoAside";
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
 import { useState } from "react";

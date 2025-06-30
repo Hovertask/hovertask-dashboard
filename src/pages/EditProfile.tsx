@@ -13,12 +13,12 @@ import {
 import { Link } from "react-router";
 import { AuthUserDTO } from "../../types";
 import { useSelector } from "react-redux";
-import Input from "./_shared/components/Input";
-import CustomSelect from "./_shared/components/Select";
+import Input from "../shared/components/Input";
+import CustomSelect from "../shared/components/Select";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import EditPassword from "./_shared/components/EditPassword";
-import UserProfileCard from "./_shared/components/UserProfileCard";
+import EditPassword from "../shared/components/EditPassword";
+import UserProfileCard from "../shared/components/UserProfileCard";
 
 export default function EditProfilePage() {
 	const authUser = useSelector<any, AuthUserDTO>(

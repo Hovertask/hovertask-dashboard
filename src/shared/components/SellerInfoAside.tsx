@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import type { AuthUserDTO } from "../../../../types";
+import type { AuthUserDTO } from "../../../types";
 
 export default function SellerInfoAside(
 	props: AuthUserDTO & { hideChatBtn?: boolean; showSafetyTips?: boolean },

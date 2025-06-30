@@ -2,8 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import { Link, type NavigateFunction, useNavigate } from "react-router";
 import cn from "../../utils/cn";
 import { useState } from "react";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
-import AddMeUpAside from "../_shared/components/AddMeUpAside";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
+import AddMeUpAside from "../../shared/components/AddMeUpAside";
 
 export default function ListProfile() {
 	const [activeTab, setActiveTab] = useState<"active" | "inactive">("active");

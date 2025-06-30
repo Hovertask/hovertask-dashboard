@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import useTasks from "../../../hooks/useTasks";
+import useTasks from "../../hooks/useTasks";
 import EmptyMapErr from "./EmptyMapErr";
 import Loading from "./Loading";
 import TaskCard from "./TaskCard";
@@ -9,6 +9,7 @@ export default function AvailableTasks({
 	filter,
 }: { mode?: "preview"; filter?: string }) {
 	const { tasks, reload } = useTasks();
+	console.log(tasks);
 
 	return (
 		<div className="space-y-3">

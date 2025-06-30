@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import MarketplaceSearchForm from "../_shared/components/MarketplaceSearchForm";
+import MarketplaceSearchForm from "../../shared/components/MarketplaceSearchForm";
 import { ArrowLeft } from "lucide-react";
 import ProductsSection from "./components/ProductsSection";
-import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
+import CarouselAdBanner from "../../shared/components/CarouselAdBanner";
 import MarketplaceAside from "./components/MarketplaceAside";
 import useProducts from "../../hooks/useProducts";
-import Loading from "../_shared/components/Loading";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
+import Loading from "../../shared/components/Loading";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
 
 export default function MarketplacePage() {
 	const { products, reload } = useProducts();

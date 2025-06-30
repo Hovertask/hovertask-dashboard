@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import ProductCard from "../../_shared/components/ProductCard";
+import ProductCard from "../../../shared/components/ProductCard";
 import type { ProductSectionProps } from "../../../../types";
 import cn from "../../../utils/cn";
 import { useRef } from "react";

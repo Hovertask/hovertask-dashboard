@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Product } from "../../types";
+import type { Product } from "../../types.d";
 import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
@@ -12,11 +12,12 @@ export default function useProduct(id: string): Product | null {
 	const { products } = useProducts();
 	const [product, setProduct] = useState<Product | null>(
 		productCache.get(id) ||
-			products?.find((product) => (product.id = id)) ||
-			null,
+		products?.find((product) => (product.id === id)) ||
+		null,
 	);
 	const navigate = useNavigate();
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies:
 	useEffect(() => {
 		if (!product) {
 			async function fetchProduct() {

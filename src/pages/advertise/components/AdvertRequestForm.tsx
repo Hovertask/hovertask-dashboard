@@ -1,7 +1,7 @@
 import { useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../../_shared/components/Input";
+import Input from "../../../shared/components/Input";
 import {
 	ChevronDown,
 	Church,
@@ -11,14 +11,14 @@ import {
 	Speaker,
 	User,
 } from "lucide-react";
-import CustomSelect from "../../_shared/components/Select";
+import CustomSelect from "../../../shared/components/Select";
 import {
 	genders,
 	religions,
 	socialMedia,
 	states,
 } from "../../../utils/selectAndAutocompletOptions";
-import ImageInput from "../../_shared/components/ImageInput";
+import ImageInput from "../../../shared/components/ImageInput";
 import AdvertSummaryModal from "./AdvertSummaryModal";
 import { toast } from "sonner";
 import InsufficientFundsModal from "./InsufficientFundsModal";
@@ -26,7 +26,7 @@ import cn from "../../../utils/cn";
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../utils/getAuthorization";
 import AdvertUploadSuccessModal from "./AdvertUploadSuccessModal";
-import Loading from "../../_shared/components/Loading";
+import Loading from "../../../shared/components/Loading";
 import {
 	descriptionValidation,
 	urlValidation,

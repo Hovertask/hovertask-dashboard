@@ -1,11 +1,11 @@
 import { toast } from "sonner";
-import apiEndpointBaseURL from "./apiEndpointBaseURL";
+import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
 export default function addProductToWishlist(id: string) {
 	toast.promise(
 		() =>
 			new Promise((resolve, reject) => {
-				fetch(apiEndpointBaseURL + `/wishlists/add/${id}`, {
+				fetch(`${apiEndpointBaseURL}/wishlists/add/${id}`, {
 					method: "post",
 					headers: {
 						authorization: `Bearer ${localStorage.getItem("auth_token")}`,

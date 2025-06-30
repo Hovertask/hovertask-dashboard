@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router";
-import CarouselAdBanner from "../_shared/components/CarouselAdBanner";
+import CarouselAdBanner from "../../shared/components/CarouselAdBanner";
 import { ArrowLeft } from "lucide-react";
 import ProductsSection from "./components/ProductsSection";
 import { useSelector } from "react-redux";

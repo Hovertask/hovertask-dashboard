@@ -1,17 +1,17 @@
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import ImageInput from "../_shared/components/ImageInput";
-import Input from "../_shared/components/Input";
+import ImageInput from "../../shared/components/ImageInput";
+import Input from "../../shared/components/Input";
 import { useState } from "react";
-import Loading from "../_shared/components/Loading";
-import AddMeUpAside from "../_shared/components/AddMeUpAside";
-import CustomSelect from "../_shared/components/Select";
+import Loading from "../../shared/components/Loading";
+import AddMeUpAside from "../../shared/components/AddMeUpAside";
+import CustomSelect from "../../shared/components/Select";
 import { useForm } from "react-hook-form";
 import states from "../../utils/states";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import { toast } from "sonner";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
-import EmptyMapErr from "../_shared/components/EmptyMapErr";
+import EmptyMapErr from "../../shared/components/EmptyMapErr";
 
 export default function ListProfileForm() {
 	const {
