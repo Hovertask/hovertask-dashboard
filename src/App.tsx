@@ -33,7 +33,7 @@ import ConnectAccountsPage from "./pages/earn/ConnectAccounts";
 import Earn from "./pages/earn/earn/Earn";
 import ResellPage from "./pages/earn/Resell";
 import TaskInfoPage from "./pages/earn/TaskInfo";
-import Tasks from "./pages/earn/Tasks";
+import Tasks from "./pages/earn/tasks/Tasks";
 import FundWalletPage from "./pages/fund-wallet/FundWallet";
 import KycVerification from "./pages/kyc/KycVerification";
 import KycVerificationForm from "./pages/kyc/KycVerificationForm";
