@@ -22,7 +22,7 @@ import PointsPage from "./pages/add-me-up/Points";
 import Profile from "./pages/add-me-up/Profile";
 import AdvertisePage from "./pages/advertise/Advertise";
 import EngagementTasks from "./pages/advertise/EngagementTasks";
-import PostAdvertPage from "./pages/advertise/PostAdvert";
+import PostAdvertPage from "./pages/advertise/post-advert/PostAdvert";
 import TaskPerformancePage from "./pages/advertise/TaskPerformance";
 import TasksHistoryPage from "./pages/advertise/TasksHistory";
 import MembershipPage from "./pages/become-a-member/BecomeAMember";
