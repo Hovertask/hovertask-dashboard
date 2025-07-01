@@ -17,11 +17,11 @@ const authUserTasks = createSlice<
     value: [],
   },
   reducers: {
-    setTasks(state, action: { payload: Task[] }) {
+    setAuthUserTasks(state, action: { payload: Task[] }) {
       state.value = action.payload;
     },
   },
 });
 
-export const { setTasks } = authUserTasks.actions;
+export const { setAuthUserTasks } = authUserTasks.actions;
 export default authUserTasks.reducer;

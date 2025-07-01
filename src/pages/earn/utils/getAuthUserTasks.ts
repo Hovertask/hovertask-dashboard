@@ -1,22 +1,24 @@
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
-const getAuthUSerTasks = async () => {
-  try {
-    const response = await fetch(
-      `${apiEndpointBaseURL}/advertise/authuserads`,
-      {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-        },
+const getAuthUSerTasks = () => new Promise((resolve) => {
+  let timeout: number | undefined = undefined;
+
+  fetch(
+    `${apiEndpointBaseURL}/advertise/authuserads`,
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
-    );
-
-    if (!response.ok) return setTimeout(getAuthUSerTasks, 3000);
-
-    return ((await response.json()).data);
-  } catch {
-    setTimeout(getAuthUSerTasks, 3000);
-  }
-}
+    },
+  )
+    .then(res => res.json())
+    .then(res => {
+      resolve(res.data);
+      if (timeout) clearTimeout(timeout);
+    })
+    .catch(() => {
+      timeout = setTimeout(getAuthUSerTasks, 3000);
+    })
+})
 
 export default getAuthUSerTasks;

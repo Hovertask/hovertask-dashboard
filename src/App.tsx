@@ -48,7 +48,7 @@ import ProductPerformancePage from "./pages/marketplace/ProductPerformance";
 import SellerPage from "./pages/marketplace/Seller";
 import SingleProductPage from "./pages/marketplace/SingleProduct";
 import ReferAndEarnPage from "./pages/refer-and-earn/ReferAndEarn";
-import TasksHistory from "./pages/earn/TasksHistory";
+import TasksHistory from "./pages/earn/tasks-history/TasksHistory";
 
 export default function App() {
 	return (
