@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
-import { CartProduct } from "../../types";
+import type { CartProduct } from "../../types.d";
 
 export default function useCartItem(id: string) {
 	return (
 		useSelector<any, CartProduct | undefined>((state: any) =>
-			state.cart.value.find((product: CartProduct) => product.id == id),
+			state.cart.value.find((product: CartProduct) => product.id === id),
 		) || null
 	);
 }
