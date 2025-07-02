@@ -14,7 +14,7 @@ const authUserTasks = createSlice<
 >({
   name: "authUserTasks",
   initialState: {
-    value: [],
+    value: null,
   },
   reducers: {
     setAuthUserTasks(state, action: { payload: Task[] }) {
