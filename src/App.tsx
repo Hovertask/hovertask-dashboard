@@ -31,7 +31,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import AdvertsPage from "./pages/earn/adverts/Adverts";
 import ConnectAccountsPage from "./pages/earn/connect-accounts/ConnectAccounts";
 import Earn from "./pages/earn/earn/Earn";
-import ResellPage from "./pages/earn/Resell";
+import ResellPage from "./pages/earn/resell/Resell";
 import TaskInfoPage from "./pages/earn/tasks/[id]/TaskInfo";
 import Tasks from "./pages/earn/tasks/Tasks";
 import FundWalletPage from "./pages/fund-wallet/FundWallet";
