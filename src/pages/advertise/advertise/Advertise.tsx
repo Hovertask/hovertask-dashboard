@@ -1,13 +1,13 @@
 import { ArrowLeft, History, Hexagon, Megaphone } from "lucide-react";
 import { Link } from "react-router";
 import { useDisclosure } from "@heroui/react";
-import type { AuthUserDTO } from "../../../types";
+import type { AuthUserDTO } from "../../../../types";
 import { useSelector } from "react-redux";
-import InsufficientFundsModal from "./components/InsufficientFundsModal";
-import AdvertCard from "./components/AdvertCard";
-import advertTypes from "./utils/advertTypes";
-import advertFeatures from "./utils/advertFeatures";
-import FeatureCard from "./components/FeatureCard";
+import InsufficientFundsModal from "../components/InsufficientFundsModal";
+import AdvertCard from "../components/AdvertCard";
+import advertTypes from "../utils/advertTypes";
+import advertFeatures from "../utils/advertFeatures";
+import FeatureCard from "../components/FeatureCard";
 
 export default function AdvertisePage() {
 	const modalProps = useDisclosure();
