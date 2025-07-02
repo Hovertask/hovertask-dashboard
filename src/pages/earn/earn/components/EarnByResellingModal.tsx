@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import { useEffect } from "react";
 import { Link } from "react-router";
-import useWindowDimensions from "../../../hooks/useWindowDimensions";
+import useWindowDimensions from "../../../../hooks/useWindowDimensions";
 
 export default function EarnByResellingModal() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();

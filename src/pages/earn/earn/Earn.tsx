@@ -1,4 +1,4 @@
-import EarnByResellingModal from "../components/EarnByResellingModal";
+import EarnByResellingModal from "./components/EarnByResellingModal";
 import EarningOptionCard from "./components/EarningOptionCard";
 import earningOptions from "./utils/earningOptions";
 import Benefits from "./components/Benefits";
