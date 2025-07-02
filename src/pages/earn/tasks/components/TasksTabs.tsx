@@ -1,5 +1,5 @@
 import { useState } from "react";
-import tasksCategories from "../../utils/tasksCategories";
+import tasksCategories from "../../earn/utils/tasksCategories";
 import cn from "../../../../utils/cn";
 import { Link } from "react-router";
 import AvailableTasks from "../../../../shared/components/AvailableTasks";

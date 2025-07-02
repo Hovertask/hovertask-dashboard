@@ -1,6 +1,6 @@
 import EarnByResellingModal from "../components/EarnByResellingModal";
 import EarningOptionCard from "./components/EarningOptionCard";
-import earningOptions from "../utils/earningOptions";
+import earningOptions from "./utils/earningOptions";
 import Benefits from "./components/Benefits";
 import Overview from "./components/Overview";
 import Banner from "./components/Banner";

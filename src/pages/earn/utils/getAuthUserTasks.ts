@@ -1,6 +1,6 @@
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
-const getAuthUSerTasks = () => new Promise((resolve) => {
+const getAuthUserTasks = () => new Promise((resolve) => {
   let timeout: number | undefined = undefined;
 
   fetch(
@@ -17,8 +17,8 @@ const getAuthUSerTasks = () => new Promise((resolve) => {
       if (timeout) clearTimeout(timeout);
     })
     .catch(() => {
-      timeout = setTimeout(getAuthUSerTasks, 3000);
+      timeout = setTimeout(getAuthUserTasks, 3000);
     })
 })
 
-export default getAuthUSerTasks;
+export default getAuthUserTasks;
