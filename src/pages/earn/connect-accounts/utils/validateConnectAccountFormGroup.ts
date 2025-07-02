@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { ActivationState } from "../../../../types";
+import type { ActivationState } from "../../../../../types";
 
 /**
    * Validates  the form in groups.

@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import { type ChangeEvent, useState } from "react";
 import { Link } from "react-router";
-import type { ActivationState } from "../../../types";
-import useDebounced from "../../hooks/useDebounced";
+import type { ActivationState } from "../../../../types";
+import useDebounced from "../../../hooks/useDebounced";
 import ConnectAccountInputGroup from "./components/ConnectAccountInputGroup";
 import validateConnectAccountFormGroup from "./utils/validateConnectAccountFormGroup";
 import connectAccountFormInitialState from "./utils/connectAccountFormInitialState";

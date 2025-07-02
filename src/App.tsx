@@ -29,7 +29,7 @@ import MembershipPage from "./pages/become-a-member/BecomeAMember";
 import ChoosePaymentMethodPage from "./pages/choose-online-payment-method/ChoosePaymentMethod";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AdvertsPage from "./pages/earn/adverts/Adverts";
-import ConnectAccountsPage from "./pages/earn/ConnectAccounts";
+import ConnectAccountsPage from "./pages/earn/connect-accounts/ConnectAccounts";
 import Earn from "./pages/earn/earn/Earn";
 import ResellPage from "./pages/earn/Resell";
 import TaskInfoPage from "./pages/earn/tasks/[id]/TaskInfo";
