@@ -20,8 +20,6 @@ export default function ResellPage() {
 	const { products, reload } = useProducts();
 	const modalProps = useDisclosure();
 
-	document.title = "Earn By Reselling Products";
-
 	return (
 		<div className="grid min-[1000px]:grid-cols-[1fr_200px] min-h-full gap-4">
 			<div className="shadow min-h-full bg-white p-4 space-y-12">
