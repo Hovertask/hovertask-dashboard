@@ -9,7 +9,7 @@ export default async function getAuthUser() {
 	}
 
 	if (!authToken)
-		return window.location.replace("https://hovertask-pi.vercel.app/signin");
+		return window.location.replace("https://hovertask.com/signin");
 
 	const response = await fetch(apiEndpointBaseURL + "/dashboard/user", {
 		headers: {
