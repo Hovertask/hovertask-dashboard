@@ -18,7 +18,7 @@ export default function ProductCard(props: ProductCardProps) {
 						"w-[131px]": props.horizontal,
 						"h-[97.7px]": !props.horizontal && !props.responsive,
 					})}
-					src={props.images[0]}
+					src={props.product_images[0].file_path}
 					alt={props.name}
 				/>
 			</div>
