@@ -1,7 +1,7 @@
 import { ArrowLeft, ShoppingBag, StarIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
-import { Product } from "../../../types";
+import type { Product } from "../../../types";
 
 export default function CartPage() {
 	const cartItems = useSelector<any, Product[]>(
@@ -37,7 +37,7 @@ function CartItemCard(props: Product) {
 			<div className="bg-zinc-200 rounded-2xl overflow-hidden">
 				<img
 					className="aspect-[4/3] block"
-					src={props.images && props.images[0]}
+					src={props.product_images && props.product_images[0].file_path}
 					alt={props.name}
 				/>
 			</div>

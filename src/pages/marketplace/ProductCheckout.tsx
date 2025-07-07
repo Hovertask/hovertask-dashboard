@@ -100,7 +100,7 @@ function CartItemCard(props: CartProduct) {
 			<div className="bg-zinc-200 rounded-2xl overflow-hidden">
 				<img
 					className="aspect-[4/3] block"
-					src={props?.images[0]}
+					src={props?.product_images[0].file_path}
 					alt={props.name}
 				/>
 			</div>

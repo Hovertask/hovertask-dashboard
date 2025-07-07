@@ -5,8 +5,8 @@ import {
 	type useDisclosure,
 } from "@heroui/react";
 import { Link } from "react-router";
-import useWindowDimensions from "../../../../hooks/useWindowDimensions";
 import type { Product } from "../../../../../types.d";
+import useWindowDimensions from "../../../../hooks/useWindowDimensions";
 
 export default function ProductInfoModal(
 	props: ReturnType<typeof useDisclosure> & { product?: Product },
@@ -52,7 +52,7 @@ export default function ProductInfoModal(
 								</p>
 							</div>
 							<div>
-								<img src={props.product?.images[0]} alt="" />
+								<img src={props.product?.product_images[0].file_path} alt="" />
 							</div>
 						</div>
 

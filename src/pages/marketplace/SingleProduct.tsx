@@ -1,17 +1,17 @@
 import { ArrowLeft, ChevronLeft, ChevronRight, Eye } from "lucide-react";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
-import useProduct from "../../hooks/useProduct";
-import Loading from "../../shared/components/Loading";
-import shareProduct from "../../utils/shareProduct";
-import addProductToWishlist from "./utils/addProductToWishlist";
-import Feedback from "../../shared/components/Feedback";
-import SellerInfoAside from "../../shared/components/SellerInfoAside";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addProduct, removeProduct } from "../../redux/slices/cart";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import useCartItem from "../../hooks/useCartItem";
+import useProduct from "../../hooks/useProduct";
 import useProductSeller from "../../hooks/useProductSeller";
+import { addProduct, removeProduct } from "../../redux/slices/cart";
+import Feedback from "../../shared/components/Feedback";
+import Loading from "../../shared/components/Loading";
+import SellerInfoAside from "../../shared/components/SellerInfoAside";
+import shareProduct from "../../utils/shareProduct";
+import addProductToWishlist from "./utils/addProductToWishlist";
 
 export default function SingleProductPage() {
 	const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -91,7 +91,7 @@ export default function SingleProductPage() {
 						<div>
 							<div className="relative overflow-hidden space-y-3">
 								{/* Nav buttons */}
-								{product.images?.length > 1 && (
+								{product.product_images?.length > 1 && (
 									<>
 										{activeImageIndex > 0 && (
 											<button
@@ -121,14 +121,14 @@ export default function SingleProductPage() {
 									ref={imageCarouselRef}
 									className="max-w-full overflow-auto snap-mandatory snap-x flex no-scrollbar"
 								>
-									{product.images?.map((image) => (
+									{product.product_images?.map((image) => (
 										<div
 											className="snap-center snap-always w-full min-w-full max-w-full"
-											key={image}
+											key={image.file_path}
 										>
 											<img
 												className="max-w-[90%] block mx-auto"
-												src={image}
+												src={image.file_path}
 												alt=""
 											/>
 										</div>
