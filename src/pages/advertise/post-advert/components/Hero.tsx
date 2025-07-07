@@ -5,7 +5,7 @@ export default function Hero() {
 	return (
 		<div className="bg-gradient-to-r from-white via-primary/30 to-white px-4 pt-4 rounded-2xl">
 			<div className="flex gap-6 max-mobile:gap-4">
-				<Link to="/">
+				<Link to="/advertise">
 					<ArrowLeft />
 				</Link>
 

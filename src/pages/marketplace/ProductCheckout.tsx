@@ -1,14 +1,14 @@
 import { ArrowLeft, CreditCard, Minus, Plus } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router";
-import useCartItem from "../../hooks/useCartItem";
-import { toast } from "sonner";
-import { CartProduct } from "../../../types";
 import { useDispatch } from "react-redux";
-import { updateQuantity } from "../../redux/slices/cart";
-import getPercentageValue from "../../utils/getPercentageValue";
-import Loading from "../../shared/components/Loading";
+import { Link, useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
+import type { CartProduct } from "../../../types";
+import useCartItem from "../../hooks/useCartItem";
 import useSeller from "../../hooks/useProductSeller";
+import { updateQuantity } from "../../redux/slices/cart";
+import Loading from "../../shared/components/Loading";
 import SellerInfoAside from "../../shared/components/SellerInfoAside";
+import getPercentageValue from "../../utils/getPercentageValue";
 
 export default function ProductCheckoutPage() {
 	const { id } = useParams();
@@ -100,7 +100,7 @@ function CartItemCard(props: CartProduct) {
 			<div className="bg-zinc-200 rounded-2xl overflow-hidden">
 				<img
 					className="aspect-[4/3] block"
-					src={props.images && props.images[0]}
+					src={props?.images[0]}
 					alt={props.name}
 				/>
 			</div>
@@ -128,6 +128,7 @@ function CartItemCard(props: CartProduct) {
 				</div>
 				<div className="flex items-center gap-2 bg-primary p-2 rounded-full justify-between text-white text-sm">
 					<button
+						type="button"
 						onClick={() =>
 							dispatch(updateQuantity({ direction: 0, id: props.id }))
 						}
@@ -138,6 +139,7 @@ function CartItemCard(props: CartProduct) {
 					</button>
 					<span>{props.cartQuantity} Added</span>
 					<button
+						type="button"
 						onClick={() =>
 							dispatch(updateQuantity({ direction: 1, id: props.id }))
 						}
@@ -153,7 +155,7 @@ function CartItemCard(props: CartProduct) {
 function ChooseOnlinePaymentMethodPage() {
 	const paymentOptions = [
 		{
-			title: "MasterCard / Visa / Verver Card",
+			title: "MasterCard / Visa / Verve Card",
 			description: "Pay instantly with your credit or debit card",
 			icon: <CreditCard size={32} />,
 			link: "#",
@@ -186,8 +188,8 @@ function ChooseOnlinePaymentMethodPage() {
 			</div>
 
 			<div className="space-y-3">
-				{paymentOptions.map((option, i) => (
-					<PaymentOptionCard key={i} {...option} />
+				{paymentOptions.map((option) => (
+					<PaymentOptionCard key={option.title} {...option} />
 				))}
 			</div>
 		</div>
@@ -229,6 +231,7 @@ function InternetBankTransferIcon() {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 		>
+			<title>Bank Transfer Icon</title>
 			<path
 				d="M13.3337 5.33337C8.30566 5.33337 5.79099 5.33337 4.22966 6.89604C2.66833 8.45871 2.66699 10.972 2.66699 16C2.66699 21.028 2.66699 23.5427 4.22966 25.104C5.79233 26.6654 8.30566 26.6667 13.3337 26.6667H15.3337M18.667 5.33337C23.695 5.33337 26.2097 5.33337 27.771 6.89604C29.1897 8.31337 29.3203 10.5147 29.3337 14.6667"
 				stroke="black"
