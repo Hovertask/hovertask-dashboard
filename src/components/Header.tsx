@@ -1,29 +1,29 @@
 import {
-	FileText,
 	Bell,
-	Lock,
-	MapPin,
-	CreditCard,
-	Shield,
-	Info,
 	BellDot,
 	ChevronDown,
+	CreditCard,
+	Ellipsis,
+	FileText,
+	Info,
+	Lock,
 	LogOut,
+	MapPin,
 	Menu,
 	Moon,
 	Search,
+	Shield,
 	ShoppingCart,
 	User,
 	X,
-	Ellipsis,
 } from "lucide-react";
+import { type SetStateAction, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
 import type { AuthUserDTO, CartProduct, MenuDropdownProps } from "../../types";
-import menu from "../utils/menu";
-import cn from "../utils/cn";
-import { type SetStateAction, useEffect, useState } from "react";
 import useActiveLink from "../hooks/useActiveLink";
+import cn from "../utils/cn";
+import menu from "../utils/menu";
 
 export default function Header() {
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -165,7 +165,10 @@ export default function Header() {
 function MobileNav({
 	setIsOpen,
 	isOpen,
-}: { setIsOpen: React.Dispatch<SetStateAction<boolean>>; isOpen: boolean }) {
+}: {
+	setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+	isOpen: boolean;
+}) {
 	const activeLink = useActiveLink();
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
@@ -391,6 +394,10 @@ function ProfileMenu({
 					<button
 						className="flex items-center gap-1 hover:text-primary"
 						type="button"
+						onClick={() => {
+							localStorage.removeItem("auth_token");
+							window.location.replace("https://hovertask.com/signin");
+						}}
 					>
 						<LogOut size={12} /> Logout
 					</button>
