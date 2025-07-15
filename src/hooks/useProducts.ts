@@ -8,9 +8,6 @@ export default function useProducts() {
 	const products = useSelector<{ products: { value: Product[] } }, Product[] | null>(
 		(state) => state.products.value,
 	);
-	const authUserId = useSelector<{ auth: { value: { id: string } } }, string>(
-		(state) => state.auth.value.id,
-	);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
