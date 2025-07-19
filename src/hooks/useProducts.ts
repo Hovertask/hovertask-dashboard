@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { Product } from "../../types";
-import { useEffect } from "react";
-import getProducts from "../utils/getProducts";
 import { setProducts } from "../redux/slices/products";
+import getProducts from "../utils/getProducts";
 
 export default function useProducts() {
 	const products = useSelector<{ products: { value: Product[] } }, Product[] | null>(
@@ -23,7 +23,7 @@ export default function useProducts() {
 	}, [products, dispatch]);
 
 	return {
-		products: products?.filter((product) => product.user_id !== authUserId),
+		products,
 		reload: () => dispatch(setProducts(null)),
 	};
 }
