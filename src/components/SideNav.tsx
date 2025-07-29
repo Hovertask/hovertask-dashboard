@@ -1,10 +1,11 @@
-import { Link } from "react-router";
-import menu from "../utils/menu";
-import cn from "../utils/cn";
-import type { MenuDropdownProps } from "../../types";
-import { useEffect, useState } from "react";
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
 import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
+import type { MenuDropdownProps } from "../../types";
 import useActiveLink from "../hooks/useActiveLink";
+import cn from "../utils/cn";
+import menu from "../utils/menu";
 
 export default function SideNav() {
 	const activeLink = useActiveLink();

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import autoVerifyAccountActivation from "../utils/autoVerifyAccountActivation";
 import type { AuthUserDTO } from "../../../../types";
+import autoVerifyAccountActivation from "../utils/autoVerifyAccountActivation";
 import requestVerificationEmail from "../utils/requestVerificationEmail";
 
 export default function WelcomeMessage(props: AuthUserDTO) {
@@ -39,7 +39,7 @@ export default function WelcomeMessage(props: AuthUserDTO) {
 				Kindly Verify Your Account
 			</button>
 			<p className="mt-4">
-				Get access to all the services with just ₦1,000{" "}
+				Get access to all the services with just ₦500{" "}
 				<span className="font-medium">ONLY</span> verify your account now!
 			</p>
 		</div>

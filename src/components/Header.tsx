@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
 import {
 	Bell,
 	BellDot,
@@ -265,8 +266,7 @@ function MenuOptionDropdown(
 				})}
 			>
 				<Link
-					// biome-ignore lint/complexity/useOptionalChain:
-					onClick={() => props.setIsMenuOpen && props.setIsMenuOpen(false)}
+					onClick={() => props?.setIsMenuOpen?.(false)}
 					to={props.basePath}
 					className="flex items-center gap-2 px-3 py-1.5"
 				>
@@ -308,8 +308,7 @@ function MenuOptionDropdown(
 						key={option.label}
 						onClick={() => {
 							setIsOpen(false);
-							// biome-ignore lint/complexity/useOptionalChain:
-							props.setIsMenuOpen && props.setIsMenuOpen(false);
+							props?.setIsMenuOpen?.(false);
 						}}
 						className={cn(
 							"flex items-center gap-3 px-3 py-1.5 rounded-xl whitespace-nowrap",
@@ -383,8 +382,7 @@ function ProfileMenu({
 					<Link
 						onClick={() => {
 							setIsOpen(false);
-							// biome-ignore lint/complexity/useOptionalChain:
-							onLinkClick && onLinkClick();
+							onLinkClick?.();
 						}}
 						className="flex items-center gap-1 hover:text-primary"
 						to="/edit-profile"

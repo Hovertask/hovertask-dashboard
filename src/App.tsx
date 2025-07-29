@@ -1,11 +1,11 @@
+import { HeroUIProvider } from "@heroui/react";
+import "material-icons/iconfont/material-icons.css";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
-import RootLayout from "./components/layout";
-import store from "./redux/store";
-import "./App.css";
-import "material-icons/iconfont/material-icons.css";
-import { HeroUIProvider } from "@heroui/react";
 import { Toaster } from "sonner";
+import "./App.css";
+import RootLayout from "./components/layout";
+import Logout from "./components/Logout";
 import AddMeUp from "./pages/add-me-up/AddMeUp";
 import ListProfile from "./pages/add-me-up/ListProfile";
 import ListProfileForm from "./pages/add-me-up/ListProfileForm";
@@ -20,14 +20,14 @@ import MembershipPage from "./pages/become-a-member/BecomeAMember";
 import ChangePasswordPage from "./pages/ChangePassword";
 import ChoosePaymentMethodPage from "./pages/choose-online-payment-method/ChoosePaymentMethod";
 import Dashboard from "./pages/dashboard/Dashboard";
-import EditProfilePage from "./pages/EditProfile";
 import AdvertsPage from "./pages/earn/adverts/Adverts";
 import ConnectAccountsPage from "./pages/earn/connect-accounts/ConnectAccounts";
 import Earn from "./pages/earn/earn/Earn";
 import ResellPage from "./pages/earn/resell/Resell";
+import TasksHistory from "./pages/earn/tasks-history/TasksHistory";
 import TaskInfoPage from "./pages/earn/tasks/[id]/TaskInfo";
 import Tasks from "./pages/earn/tasks/Tasks";
-import TasksHistory from "./pages/earn/tasks-history/TasksHistory";
+import EditProfilePage from "./pages/EditProfile";
 import FundWalletPage from "./pages/fund-wallet/FundWallet";
 import KycVerification from "./pages/kyc/KycVerification";
 import KycVerificationForm from "./pages/kyc/KycVerificationForm";
@@ -49,6 +49,7 @@ import TermsPage from "./pages/Terms";
 import TransactionsHistoryPage from "./pages/TransactionsHistory";
 import UpdateBankDetailsPage from "./pages/UpdateBankDetails";
 import UpdateLocationPage from "./pages/UpdateLocation";
+import store from "./redux/store";
 
 export default function App() {
 	return (
@@ -58,6 +59,7 @@ export default function App() {
 				<BrowserRouter>
 					<Routes>
 						<Route element={<RootLayout />} path="*">
+							<Route path="logout" element={<Logout />} />
 							<Route index element={<Dashboard />} />
 							<Route path="become-a-member" element={<MembershipPage />} />
 							<Route
