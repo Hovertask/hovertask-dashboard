@@ -49,12 +49,12 @@ export default [
 		],
 	},
 	{
-		basePath: "/buy-followers",
+		basePath: "#",
 		label: "Buy Followers",
 		icon: <UserPlus size={13} />,
 		options: [
 			{
-				path: "/buy-followers",
+				path: "/advertise/engagement-tasks",
 				label: "Buy Followers",
 				icon: <UserPlus size={13} />,
 			},

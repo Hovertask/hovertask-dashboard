@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: allow static interactive elements */
 import {
 	Bell,
 	BellDot,
@@ -265,39 +265,40 @@ function MenuOptionDropdown(
 					"bg-primary text-white": activeLink === props.basePath,
 				})}
 			>
-				<Link
-					onClick={() => props?.setIsMenuOpen?.(false)}
-					to={props.basePath}
-					className="flex items-center gap-2 px-3 py-1.5"
-				>
-					{props.icon} {props.label}
-				</Link>
 				<button
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
-					className={cn(
-						"flex items-center transition-all active:scale-90 px-2",
-						{
-							"rotate-180": isOpen,
-						},
-					)}
+					className="flex items-center transition-all active:scale-90 px-2"
 				>
-					<ChevronDown size={13} />
+					<span className="flex items-center gap-2 px-3 py-1.5">
+						{props.icon} {props.label}
+					</span>
+
+					<ChevronDown
+						className={cn({
+							"rotate-180": isOpen,
+						})}
+						size={13}
+					/>
 				</button>
 			</div>
 
 			{isOpen && (
 				<div
 					className="fixed inset-0"
-					onKeyDown={() => setIsOpen(false)}
-					onClick={() => setIsOpen(false)}
+					onKeyDown={() => {
+						setIsOpen(false);
+					}}
+					onClick={() => {
+						setIsOpen(false);
+					}}
 				/>
 			)}
 
 			<div
 				aria-live="polite"
 				className={cn(
-					"absolute [top:calc(100%+2px)] p-2 rounded-xl bg-white shadow-lg text-black text-xs transition-all [transform-origin:_top]",
+					"absolute [top:calc(100%+2px)] p-2 rounded-xl bg-white shadow-lg text-black text-xs transition-all [transform-origin:_top] z-10",
 					{
 						"opacity-0 overflow-hidden scale-0": !isOpen,
 					},
