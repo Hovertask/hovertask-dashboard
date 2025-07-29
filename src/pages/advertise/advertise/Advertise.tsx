@@ -1,13 +1,13 @@
-import { ArrowLeft, History, Hexagon, Megaphone } from "lucide-react";
-import { Link } from "react-router";
 import { useDisclosure } from "@heroui/react";
-import type { AuthUserDTO } from "../../../../types";
+import { ArrowLeft, Hexagon, History, Megaphone } from "lucide-react";
 import { useSelector } from "react-redux";
-import InsufficientFundsModal from "../components/InsufficientFundsModal";
+import { Link } from "react-router";
+import type { AuthUserDTO } from "../../../../types";
 import AdvertCard from "../components/AdvertCard";
-import advertTypes from "../utils/advertTypes";
-import advertFeatures from "../utils/advertFeatures";
 import FeatureCard from "../components/FeatureCard";
+import InsufficientFundsModal from "../components/InsufficientFundsModal";
+import advertFeatures from "../utils/advertFeatures";
+import advertTypes from "../utils/advertTypes";
 
 export default function AdvertisePage() {
 	const modalProps = useDisclosure();
@@ -50,10 +50,10 @@ export default function AdvertisePage() {
 					</p>
 
 					<div className="flex items-center gap-4 justify-between py-2 px-6 border border-zinc-400 rounded-full max-w-sm mx-auto">
-						<span className="text-xl font-medium">₦1,000</span>
+						<span className="text-xl font-medium">₦500</span>
 						<button
 							type="button"
-							onClick={() => authUser.balance >= 1000 || modalProps.onOpen()}
+							onClick={() => authUser.balance >= 500 || modalProps.onOpen()}
 							className="px-4 py-2 rounded-2xl text-sm text-white bg-primary active:scale-95 transition-transform"
 						>
 							Continue
