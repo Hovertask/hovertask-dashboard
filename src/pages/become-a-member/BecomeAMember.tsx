@@ -1,4 +1,6 @@
 import { useDisclosure } from "@heroui/react";
+import { X } from "lucide-react";
+import { Link } from "react-router";
 import PaymentMethodModal from "./components/PaymentMethodModal";
 
 export default function MembershipPage() {
@@ -6,7 +8,11 @@ export default function MembershipPage() {
 
 	return (
 		<div className="mobile:grid grid-cols-[1fr_214px] gap-4 min-h-full">
-			<div className="px-4 py-10 space-y-12 bg-white shadow min-h-full lg:max-w-[573px] overflow-x-hidden">
+			<div className="px-4 py-10 space-y-12 bg-white shadow min-h-full lg:max-w-[573px] overflow-x-hidden relative">
+				<Link to="/" className="absolute top-4 right-4">
+					<X />
+				</Link>
+
 				<div className="max-w-sm mx-auto flex max-xs:flex-wrap gap-2 items-center justify-center my-4">
 					<img
 						src="/images/You_Won_t_Blog_Forever-removebg-preview 1.png"
