@@ -1,11 +1,12 @@
 import { ArrowLeft, Gift } from "lucide-react";
-import { Link } from "react-router";
-import CarouselAdBanner from "../../shared/components/CarouselAdBanner";
 import { useSelector } from "react-redux";
-import type { AuthUserDTO, ContactCardProps } from "../../../types";
-import ContactsSection from "./components/ContactSection";
-import AddMeUpAside from "../../shared/components/AddMeUpAside";
+import { Link } from "react-router";
 import { toast } from "sonner";
+import type { AuthUserDTO, ContactCardProps } from "../../../types";
+import AddMeUpAside from "../../shared/components/AddMeUpAside";
+import CarouselAdBanner from "../../shared/components/CarouselAdBanner";
+import ContactGainModal from "../dashboard/components/ContactGainModal";
+import ContactsSection from "./components/ContactSection";
 import HorizontalLine from "./components/HorizontalLine";
 
 export const contacts: ContactCardProps[] = [
@@ -174,59 +175,63 @@ function UserInfoSection() {
 
 function PointsInformation() {
 	return (
-		<div className="space-y-4 px-8 py-4 max-sm:px-4 bg-white shadow-md rounded-2xl">
-			<div className="flex justify-between items-center flex-wrap">
-				<p className="inline-flex items-center gap-2">
-					Your points:{" "}
-					<span>
-						<span className="text-2xl font-medium inline-flex items-center gap-2">
-							<Gift /> 120
-						</span>{" "}
-						<span className="text-sm font-medium">Points</span>
-					</span>
-				</p>
-
-				<Link
-					className="p-2 text-xs rounded-xl transition-all hover:bg-primary/80 active:scale-95 bg-primary text-white"
-					to="/add-me-up/points"
-				>
-					Get More Points
-				</Link>
-			</div>
-
-			<div className="flex gap-2 justify-around bg-primary/10 p-4 rounded-2xl">
-				<div className="text-sm">
-					<p className="text-zinc-700">Contacts Added</p>
-					<p className="text-xl font-medium">1,000</p>
-				</div>
-
-				<HorizontalLine />
-
-				<div className="text-sm">
-					<p className="text-zinc-700">Groups Joined</p>
-					<p className="text-xl font-medium">50</p>
-				</div>
-
-				<HorizontalLine />
-
-				<div className="text-sm">
-					<p className="text-zinc-700 flex items-end gap-2">
-						Contacts Listed{" "}
+		<>
+			<div className="space-y-4 px-8 py-4 max-sm:px-4 bg-white shadow-md rounded-2xl">
+				<div className="flex justify-between items-center flex-wrap">
+					<p className="inline-flex items-center gap-2">
+						Your points:{" "}
 						<span>
-							<span className="text-xl font-medium">10</span> Active
-						</span>{" "}
-						<span>
-							<span className="text-xl font-medium">0</span> Inactive
+							<span className="text-2xl font-medium inline-flex items-center gap-2">
+								<Gift /> 120
+							</span>{" "}
+							<span className="text-sm font-medium">Points</span>
 						</span>
 					</p>
+
 					<Link
-						to="/add-me-up/list-profile"
-						className="text-primary hover:underline"
+						className="p-2 text-xs rounded-xl transition-all hover:bg-primary/80 active:scale-95 bg-primary text-white"
+						to="/add-me-up/points"
 					>
-						View
+						Get More Points
 					</Link>
 				</div>
+
+				<div className="flex gap-2 justify-around bg-primary/10 p-4 rounded-2xl">
+					<div className="text-sm">
+						<p className="text-zinc-700">Contacts Added</p>
+						<p className="text-xl font-medium">1,000</p>
+					</div>
+
+					<HorizontalLine />
+
+					<div className="text-sm">
+						<p className="text-zinc-700">Groups Joined</p>
+						<p className="text-xl font-medium">50</p>
+					</div>
+
+					<HorizontalLine />
+
+					<div className="text-sm">
+						<p className="text-zinc-700 flex items-end gap-2">
+							Contacts Listed{" "}
+							<span>
+								<span className="text-xl font-medium">10</span> Active
+							</span>{" "}
+							<span>
+								<span className="text-xl font-medium">0</span> Inactive
+							</span>
+						</p>
+						<Link
+							to="/add-me-up/list-profile"
+							className="text-primary hover:underline"
+						>
+							View
+						</Link>
+					</div>
+				</div>
 			</div>
-		</div>
+
+			<ContactGainModal />
+		</>
 	);
 }

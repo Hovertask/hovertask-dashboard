@@ -8,11 +8,12 @@ export interface AuthUserDTO {
 	email: string;
 	email_verified_at: null | string;
 	fname: string;
+	is_member: boolean;
 	how_you_want_to_use: "earner" | "seller";
 	id: number;
 	lname: string;
 	phone: string;
-	referral_code: null | string;
+	referral_code: string;
 	referral_username: null | string;
 	referred_by: null | string;
 	updated_at: string;
@@ -46,11 +47,11 @@ export interface Task {
 	completion_percentage: number;
 	posted_status: "old" | "new";
 	category:
-		| "social_media"
-		| "video_marketing"
-		| "micro_influence"
-		| "promotion"
-		| "telegram";
+	| "social_media"
+	| "video_marketing"
+	| "micro_influence"
+	| "promotion"
+	| "telegram";
 }
 
 interface Product {

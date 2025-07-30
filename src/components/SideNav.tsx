@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: allow static element interaction */
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";

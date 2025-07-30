@@ -1,14 +1,13 @@
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
-import Carousel from "./components/Carousel";
 import AvailableTasks from "../../shared/components/AvailableTasks";
-import BecomeMemberModal from "./components/BecomeAMemberModal";
-import ContactGainModal from "./components/ContactGainModal";
-import Greeting from "./components/Greeting";
-import BalanceBoard from "./components/BalanceBoard";
-import WelcomeMessage from "./components/WelcomeMessage";
-import PopularProducts from "./components/PopularProducts";
 import AdBanner from "./components/AdBanner";
+import BalanceBoard from "./components/BalanceBoard";
+import BecomeMemberModal from "./components/BecomeAMemberModal";
+import Carousel from "./components/Carousel";
+import Greeting from "./components/Greeting";
+import PopularProducts from "./components/PopularProducts";
+import WelcomeMessage from "./components/WelcomeMessage";
 
 export default function Dashboard() {
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
@@ -38,7 +37,6 @@ export default function Dashboard() {
 
 			{/* Modals */}
 			<BecomeMemberModal />
-			<ContactGainModal />
 		</>
 	);
 }

@@ -1,14 +1,20 @@
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
+import type { AuthUserDTO } from "../../../../types";
 
 /** Prompts user to subscribe on the platform. */
 export default function BecomeMemberModal() {
 	const { isOpen, onOpenChange, onOpen } = useDisclosure();
+	const isMember = useSelector<{ auth: { value: AuthUserDTO } }, boolean>(
+		(state) => state.auth.value.is_member,
+	);
 
 	useEffect(() => {
-		onOpen(); // Auto open modal.
-	}, []);
+		!isMember && !sessionStorage.hasShownMembershipModal && onOpen();
+		sessionStorage.hasShownMembershipModal = true;
+	}, [onOpen, isMember]);
 
 	return (
 		<Modal size="md" isOpen={isOpen} onOpenChange={onOpenChange}>

@@ -8,7 +8,8 @@ export default function EarnByResellingModal() {
 	const { innerWidth } = useWindowDimensions();
 
 	useEffect(() => {
-		onOpen();
+		!sessionStorage.hasShownResellModal && onOpen();
+		sessionStorage.hasShownResellModal = true;
 	}, [onOpen]);
 
 	return (

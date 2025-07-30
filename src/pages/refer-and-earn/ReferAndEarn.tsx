@@ -2,12 +2,13 @@ import { ArrowLeft, Copy } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import { toast } from "sonner";
+import type { AuthUserDTO } from "../../../types";
 
 export default function ReferAndEarnPage() {
-	const username = useSelector<any, string>(
-		(state: any) => state.auth.value.username,
+	const referralCode = useSelector<{ auth: { value: AuthUserDTO } }, string>(
+		(state) => state.auth.value.referral_code,
 	);
-	const refLink = `https://hovertask.com/ref/${username}`;
+	const refLink = `https://hovertask.com/signup/?ref=${referralCode}`;
 
 	async function copyRefLink() {
 		try {
@@ -71,6 +72,7 @@ export default function ReferAndEarnPage() {
 							</span>
 							<button
 								onClick={copyRefLink}
+								type="button"
 								className="flex gap-2 items-center text-primary transition-all active:scale-95 hover:bg-primary/20 px-2 py-1 rounded-full"
 							>
 								<Copy size={12} /> Copy
@@ -87,7 +89,10 @@ export default function ReferAndEarnPage() {
 							<span className="font-medium">₦1,500.00</span>
 							<small>Total Earnings</small>
 						</div>
-						<button className="px-4 py-3 rounded-xl text-sm transition-all active:scale-95 bg-primary text-white">
+						<button
+							type="button"
+							className="px-4 py-3 rounded-xl text-sm transition-all active:scale-95 bg-primary text-white"
+						>
 							Withdraw Earnings
 						</button>
 					</div>
