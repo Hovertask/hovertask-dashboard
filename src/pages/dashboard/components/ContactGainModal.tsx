@@ -8,8 +8,9 @@ export default function ContactGainModal() {
 	const addWhatsAppModalProps = useDisclosure();
 
 	useEffect(() => {
-		onOpen(); // Auto open modal.
-	}, []);
+		!sessionStorage.hasShownContactGainModal && onOpen();
+		sessionStorage.hasShownContactGainModal = true;
+	}, [onOpen]);
 
 	return (
 		<>
@@ -31,7 +32,11 @@ export default function ContactGainModal() {
 								others to add you back
 							</p>
 							<button
-								onClick={() => (onClose(), addWhatsAppModalProps.onOpen())}
+								type="button"
+								onClick={() => {
+									onClose();
+									addWhatsAppModalProps.onOpen();
+								}}
 								className="p-2 rounded-xl text-sm transition-all bg-primary text-white active:scale-95 block w-fit mx-auto"
 							>
 								Continue
