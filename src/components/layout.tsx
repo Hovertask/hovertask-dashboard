@@ -1,7 +1,7 @@
+import { Outlet, useNavigate } from "react-router";
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
@@ -13,7 +13,8 @@ export default function RootLayout() {
 	const user = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
 	);
-	
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		async function fetchUser() {
 			try {
@@ -26,8 +27,13 @@ export default function RootLayout() {
 		if (!user) fetchUser();
 	}, [dispatch, user]);
 
-	
-  
+	useEffect(() => {
+		// If user exists, but not verified or not a member, redirect
+		if (user && (!user.email_verified_at || !user.is_member)) {
+			navigate('/become-a-member', { replace: true });
+		}
+	}, [user, navigate]);
+
 	return (
 		<>
 			{user ? (
