@@ -13,8 +13,7 @@ export default function RootLayout() {
 	const user = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
 	);
-	const navigate = useNavigate();
-
+	
 	useEffect(() => {
 		async function fetchUser() {
 			try {
