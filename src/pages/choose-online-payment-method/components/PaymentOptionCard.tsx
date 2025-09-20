@@ -64,4 +64,4 @@ export default function PaymentOptionCard(props: {
 			</button>
 		</div>
 	);
-' }
+}
