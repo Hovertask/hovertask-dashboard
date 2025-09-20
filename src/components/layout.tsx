@@ -1,6 +1,7 @@
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
