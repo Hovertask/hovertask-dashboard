@@ -25,6 +25,7 @@ export default function PaymentOptionCard(props: {
 					})
 						.then((response) => {
 							const data = response.data || response;
+							console.log('Payment response:', data);
 							const paymentData = data.data?.data;
 							if (!paymentData || !paymentData.authorization_url) {
 								reject("Payment gateway did not return a valid authorization URL.");
