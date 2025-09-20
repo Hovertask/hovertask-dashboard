@@ -1,4 +1,3 @@
-import { Outlet, useNavigate } from "react-router";
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect } from "react";
