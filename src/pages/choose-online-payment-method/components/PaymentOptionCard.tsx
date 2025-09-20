@@ -18,7 +18,7 @@ export default function PaymentOptionCard(props: {
 	function initiatePaymentTransaction() {
 		toast.promise(
 			() =>
-				new Promise((resolve, reject) => {
+				new Promise<string>((resolve, reject) => {
 					initiateFundWalletTransaction({
 						email: authUser.email,
 						amount: 1000,
@@ -30,9 +30,11 @@ export default function PaymentOptionCard(props: {
 								"_blank",
 							);
 
-							if (!newWindow) reject("Please allow popups for this website");
-							else {
-								resolve(undefined);
+							if (!newWindow) {
+								reject("Please allow popups for this website");
+							} else {
+								const msg = response.message ? String(response.message) : "Transaction initialized successfully!";
+								resolve(msg);
 								verifyFundWalletTransaction(response.data.reference);
 							}
 						})
@@ -40,8 +42,8 @@ export default function PaymentOptionCard(props: {
 				}),
 			{
 				loading: "Initiating transaction...",
-				error: (e: string) => e,
-				success: "Transaction initialized successfully!",
+				error: (e: any) => typeof e === "string" ? e : (e?.message || "An error occurred"),
+				success: (msg: string) => msg,
 			},
 		);
 	}
