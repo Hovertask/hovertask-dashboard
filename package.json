@@ -13,6 +13,7 @@
   "dependencies": {
     "@heroui/react": "^2.7.5",
     "@reduxjs/toolkit": "^2.6.1",
+    "axios": "^1.12.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.6.3",
     "lucide-react": "^0.487.0",

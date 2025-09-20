@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect } from "react";
@@ -13,7 +13,8 @@ export default function RootLayout() {
 	const user = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
 	);
-	const navigate = useNavigate();
+		const navigate = useNavigate();
+		const location = useLocation();
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -28,11 +29,14 @@ export default function RootLayout() {
 	}, [dispatch, user]);
 
 	useEffect(() => {
-		// If user exists, but not verified or not a member, redirect
-		if (user && (!user.email_verified_at || !user.is_member)) {
-			navigate('/become-a-member', { replace: true });
+		if (!user) return;
+		const allowedPaths = ["/verify-email", "/become-a-member", "/choose-online-payment-method"];
+		if (!user.email_verified_at && !allowedPaths.includes(location.pathname)) {
+			navigate("/verify-email", { replace: true });
+		} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
+			navigate("/become-a-member", { replace: true });
 		}
-	}, [user, navigate]);
+	}, [user, navigate, location]);
 
 	return (
 		<>
