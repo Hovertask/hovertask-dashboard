@@ -24,9 +24,8 @@ export default function PaymentOptionCard(props: {
 						amount: 1000,
 					})
 						.then((response) => {
-							const data = response.data || response;
-							console.log('Payment response:', data);
-							const paymentData = data.data?.data;
+							const paymentData = response.data || response;
+							console.log('Payment response:', paymentData);
 							if (!paymentData || !paymentData.authorization_url) {
 								reject("Payment gateway did not return a valid authorization URL.");
 								return;
@@ -39,8 +38,7 @@ export default function PaymentOptionCard(props: {
 							if (!newWindow) {
 								reject("Please allow popups for this website");
 							} else {
-								const msg = data.message ? String(data.message) : "Transaction initialized successfully!";
-								resolve(msg);
+								resolve("Transaction initialized successfully!");
 								verifyFundWalletTransaction(paymentData.reference);
 							}
 						})
