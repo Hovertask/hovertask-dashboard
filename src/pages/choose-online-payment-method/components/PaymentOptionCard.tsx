@@ -23,19 +23,19 @@ export default function PaymentOptionCard(props: {
 						email: authUser.email,
 						amount: 1000,
 					})
-						.then((res) => res.json())
 						.then((response) => {
+							const data = response.data || response;
 							const newWindow = window.open(
-								response.data.authorization_url,
+								data.data.authorization_url,
 								"_blank",
 							);
 
 							if (!newWindow) {
 								reject("Please allow popups for this website");
 							} else {
-								const msg = response.message ? String(response.message) : "Transaction initialized successfully!";
+								const msg = data.message ? String(data.message) : "Transaction initialized successfully!";
 								resolve(msg);
-								verifyFundWalletTransaction(response.data.reference);
+								verifyFundWalletTransaction(data.data.reference);
 							}
 						})
 						.catch(reject);
@@ -64,4 +64,4 @@ export default function PaymentOptionCard(props: {
 			</button>
 		</div>
 	);
-}
+' }
