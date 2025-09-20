@@ -27,13 +27,8 @@ export default function RootLayout() {
 		if (!user) fetchUser();
 	}, [dispatch, user]);
 
-	useEffect(() => {
-		// If user exists, but not verified or not a member, redirect
-		if (user && (!user.email_verified_at || !user.is_member)) {
-			navigate('/become-a-member', { replace: true });
-		}
-	}, [user, navigate]);
-
+	
+  
 	return (
 		<>
 			{user ? (
