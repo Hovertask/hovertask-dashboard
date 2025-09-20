@@ -25,12 +25,13 @@ export default function PaymentOptionCard(props: {
 					})
 						.then((response) => {
 							const data = response.data || response;
-							if (!data || !data.data || !data.data.authorization_url) {
+							const paymentData = data.data?.data;
+							if (!paymentData || !paymentData.authorization_url) {
 								reject("Payment gateway did not return a valid authorization URL.");
 								return;
 							}
 							const newWindow = window.open(
-								data.data.authorization_url,
+								paymentData.authorization_url,
 								"_blank",
 							);
 
@@ -39,7 +40,7 @@ export default function PaymentOptionCard(props: {
 							} else {
 								const msg = data.message ? String(data.message) : "Transaction initialized successfully!";
 								resolve(msg);
-								verifyFundWalletTransaction(data.data.reference);
+								verifyFundWalletTransaction(paymentData.reference);
 							}
 						})
 						.catch(reject);
