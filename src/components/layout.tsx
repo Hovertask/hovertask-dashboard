@@ -32,7 +32,7 @@ export default function RootLayout() {
 		if (!user) return;
 		const allowedPaths = ["/VerifyEmail", "/become-a-member", "/choose-online-payment-method", "/payment/callback"];
 		if (!user.email_verified_at && !allowedPaths.includes(location.pathname)) {
-			navigate("/verify-email", { replace: true });
+			navigate("/VerifyEmail", { replace: true });
 		} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
 			navigate("/become-a-member", { replace: true });
 		}
