@@ -17,7 +17,8 @@ import PostAdvertPage from "./pages/advertise/post-advert/PostAdvert";
 import TaskPerformancePage from "./pages/advertise/TaskPerformance";
 import TasksHistoryPage from "./pages/advertise/TasksHistory";
 import MembershipPage from "./pages/become-a-member/BecomeAMember";
-import PaymentCallback from "./pages/PaymentCallback";
+import PaymentCallbackPage from "./pages/PaymentCallback";
+import VerifyEmailPage from "./pages/VerifyEmail";
 import ChangePasswordPage from "./pages/ChangePassword";
 import ChoosePaymentMethodPage from "./pages/choose-online-payment-method/ChoosePaymentMethod";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -156,7 +157,9 @@ export default function App() {
 							<Route path="kyc" element={<KycVerification />} />
 							<Route path="kyc/start" element={<KycVerificationForm />} />
 							{/* Payment Callback */}
-							<Route path="payment/callback" element={<PaymentCallback />} />
+							<Route path="payment/callback" element={<PaymentCallbackPage />} />
+							{/* VerifyEmail */}
+							<Route path="VerifyEmail" element={<VerifyEmailPage />} />
 						</Route>
 					</Routes>
 				</BrowserRouter>
