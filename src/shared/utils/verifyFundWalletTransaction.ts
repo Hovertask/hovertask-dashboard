@@ -5,7 +5,7 @@ export default async function verifyFundWalletTransaction(
 	cb?: () => unknown,
 ) {
 	const response = await fetch(
-		`https://backend.hovertask.com/wallet/verify-payment/${transactionId}`,
+		`https://backend.hovertask.com/api/wallet/verify-payment/${transactionId}`,
 		{ headers: { authorization: getAuthorization() } },
 	);
 	const data = await response.json();
