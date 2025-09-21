@@ -33,7 +33,12 @@ export default function PaymentCallback() {
   return (
     <>
       <div className="p-8 text-center">Processing payment...</div>
-      {showSuccessModal && <MembershipSuccessModal />}
+      {showSuccessModal && (
+     <MembershipSuccessModal
+      isOpen={showSuccessModal}
+      onClose={() => setShowSuccessModal(false)}/>
+)}
+
     </>
   );
 }
