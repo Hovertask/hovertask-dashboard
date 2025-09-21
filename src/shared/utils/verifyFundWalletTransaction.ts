@@ -1,4 +1,3 @@
-import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../utils/getAuthorization";
 
 export default async function verifyFundWalletTransaction(
@@ -6,7 +5,7 @@ export default async function verifyFundWalletTransaction(
 	cb?: () => unknown,
 ) {
 	const response = await fetch(
-		`${apiEndpointBaseURL}/wallet/verify-payment/${transactionId}`,
+		`https://app.hovertask.com/wallet/verify-payment/${transactionId}`,
 		{ headers: { authorization: getAuthorization() } },
 	);
 	const data = await response.json();
