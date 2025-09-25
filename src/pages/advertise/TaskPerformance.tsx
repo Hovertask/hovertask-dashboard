@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router";
+import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 
 export default function TaskPerformancePage() {
 	const { id } = useParams(); // assuming route is /advertise/:id
@@ -10,7 +11,7 @@ export default function TaskPerformancePage() {
 	useEffect(() => {
 		async function fetchTask() {
 			try {
-				const res = await fetch(`/api/advertises/${id}`); // Laravel route
+				const res = await fetch(`${apiEndpointBaseURL}/show/{id}}`); // Laravel route
 				const data = await res.json();
 				if (data.status) {
 					setTask(data.data);
