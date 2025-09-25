@@ -11,7 +11,13 @@ export default function TaskPerformancePage() {
 	useEffect(() => {
 		async function fetchTask() {
 			try {
-				const res = await fetch(`${apiEndpointBaseURL}/advertise/show/{id}}`); // Laravel route
+				const res = await fetch(`${apiEndpointBaseURL}/advertise/show/${id}`, {
+					headers: {
+						authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+						"Content-Type": "application/json",
+					},
+				});
+
 				const data = await res.json();
 				if (data.status) {
 					setTask(data.data);
@@ -51,6 +57,7 @@ export default function TaskPerformancePage() {
 		</div>
 	);
 }
+
 
 function TaskPerformance({ task }: { task: any }) {
 	// calculate budget spent & completion rate safely
