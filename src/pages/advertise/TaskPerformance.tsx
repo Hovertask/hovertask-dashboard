@@ -1,7 +1,33 @@
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 
 export default function TaskPerformancePage() {
+	const { id } = useParams(); // assuming route is /advertise/:id
+	const [task, setTask] = useState<any | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchTask() {
+			try {
+				const res = await fetch(`/api/advertises/${id}`); // Laravel route
+				const data = await res.json();
+				if (data.status) {
+					setTask(data.data);
+				}
+			} catch (error) {
+				console.error("Error fetching task", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchTask();
+	}, [id]);
+
+	if (loading) return <p className="p-6">Loading...</p>;
+	if (!task) return <p className="p-6">Task not found.</p>;
+
 	return (
 		<div className="mobile:grid grid-cols-[1fr_214px] gap-4 min-h-full">
 			<div className="bg-white shadow-md px-4 py-8 space-y-6 overflow-hidden min-h-full">
@@ -19,39 +45,61 @@ export default function TaskPerformancePage() {
 					</div>
 				</div>
 
-				<TaskPerformance />
+				<TaskPerformance task={task} />
 			</div>
 		</div>
 	);
 }
 
-function TaskPerformance() {
+function TaskPerformance({ task }: { task: any }) {
+	// calculate budget spent & completion rate safely
+	const budgetSpent = task.stats.accepted * (task.amount_paid / task.stats.total_participants || 1);
+	const completionRate =
+		task.stats.total_participants > 0
+			? Math.round((task.stats.accepted / task.stats.total_participants) * 100)
+			: 0;
+
 	return (
 		<div className="max-w-3xl mx-auto p-4 space-y-6 bg-white rounded-xl shadow">
 			{/* Header */}
 			<div className="flex justify-between items-start border p-4 rounded-lg">
 				<div>
 					<h3 className="text-sm font-medium text-gray-800 mb-1">
-						Follow Us on Instagram and Comment on Our Latest Post
+						{task.title}
 					</h3>
 					<p className="text-xs text-gray-600 mb-1">
-						Earnings: <span className="text-green-600 font-medium">₦20.00</span>{" "}
+						Earnings:{" "}
+						<span className="text-green-600 font-medium">
+							₦{(task.amount_paid / (task.stats.total_participants || 1)).toFixed(2)}
+						</span>{" "}
 						per post engagement.
 					</p>
 					<p className="text-xs text-gray-600">
-						Amount Paid: <span className="font-medium">₦2,000</span> &nbsp; |
-						&nbsp; Your Link:{" "}
+						Amount Paid: <span className="font-medium">₦{task.amount_paid}</span>{" "}
+						&nbsp; | &nbsp; Your Link:{" "}
 						<a
-							href="https://twitter.com/Akpan4Real7"
+							href={task.link}
 							className="text-blue-500 underline"
+							target="_blank"
+							rel="noopener noreferrer"
 						>
-							https://twitter.com/Akpan4Real7
+							{task.link}
 						</a>
 					</p>
 				</div>
 				<div className="text-right">
-					<span className="text-xs text-green-600 font-medium">APPROVED</span>
-					<p className="text-[10px] text-gray-400">Jan 15th 2025 6:42 am</p>
+					<span
+						className={`text-xs font-medium ${
+							task.admin_approval_status === "approved"
+								? "text-green-600"
+								: "text-yellow-600"
+						}`}
+					>
+						{task.admin_approval_status.toUpperCase()}
+					</span>
+					<p className="text-[10px] text-gray-400">
+						{new Date(task.created_at).toLocaleString()}
+					</p>
 				</div>
 			</div>
 
@@ -68,21 +116,27 @@ function TaskPerformance() {
 			{/* Stats */}
 			<div className="grid grid-cols-4 gap-4 text-center text-sm">
 				<div className="bg-gray-50 p-3 rounded border">
-					<p className="font-medium text-lg text-gray-800">25/50</p>
+					<p className="font-medium text-lg text-gray-800">
+						{task.stats.total_participants}
+					</p>
 					<p className="text-gray-500 text-xs">Total Participants</p>
 				</div>
 				<div className="bg-gray-50 p-3 rounded border">
 					<p className="font-medium text-lg text-gray-800">
-						5 Followers & Comments
+						{task.stats.accepted} Accepted
 					</p>
 					<p className="text-gray-500 text-xs">Actions Completed</p>
 				</div>
 				<div className="bg-gray-50 p-3 rounded border">
-					<p className="font-medium text-lg text-gray-800">₦5,000 / ₦10,000</p>
+					<p className="font-medium text-lg text-gray-800">
+						₦{budgetSpent} / ₦{task.amount_paid}
+					</p>
 					<p className="text-gray-500 text-xs">Budget Spent</p>
 				</div>
 				<div className="bg-gray-50 p-3 rounded border">
-					<p className="font-medium text-lg text-gray-800">50%</p>
+					<p className="font-medium text-lg text-gray-800">
+						{completionRate}%
+					</p>
 					<p className="text-gray-500 text-xs">Completion Rate</p>
 				</div>
 			</div>
@@ -94,66 +148,62 @@ function TaskPerformance() {
 				</h4>
 				<p className="text-xs text-gray-600 mb-4">
 					Your order will be allocated to various users so they can perform your
-					task for you. You have to verify each of the tasks performed by the
-					users below.
+					task for you. You have to verify each of the tasks performed.
 				</p>
 
-				{/* User Result Card */}
-				{[
-					{
-						name: "Ann Lyons",
-						handle: "@abrietan18",
-						proofLink: "#",
-						time: "Jan 15th 2025 6:42 am",
-						status: "Completed",
-					},
-					{
-						name: "Sunday Lasis",
-						handle: "@delemgold",
-						proofLink: "#",
-						time: "Jan 15th 2025 6:42 am",
-						status: "Completed",
-					},
-				].map((user, index) => (
-					<div
-						key={index}
-						className="flex items-start justify-between border p-4 rounded-lg mb-3"
-					>
-						<div>
-							<p className="text-sm font-medium text-gray-800">{user.name}</p>
-							<p className="text-xs text-gray-600 mb-1">
-								Instagram Handle:{" "}
-								<span className="text-gray-700">{user.handle}</span>
-							</p>
-							<a
-								href={user.proofLink}
-								className="text-xs text-blue-500 underline"
+				{task.participants.length > 0 ? (
+					<div className="space-y-3">
+						{task.participants.map((p: any) => (
+							<div
+								key={p.id}
+								className="flex items-center justify-between p-3 border rounded-lg"
 							>
-								Advert Proof: Click here to view
-							</a>
-						</div>
-						<div className="text-right">
-							<span className="text-xs text-green-600 font-medium">
-								{user.status}
-							</span>
-							<p className="text-[10px] text-gray-400">{user.time}</p>
-							<div className="flex gap-2 mt-2 justify-end">
-								<button
-									type="button"
-									className="text-xs px-2 py-1 border border-green-500 text-green-600 rounded-md"
-								>
-									Accepted
-								</button>
-								<button
-									type="button"
-									className="text-xs px-2 py-1 border border-red-500 text-red-600 rounded-md"
-								>
-									Reject
-								</button>
+								<div>
+									<p className="text-sm font-medium text-gray-800">
+										{p.name}{" "}
+										<span className="text-gray-500">{p.handle}</span>
+									</p>
+									<a
+										href={p.proof_link}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-xs text-blue-600 underline"
+									>
+										Proof
+									</a>
+									<p className="text-xs text-gray-500">
+										{new Date(p.submitted_at).toLocaleString()}
+									</p>
+								</div>
+								<div className="flex gap-2">
+									{p.status === "pending" && (
+										<>
+											<button className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
+												Accept
+											</button>
+											<button className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">
+												Reject
+											</button>
+										</>
+									)}
+									{p.status !== "pending" && (
+										<span
+											className={`px-2 py-1 text-xs rounded ${
+												p.status === "accepted"
+													? "bg-green-100 text-green-700"
+													: "bg-red-100 text-red-700"
+											}`}
+										>
+											{p.status.toUpperCase()}
+										</span>
+									)}
+								</div>
 							</div>
-						</div>
+						))}
 					</div>
-				))}
+				) : (
+					<p className="text-xs text-gray-500">No allocations yet.</p>
+				)}
 			</div>
 		</div>
 	);

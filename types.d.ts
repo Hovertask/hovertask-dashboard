@@ -1,4 +1,6 @@
 export interface AuthUserDTO {
+	tasks_count: number;
+	adverts_count: number;
 	account_status: string;
 	avatar: null | string;
 	balance: number;

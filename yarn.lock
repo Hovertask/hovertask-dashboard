@@ -28,15 +28,15 @@
     "@biomejs/cli-win32-arm64" "2.0.6"
     "@biomejs/cli-win32-x64" "2.0.6"
 
-"@biomejs/cli-win32-x64@2.0.6":
+"@biomejs/cli-darwin-x64@2.0.6":
   version "2.0.6"
-  resolved "https://registry.npmjs.org/@biomejs/cli-win32-x64/-/cli-win32-x64-2.0.6.tgz"
-  integrity sha512-bfM1Bce0d69Ao7pjTjUS+AWSZ02+5UHdiAP85Th8e9yV5xzw6JrHXbL5YWlcEKQ84FIZMdDc7ncuti1wd2sdbw==
+  resolved "https://registry.npmjs.org/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.0.6.tgz"
+  integrity sha512-wJjjP4E7bO4WJmiQaLnsdXMa516dbtC6542qeRkyJg0MqMXP0fvs4gdsHhZ7p9XWTAmGIjZHFKXdsjBvKGIJJQ==
 
-"@esbuild/win32-x64@0.25.2":
+"@esbuild/darwin-x64@0.25.2":
   version "0.25.2"
-  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.2.tgz"
-  integrity sha512-kM3HKb16VIXZyIeVrM1ygYmZBKybX8N4p754bw390wGO3Tf2j4L2/WYL+4suWujpgf6GBYs3jv7TyUivdd05JA==
+  resolved "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.2.tgz"
+  integrity sha512-5eRPrTX7wFyuWe8FqEFPG2cU0+butQQVNcT4sVipqjLYQjjh8a8+vUTfgBKM88ObB85ahsnTwF7PSIt6PG+QkA==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.5.1"
@@ -2303,15 +2303,15 @@
     redux-thunk "^3.1.0"
     reselect "^5.1.0"
 
-"@rollup/rollup-win32-x64-msvc@4.39.0":
+"@rollup/rollup-darwin-x64@4.39.0":
   version "4.39.0"
-  resolved "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.39.0.tgz"
-  integrity sha512-yAkUOkIKZlK5dl7u6dg897doBgLXmUHhIINM2c+sND3DZwnrdQkkSiDh7N75Ll4mM4dxSkYfXqU9fW3lLkMFug==
+  resolved "https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.39.0.tgz"
+  integrity sha512-mKXpNZLvtEbgu6WCkNij7CGycdw9cJi2k9v0noMb++Vab12GZjFgUXD69ilAbBh034Zwn95c2PNSz9xM7KYEAQ==
 
-"@swc/core-win32-x64-msvc@1.11.16":
+"@swc/core-darwin-x64@1.11.16":
   version "1.11.16"
-  resolved "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.11.16.tgz"
-  integrity sha512-/ibq/YDc3B5AROkpOKPGxVkSyCKOg+ml8k11RxrW7FAPy6a9y5y9KPcWIqV74Ahq4RuaMNslTQqHWAGSm0xJsQ==
+  resolved "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.11.16.tgz"
+  integrity sha512-TH0IW8Ao1WZ4ARFHIh29dAQHYBEl4YnP74n++rjppmlCjY+8v3s5nXMA7IqxO3b5LVHyggWtU4+46DXTyMJM7g==
 
 "@swc/core@^1.11.11":
   version "1.11.16"
@@ -3104,6 +3104,11 @@ framer-motion@^12.6.3, "framer-motion@>=11.5.6 || >=12.0.0-alpha.1":
     motion-dom "^12.6.3"
     motion-utils "^12.6.3"
     tslib "^2.4.0"
+
+fsevents@~2.3.2, fsevents@~2.3.3:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"

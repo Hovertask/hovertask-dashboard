@@ -206,7 +206,7 @@ function TaskCard(props: any) {
 						</p>
 						<p className="text-xs text-gray-600 mt-1">
 							Amount Paid:{" "}
-							<span className="font-medium text-gray-800">₦2,000</span>
+							<span className="font-medium text-gray-800">₦{props.amount_paid ?? "0"}</span>
 						</p>
 						{props.link && (
 							<p className="text-xs text-gray-600 mt-1">
@@ -228,7 +228,7 @@ function TaskCard(props: any) {
 					<span className="text-xs uppercase">
 						{props.admin_approval_status}
 					</span>
-					<span className="text-xs text-gray-500">Jan 15th 2025, 6:42 am</span>
+					<span className="text-xs text-gray-500"> {new Date(props.created_at).toLocaleString()}</span>
 				</div>
 			</div>
 

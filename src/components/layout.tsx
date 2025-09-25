@@ -29,14 +29,30 @@ export default function RootLayout() {
 	}, [dispatch, user]);
 
 	useEffect(() => {
-		if (!user) return;
-		const allowedPaths = ["/VerifyEmail", "/become-a-member", "/choose-online-payment-method", "/payment/callback"];
-		if (!user.email_verified_at && !allowedPaths.includes(location.pathname)) {
-			navigate("/VerifyEmail", { replace: true });
-		} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
-			navigate("/become-a-member", { replace: true });
-		}
-	}, [user, navigate, location]);
+	if (!user) return;
+
+	const allowedPaths = [
+		"/VerifyEmail",
+		"/become-a-member",
+		"/choose-online-payment-method",
+		"/payment/callback",
+		"/advertise", // allow advertise page itself
+	];
+
+	if (!user.email_verified_at && !allowedPaths.includes(location.pathname)) {
+		navigate("/VerifyEmail", { replace: true });
+	} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
+		navigate("/become-a-member", { replace: true });
+	} else if (
+		user.adverts_count === 0 &&
+		user.tasks_count === 0 &&
+		!allowedPaths.includes(location.pathname)
+	) {
+		// if user has not created any advert or task
+		navigate("/advertise", { replace: true });
+	}
+}, [user, navigate, location]);
+
 
 	return (
 		<>
