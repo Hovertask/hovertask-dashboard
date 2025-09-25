@@ -37,9 +37,9 @@ export default function RootLayout() {
 		"/choose-online-payment-method",
 		"/payment/callback",
 		"/advertise", // allow advertise page itself
-		"advertise/tasks-history",
+		"/advertise/tasks-history",
 		"/advertise/task-performance/:id",
-		"advertise/post-advert",
+		"/advertise/post-advert",
 		"/advertise/engagement-tasks",
 		
 	];
