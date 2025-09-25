@@ -44,8 +44,8 @@ export default function RootLayout() {
 	} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
 		navigate("/become-a-member", { replace: true });
 	} else if (
-		user.adverts_count === 0 &&
-		user.tasks_count === 0 &&
+		user.advertise === 0 &&
+		user.task === 0 &&
 		!allowedPaths.includes(location.pathname)
 	) {
 		// if user has not created any advert or task
