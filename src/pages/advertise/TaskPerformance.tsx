@@ -11,7 +11,7 @@ export default function TaskPerformancePage() {
 	useEffect(() => {
 		async function fetchTask() {
 			try {
-				const res = await fetch(`${apiEndpointBaseURL}/show/{id}}`); // Laravel route
+				const res = await fetch(`${apiEndpointBaseURL}/advertise/show/{id}}`); // Laravel route
 				const data = await res.json();
 				if (data.status) {
 					setTask(data.data);
