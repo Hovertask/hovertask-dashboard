@@ -23,7 +23,7 @@ export default function AdvertCard({
         </p>
       </div>
       <Link
-        to={`/post-advert?platform=${platform}`} // ✅ pass platform via query string
+        to={`/advertise/post-advert?platform=${platform}`} // ✅ pass platform via query string
         className="bg-primary text-white text-xs px-4 py-2 rounded-full hover:bg-primary/90 transition"
       >
         Create Advert
