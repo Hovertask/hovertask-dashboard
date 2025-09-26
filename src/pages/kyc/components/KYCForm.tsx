@@ -1,6 +1,6 @@
 import { useState } from "react";
 import cn from "../../../utils/cn";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import CustomSelect from "../../../shared/components/Select";
 import { BookUser } from "lucide-react";
 import Input from "../../../shared/components/Input";
@@ -18,6 +18,7 @@ export default function KYCForm({
 	const {
 		register,
 		trigger,
+		control,
 		formState: { isValid, errors },
 	} = useForm({ mode: "onBlur" });
 
@@ -35,34 +36,50 @@ export default function KYCForm({
 			</div>
 
 			<div className="grid grid-cols-2 gap-6">
-				<CustomSelect
-					{...register("country", { required: "Select your country" })}
-					placeholder="Your Country"
-					options={[{ key: "nigeria", label: "Nigeria" }]}
-					errorMessage={errors.country?.message as string}
+				{/* Country */}
+				<Controller
+					name="country"
+					control={control}
+					rules={{ required: "Select your country" }}
+					render={({ field, fieldState }) => (
+						<CustomSelect
+							{...field}
+							placeholder="Your Country"
+							options={[{ key: "nigeria", label: "Nigeria" }]}
+							errorMessage={fieldState.error?.message}
+						/>
+					)}
 				/>
-				<CustomSelect
-					{...register("document_type", {
-						required: "Select your document type",
-					})}
-					placeholder="Document Type"
-					options={[
-						{ key: "drivers_license", label: "Driver's License" },
-						{ key: "passport", label: "Passport" },
-						{ key: "national_id_card", label: "National ID Card" },
-					]}
-					errorMessage={errors.document_type?.message as string}
+
+				{/* Document Type */}
+				<Controller
+					name="document_type"
+					control={control}
+					rules={{ required: "Select your document type" }}
+					render={({ field, fieldState }) => (
+						<CustomSelect
+							{...field}
+							placeholder="Document Type"
+							options={[
+								{ key: "drivers_license", label: "Driver's License" },
+								{ key: "passport", label: "Passport" },
+								{ key: "national_id_card", label: "National ID Card" },
+							]}
+							errorMessage={fieldState.error?.message}
+						/>
+					)}
 				/>
 			</div>
 
+			{/* Document Uploads */}
 			<div className="grid grid-cols-2 gap-4">
+				{/* Front Side */}
 				<div className="relative aspect-video rounded-md bg-zinc-200/40 border border-dashed">
 					<div className="absolute text-center p-4 inset-0 space-y-2">
 						<BookUser className="h-8 w-8 mx-auto" />
 						<p>Front side of your document</p>
 						<p className="text-xs">
-							Upload the front side of your document. We support JPG, PNG, and
-							PDF
+							Upload the front side of your document. We support JPG, PNG, and PDF
 						</p>
 						<label
 							className="text-sm text-primary hover:underline cursor-pointer"
@@ -73,22 +90,16 @@ export default function KYCForm({
 						<input
 							required
 							onChange={(e) => {
-								// Display the selected image or PDF file.
-								const newUrl =
-									// biome-ignore lint/complexity/useOptionalChain:
-									e.target.files &&
-									e.target.files[0] &&
-									e.target.files[0].type.startsWith("image")
-										? URL.createObjectURL(e.target.files[0])
-										: // biome-ignore lint/complexity/useOptionalChain:
-											e.target.files &&
-												e.target.files[0] &&
-												e.target.files[0].type.includes("pdf")
-											? "/images/pdf-thumbnail.webp"
-											: null;
+								const file = e.target.files?.[0];
+								const newUrl = file
+									? file.type.startsWith("image")
+										? URL.createObjectURL(file)
+										: file.type.includes("pdf")
+										? "/images/pdf-thumbnail.webp"
+										: null
+									: null;
 
 								if (imagesUrl[0]) URL.revokeObjectURL(imagesUrl[0]);
-
 								setImages([newUrl || "", imagesUrl[1]]);
 							}}
 							type="file"
@@ -106,13 +117,13 @@ export default function KYCForm({
 					/>
 				</div>
 
+				{/* Back Side */}
 				<div className="relative aspect-video rounded-md bg-zinc-200/40 border border-dashed">
 					<div className="absolute text-center p-4 inset-0 space-y-2">
 						<BookUser className="h-8 w-8 mx-auto" />
 						<p>Back side of your document</p>
 						<p className="text-xs">
-							Upload the front side of your document. We support JPG, PNG, and
-							PDF
+							Upload the back side of your document. We support JPG, PNG, and PDF
 						</p>
 						<label
 							className="text-sm text-primary hover:underline cursor-pointer"
@@ -123,22 +134,16 @@ export default function KYCForm({
 						<input
 							required
 							onChange={(e) => {
-								// Display the selected image or PDF file.
-								const newUrl =
-									// biome-ignore lint/complexity/useOptionalChain:
-									e.target.files &&
-									e.target.files[0] &&
-									e.target.files[0].type.startsWith("image")
-										? URL.createObjectURL(e.target.files[0])
-										: // biome-ignore lint/complexity/useOptionalChain:
-											e.target.files &&
-												e.target.files[0] &&
-												e.target.files[0].type.includes("pdf")
-											? "/images/pdf-thumbnail.webp"
-											: null;
+								const file = e.target.files?.[0];
+								const newUrl = file
+									? file.type.startsWith("image")
+										? URL.createObjectURL(file)
+										: file.type.includes("pdf")
+										? "/images/pdf-thumbnail.webp"
+										: null
+									: null;
 
-								if (imagesUrl[0]) URL.revokeObjectURL(imagesUrl[0]);
-
+								if (imagesUrl[1]) URL.revokeObjectURL(imagesUrl[1]);
 								setImages([imagesUrl[0], newUrl || ""]);
 							}}
 							type="file"
@@ -157,6 +162,7 @@ export default function KYCForm({
 				</div>
 			</div>
 
+			{/* Consent Checkbox */}
 			<div>
 				<div className="flex items-center gap-4">
 					<input
@@ -165,17 +171,16 @@ export default function KYCForm({
 						{...register("consent", { required: "This field is required" })}
 					/>
 					<label htmlFor="consent" className="text-sm">
-						I confirm that I uploaded valid government-issued phot ID. This ID
-						include my picture, signature, date of birth, and address.
+						I confirm that I uploaded valid government-issued photo ID. This ID
+						includes my picture, signature, date of birth, and address.
 					</label>
 				</div>
-				<small className="text-danger">
-					{errors.consent?.message as string}
-				</small>
+				<small className="text-danger">{errors.consent?.message as string}</small>
 			</div>
 
 			<hr className="border-dashed" />
 
+			{/* Personal Info */}
 			<div className="grid grid-cols-2 gap-6">
 				<Input
 					id="name"
@@ -195,7 +200,7 @@ export default function KYCForm({
 				<Input
 					id="nid"
 					label="National ID No."
-					placeholder="DD/MM/YY"
+					placeholder="Your National ID"
 					{...register("national_id_number", {
 						required: "Enter your national ID number",
 					})}
@@ -215,6 +220,7 @@ export default function KYCForm({
 
 			<p className="text-center">OR</p>
 
+			{/* QR Option */}
 			<div className="max-w-xl mx-auto border border-zinc-400 rounded-3xl p-6 flex gap-x-8">
 				<img src="/images/qr-code.png" alt="" />
 				<div className="flex flex-col justify-between max-w-40">
@@ -228,6 +234,7 @@ export default function KYCForm({
 				</div>
 			</div>
 
+			{/* Continue/Cancel */}
 			<div className="flex gap-6">
 				<button
 					onClick={async () => {

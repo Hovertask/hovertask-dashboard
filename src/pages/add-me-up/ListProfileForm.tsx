@@ -6,7 +6,7 @@ import { useState } from "react";
 import Loading from "../../shared/components/Loading";
 import AddMeUpAside from "../../shared/components/AddMeUpAside";
 import CustomSelect from "../../shared/components/Select";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import states from "../../utils/states";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import { toast } from "sonner";
@@ -17,10 +17,13 @@ export default function ListProfileForm() {
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm({ mode: "onBlur" });
+
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const modalProps = useDisclosure();
+
 	const listingTypes = [
 		{ key: "earner", label: "Earn Money" },
 		{ key: "advertiser", label: "Advertise Products" },
@@ -45,8 +48,8 @@ export default function ListProfileForm() {
 		setIsSubmitting(true);
 
 		const form = new FormData(e.target as HTMLFormElement);
-
 		form.append("how_you_want_your_profile_listed", "public");
+
 		fetch(`${apiEndpointBaseURL}/addmeup/listcontact`, {
 			method: "POST",
 			headers: {
@@ -88,17 +91,25 @@ export default function ListProfileForm() {
 					)}
 					className="space-y-6"
 				>
-					<CustomSelect
-						options={listingTypes}
-						label="Listing Type"
-						labelPlacement="outside"
-						placeholder="Select listing type"
-						{...register("listing_type", {
-							required: "Listing type is required",
-						})}
-						errorMessage={errors.listing_type?.message as string}
+					{/* Listing Type */}
+					<Controller
+						name="listing_type"
+						control={control}
+						rules={{ required: "Listing type is required" }}
+						render={({ field, fieldState }) => (
+							<CustomSelect
+								options={listingTypes}
+								label="Listing Type"
+								labelPlacement="outside"
+								placeholder="Select listing type"
+								value={field.value}
+								onChange={(val) => field.onChange(val)}
+								errorMessage={fieldState.error?.message}
+							/>
+						)}
 					/>
 
+					{/* Display Name */}
 					<Input
 						type="text"
 						label="Display Name"
@@ -117,6 +128,7 @@ export default function ListProfileForm() {
 						errorMessage={errors.display_name?.message as string}
 					/>
 
+					{/* WhatsApp Number */}
 					<Input
 						type="tel"
 						label="WhatsApp Number"
@@ -141,47 +153,67 @@ export default function ListProfileForm() {
 						errorMessage={errors.whatsapp_number?.message as string}
 					/>
 
+					{/* Duration */}
 					<div className="pt-2">
-						<CustomSelect
-							options={listingDurations}
-							label="How long do you want your profile listed"
-							labelPlacement="outside"
-							placeholder="Select how long you want"
-							{...register("how_long_you_want_your_profile_listed", {
-								required: "Duration is required",
-							})}
-							errorMessage={
-								errors.how_long_you_want_your_profile_listed?.message as string
-							}
+						<Controller
+							name="how_long_you_want_your_profile_listed"
+							control={control}
+							rules={{ required: "Duration is required" }}
+							render={({ field, fieldState }) => (
+								<CustomSelect
+									options={listingDurations}
+									label="How long do you want your profile listed"
+									labelPlacement="outside"
+									placeholder="Select how long you want"
+									value={field.value}
+									onChange={(val) => field.onChange(val)}
+									errorMessage={fieldState.error?.message}
+								/>
+							)}
 						/>
 					</div>
 
+					{/* Gender */}
 					<div className="pt-2">
-						<CustomSelect
-							options={genders}
-							label="Which genders do you want"
-							labelPlacement="outside"
-							placeholder="Select gender"
-							{...register("gender", { required: "Select a gender" })}
-							errorMessage={errors.gender?.message as string}
+						<Controller
+							name="gender"
+							control={control}
+							rules={{ required: "Select a gender" }}
+							render={({ field, fieldState }) => (
+								<CustomSelect
+									options={genders}
+									label="Which genders do you want"
+									labelPlacement="outside"
+									placeholder="Select gender"
+									value={field.value}
+									onChange={(val) => field.onChange(val)}
+									errorMessage={fieldState.error?.message}
+								/>
+							)}
 						/>
 					</div>
 
+					{/* Location */}
 					<div className="pt-2">
-						<CustomSelect
-							options={states}
-							label="Where do you want contacts from"
-							labelPlacement="outside"
-							placeholder="Select where you want contacts from"
-							{...register("where_you_want_your_contacts_from", {
-								required: "Select a location",
-							})}
-							errorMessage={
-								errors.where_you_want_your_contacts_from?.message as string
-							}
+						<Controller
+							name="where_you_want_your_contacts_from"
+							control={control}
+							rules={{ required: "Select a location" }}
+							render={({ field, fieldState }) => (
+								<CustomSelect
+									options={states}
+									label="Where do you want contacts from"
+									labelPlacement="outside"
+									placeholder="Select where you want contacts from"
+									value={field.value}
+									onChange={(val) => field.onChange(val)}
+									errorMessage={fieldState.error?.message}
+								/>
+							)}
 						/>
 					</div>
 
+					{/* Image */}
 					<div className="max-w-sm space-y-2">
 						<label htmlFor="image" className="text-sm">
 							Display Image
