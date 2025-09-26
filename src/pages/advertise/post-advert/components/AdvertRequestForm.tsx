@@ -116,6 +116,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Platform Selection */}
         <CustomSelect
   options={socialMedia}
+  aria-label="Select Platform"
   label={
     <Label
       title="Select Platform"
@@ -125,7 +126,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   placeholder="Select platform"
   className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
   startContent={<Globe />}
-  defaultSelectedKeys={platform ? [platform] : []}
+  defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
   onChange={(value) => {
     const platformValue = Array.isArray(value) ? value[0] : value;
     setSelectedPlatform(platformValue);
@@ -133,6 +134,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   }}
   errorMessage={errors.platforms?.message as string}
 />
+
 
 
         {/* Dynamic input (based on platform) */}
