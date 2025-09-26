@@ -127,7 +127,7 @@ export default function App() {
 							{/* Advertise */}
 							<Route path="advertise" element={<AdvertisePage />} />
 							<Route
-								path="advertise/post-advert"
+								path="advertise/post-advert/post-advert?platform=${platform}"
 								element={<PostAdvertPage />}
 							/>
 							<Route
