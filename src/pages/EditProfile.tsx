@@ -19,6 +19,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import EditPassword from "../shared/components/EditPassword";
 import UserProfileCard from "../shared/components/UserProfileCard";
+import Label from "./advertise/post-advert/components/Label";
 
 export default function EditProfilePage() {
 	const authUser = useSelector<any, AuthUserDTO>(
@@ -328,17 +329,23 @@ function EditSocialMediaForm(props: {
 				</button>
 			</div>
 
+
 			<CustomSelect
-				options={socialMediaPlatforms}
-				placeholder="Select platform"
-				label="Select Platform"
-				startContent={<Mail size={14} className="mr-2" />}
-				labelPlacement="outside"
-				onChange={(e) =>
-					setSelectedMedia(Array.from(new Set(e.target.value.split(","))))
-				}
-				selectionMode="multiple"
-			/>
+  options={socialMediaPlatforms}
+  placeholder="Select platform"
+  label={
+    <Label
+      title="Select Platform"
+      description="Choose one or more platforms you want to link."
+    />
+  }
+  className="[&_button]:rounded-full [&_button]:bg-white"
+  selectionMode="multiple"
+  startContent={<Mail size={14} className="mr-2" />}
+  onChange={(value) => setSelectedMedia(value.split(","))}
+  errorMessage={selectedMedia.length === 0 ? "Please select at least one platform" : ""}
+/>
+
 
 			{selectedMedia.map((medium, i) =>
 				selectedMedia[i] !== "" ? (

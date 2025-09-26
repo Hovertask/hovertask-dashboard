@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import CustomSelect from "../shared/components/Select";
 import banks from "../utils/banks";
 import Input from "../shared/components/Input";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Loading from "../shared/components/Loading";
 import { useSelector } from "react-redux";
 import { AuthUserDTO } from "../../types";
@@ -19,13 +19,15 @@ export default function UpdateBankDetailsPage() {
 	});
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
 	const {
-		register,
+		control,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({ mode: "onBlur" });
 
-	function submit() {
+	function submit(data: any) {
+		console.log("Submitted data:", data);
 		setIsSubmitting(true);
 		setTimeout(() => {
 			setIsSubmitting(false);
@@ -70,49 +72,63 @@ export default function UpdateBankDetailsPage() {
 							onSubmit={handleSubmit(submit)}
 							className="p-4 rounded-2xl shadow-md space-y-4"
 						>
-							<CustomSelect
-								options={banks}
-								label="Bank Name"
-								placeholder="Select bank"
-								labelPlacement="outside"
-								{...register("bank_name", {
-									required: "Select bank name",
-								})}
-								errorMessage={errors.bank_name?.message as string}
-								isAutoComplete
-								inputValue={
-									banks.find((bank) => bank.key === bankDetails.bankName)
-										?.label!
-								}
-								selectedKey={bankDetails.bankName}
-								onSelectionChange={(id) =>
-									setBankDetails((prev) => ({
-										...prev,
-										bankName: (id as string) || "",
-									}))
-								}
+							{/* Bank Name */}
+							<Controller
+								name="bank_name"
+								control={control}
+								rules={{ required: "Select bank name" }}
+								render={({ field, fieldState }) => (
+									<CustomSelect
+										options={banks}
+										label="Bank Name"
+										placeholder="Select bank"
+										isAutoComplete
+										inputValue={
+											banks.find((b) => b.key === field.value)?.label || ""
+										}
+										selectedKey={field.value}
+										onSelectionChange={(id) => {
+											const val = id as string;
+											field.onChange(val);
+											setBankDetails((prev) => ({ ...prev, bankName: val }));
+										}}
+										errorMessage={fieldState.error?.message}
+									/>
+								)}
 							/>
-							<Input
-								label="Account Number"
-								placeholder="Enter account number"
-								{...register("account_number", {
-									required: "Select bank name",
+
+							{/* Account Number */}
+							<Controller
+								name="account_number"
+								control={control}
+								rules={{
+									required: "Account number is required",
 									pattern: {
 										value: /^\d{10}$/,
-										message:
-											"Please enter a valid account number with the right number of digits",
+										message: "Please enter a valid 10-digit account number",
 									},
-								})}
-								errorMessage={errors.account_number?.message as string}
-								value={bankDetails.accountNumber}
-								onChange={(e) =>
-									setBankDetails((prev) => ({
-										...prev,
-										accountNumber: e.target.value,
-									}))
-								}
+								}}
+								render={({ field, fieldState }) => (
+									<Input
+										label="Account Number"
+										placeholder="Enter account number"
+										value={field.value || ""}
+										onChange={(e) => {
+											field.onChange(e.target.value);
+											setBankDetails((prev) => ({
+												...prev,
+												accountNumber: e.target.value,
+											}));
+										}}
+										errorMessage={fieldState.error?.message}
+									/>
+								)}
 							/>
-							<button className="bg-primary p-2 rounded-xl text-white transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transition-none">
+
+							<button
+								disabled={isSubmitting}
+								className="bg-primary p-2 rounded-xl text-white transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transition-none"
+							>
 								Save Bank Details
 							</button>
 						</form>
