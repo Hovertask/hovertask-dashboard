@@ -29,7 +29,10 @@ import Label from "./Label";
 import SetPaymentMethod from "./SetPaymentMethod";
 
 // ✅ Platform-specific customization
-const platformConfig: any = {
+const platformConfig: Record<
+  string,
+  { inputLabel: string; inputDescription: string; registerKey: string }
+> = {
   WhatsApp: {
     inputLabel: "Select Number of WhatsApp Status to Post",
     inputDescription:
@@ -55,7 +58,8 @@ const platformConfig: any = {
   },
   TikTok: {
     inputLabel: "Select Number of TikTok Videos",
-    inputDescription: "Enter how many TikTok video adverts you'd like to request.",
+    inputDescription:
+      "Enter how many TikTok video adverts you'd like to request.",
     registerKey: "no_of_tiktok_video_post",
   },
 };
@@ -71,9 +75,9 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   const isEngagementTask =
     new URLSearchParams(window.location.search).get("type") === "engagement";
 
-  // ✅ default to prop value first
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(
-    platform || null
+  // ✅ selected platform (defaults to prop or empty)
+  const [selectedPlatform, setSelectedPlatform] = useState<string>(
+    platform || ""
   );
 
   const {
@@ -82,6 +86,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     trigger,
     clearErrors,
     formState: { errors, isValid, isSubmitting },
+    setValue,
   } = useForm();
 
   useEffect(() => {
@@ -126,10 +131,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           placeholder="Select platform"
           className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
           startContent={<Globe />}
-          {...register("platforms", { required: "Select platform" })}
           errorMessage={errors.platforms?.message as string}
-          defaultSelectedKeys={platform ? [platform] : []} // ✅ pre-select platform if provided
-          onChange={(value: string) => setSelectedPlatform(value)}
+          // ✅ default selection from prop
+          defaultSelectedKeys={platform ? [platform] : []}
+          onChange={(value) => {
+            setSelectedPlatform(value);
+            setValue("platforms", value, { shouldValidate: true });
+          }}
         />
 
         {/* Dynamic Input Based on Platform */}
@@ -167,7 +175,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           placeholder="Select gender"
           className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
           startContent={<User />}
-          {...register("gender", { required: "Select preferred gender." })}
+          onChange={(value) => setValue("gender", value, { shouldValidate: true })}
           errorMessage={errors.gender?.message as string}
         />
 
@@ -182,7 +190,9 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           }
           className="[&_button]:rounded-full [&_button]:bg-white"
           selectionMode="multiple"
-          {...register("location", { required: "Select a location." })}
+          onChange={(value) =>
+            setValue("location", value, { shouldValidate: true })
+          }
           errorMessage={errors.location?.message as string}
         />
 
@@ -199,7 +209,9 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           selectionMode="multiple"
           placeholder="Select religion"
           startContent={<Church />}
-          {...register("religion", { required: "Select preferred religion." })}
+          onChange={(value) =>
+            setValue("religion", value, { shouldValidate: true })
+          }
           errorMessage={errors.religion?.message as string}
         />
 
@@ -217,7 +229,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             placeholder="Enter your post link"
             type="url"
             {...register("url", {
-              required: "Enter the number of posts you want",
+              required: "Enter your post link",
               pattern: urlValidation,
             })}
             errorMessage={errors.url?.message as string}
