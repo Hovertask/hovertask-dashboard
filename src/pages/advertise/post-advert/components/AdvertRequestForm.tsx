@@ -115,24 +115,25 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
 
         {/* Platform Selection */}
         <CustomSelect
-          options={socialMedia}
-          label={
-            <Label
-              title="Select Platform"
-              description="Choose the platform where you'd like to share or promote your content."
-            />
-          }
-          placeholder="Select platform"
-          className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-          startContent={<Globe />}
-          defaultSelectedKeys={platform ? [platform] : []}
-          // ✅ onChange simplified
-          onChange={(value) => {
-            setSelectedPlatform(value);
-            setValue("platforms", value, { shouldValidate: true });
-          }}
-          errorMessage={errors.platforms?.message as string}
-        />
+  options={socialMedia}
+  label={
+    <Label
+      title="Select Platform"
+      description="Choose the platform where you'd like to share or promote your content."
+    />
+  }
+  placeholder="Select platform"
+  className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+  startContent={<Globe />}
+  defaultSelectedKeys={platform ? [platform] : []}
+  onChange={(value) => {
+    const platformValue = Array.isArray(value) ? value[0] : value;
+    setSelectedPlatform(platformValue);
+    setValue("platforms", platformValue, { shouldValidate: true });
+  }}
+  errorMessage={errors.platforms?.message as string}
+/>
+
 
         {/* Dynamic input (based on platform) */}
         {config && (
