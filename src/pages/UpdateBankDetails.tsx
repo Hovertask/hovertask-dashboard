@@ -11,6 +11,11 @@ import { AuthUserDTO } from "../../types";
 import cn from "../utils/cn";
 import UserProfileCard from "../shared/components/UserProfileCard";
 
+type FormData = {
+	bank_name: string;
+	account_number: string;
+};
+
 export default function UpdateBankDetailsPage() {
 	const authUser = useSelector<any, AuthUserDTO>((state) => state.auth.value);
 	const [bankDetails, setBankDetails] = useState({
@@ -24,20 +29,32 @@ export default function UpdateBankDetailsPage() {
 		control,
 		handleSubmit,
 		formState: { errors },
-	} = useForm({ mode: "onBlur" });
+		reset,
+	} = useForm<FormData>({ mode: "onBlur" });
 
-	function submit(data: any) {
+	function submit(data: FormData) {
 		console.log("Submitted data:", data);
 		setIsSubmitting(true);
+
 		setTimeout(() => {
+			// ✅ Update local bankDetails from submitted form data
+			setBankDetails({
+				bankName: data.bank_name,
+				accountNumber: data.account_number,
+			});
+
+			// ✅ Reset form (fields cleared but still show saved state)
+			reset();
+
 			setIsSubmitting(false);
 			setIsEditing(false);
-		}, 4000);
+		}, 2000);
 	}
 
 	useEffect(() => {
-		if (!bankDetails.bankName.trim() || !bankDetails.accountNumber.trim())
+		if (!bankDetails.bankName.trim() || !bankDetails.accountNumber.trim()) {
 			setIsEditing(true);
+		}
 	}, [bankDetails]);
 
 	return (
@@ -77,7 +94,7 @@ export default function UpdateBankDetailsPage() {
 								name="bank_name"
 								control={control}
 								rules={{ required: "Select bank name" }}
-								render={({ field, fieldState }) => (
+								render={({ field }) => (
 									<CustomSelect
 										options={banks}
 										label="Bank Name"
@@ -90,9 +107,8 @@ export default function UpdateBankDetailsPage() {
 										onSelectionChange={(id) => {
 											const val = id as string;
 											field.onChange(val);
-											setBankDetails((prev) => ({ ...prev, bankName: val }));
 										}}
-										errorMessage={fieldState.error?.message}
+										errorMessage={errors.bank_name?.message as string}
 									/>
 								)}
 							/>
@@ -108,19 +124,13 @@ export default function UpdateBankDetailsPage() {
 										message: "Please enter a valid 10-digit account number",
 									},
 								}}
-								render={({ field, fieldState }) => (
+								render={({ field }) => (
 									<Input
 										label="Account Number"
 										placeholder="Enter account number"
 										value={field.value || ""}
-										onChange={(e) => {
-											field.onChange(e.target.value);
-											setBankDetails((prev) => ({
-												...prev,
-												accountNumber: e.target.value,
-											}));
-										}}
-										errorMessage={fieldState.error?.message}
+										onChange={(e) => field.onChange(e.target.value)}
+										errorMessage={errors.account_number?.message as string}
 									/>
 								)}
 							/>
