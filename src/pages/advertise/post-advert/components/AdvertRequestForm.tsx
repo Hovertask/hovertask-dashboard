@@ -2,14 +2,7 @@ import { useDisclosure } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../../../../shared/components/Input";
-import {
-  Church,
-  Globe,
-  Hash,
-  LinkIcon,
-  Speaker,
-  User,
-} from "lucide-react";
+import { Church, Globe, Hash, LinkIcon, Speaker, User } from "lucide-react";
 import CustomSelect from "../../../../shared/components/Select";
 import {
   genders,
@@ -28,7 +21,7 @@ import {
 import Label from "./Label";
 import SetPaymentMethod from "./SetPaymentMethod";
 
-// ✅ Platform-specific customization
+// ✅ Centralized platform-specific config
 const platformConfig: Record<
   string,
   { inputLabel: string; inputDescription: string; registerKey: string }
@@ -65,17 +58,18 @@ const platformConfig: Record<
 };
 
 type AdvertRequestFormProps = {
-  platform?: string; // ✅ accept platform as prop
+  platform?: string; // ✅ optional platform from props
 };
 
 export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const successModalProps = useDisclosure();
   const modalProps = useDisclosure();
+
   const isEngagementTask =
     new URLSearchParams(window.location.search).get("type") === "engagement";
 
-  // ✅ selected platform (defaults to prop or empty)
+  // ✅ state for currently selected platform
   const [selectedPlatform, setSelectedPlatform] = useState<string>(
     platform || ""
   );
@@ -131,16 +125,16 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           placeholder="Select platform"
           className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
           startContent={<Globe />}
-          errorMessage={errors.platforms?.message as string}
-          // ✅ default selection from prop
           defaultSelectedKeys={platform ? [platform] : []}
+          // ✅ onChange simplified
           onChange={(value) => {
             setSelectedPlatform(value);
             setValue("platforms", value, { shouldValidate: true });
           }}
+          errorMessage={errors.platforms?.message as string}
         />
 
-        {/* Dynamic Input Based on Platform */}
+        {/* Dynamic input (based on platform) */}
         {config && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
@@ -156,7 +150,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
               required: `Enter the number of ${selectedPlatform} posts you want`,
               pattern: {
                 value: /^\d+$/,
-                message: "Enter a number. No spacing required.",
+                message: "Enter a valid number",
               },
             })}
             errorMessage={errors[config.registerKey]?.message as string}
@@ -169,13 +163,15 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           label={
             <Label
               title="Select Gender"
-              description="Choose the target gender for your audience to ensure your advert reaches the most relevant individuals."
+              description="Choose the target gender for your audience."
             />
           }
           placeholder="Select gender"
           className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
           startContent={<User />}
-          onChange={(value) => setValue("gender", value, { shouldValidate: true })}
+          onChange={(value) =>
+            setValue("gender", value, { shouldValidate: true })
+          }
           errorMessage={errors.gender?.message as string}
         />
 
@@ -185,7 +181,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           label={
             <Label
               title="Select Location"
-              description="Choose the preferred location for your advert or service audience."
+              description="Choose the preferred location for your advert audience."
             />
           }
           className="[&_button]:rounded-full [&_button]:bg-white"
@@ -202,7 +198,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           label={
             <Label
               title="Select Religion"
-              description="Choose the target religion for your audience or service."
+              description="Choose the target religion for your audience."
             />
           }
           className="[&_button]:rounded-full [&_button]:bg-white"
@@ -222,7 +218,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             label={
               <Label
                 title="Your Social Media Post Link"
-                description="Provide the link to your social media post to ensure accurate tracking and verification."
+                description="Provide the link to your post for tracking and verification."
               />
             }
             icon={<LinkIcon size={16} />}
@@ -240,7 +236,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         <div className="space-y-1 text-sm">
           <Label
             title="Enter Advert Text or Caption"
-            description="Write the text or caption for your advert to grab your audience's attention."
+            description="Write the text or caption for your advert."
           />
           <textarea
             {...register("description", {
@@ -262,19 +258,18 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         <div>
           <Label
             title="Choose Your Advert Media Upload Option"
-            description="Selecting the right media for your advert is essential to capturing attention and driving engagement."
+            description="Upload media for your advert."
           />
-
           <div className="flex gap-6 items-center">
             <div className="flex flex-col gap-2">
               <label
-                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary transition-transform active:scale-95"
+                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
                 htmlFor="images"
               >
                 Upload video advert
               </label>
               <label
-                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary transition-transform active:scale-95"
+                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
                 htmlFor="images"
               >
                 Upload image advert
