@@ -39,7 +39,7 @@ export default function RootLayout() {
 		"/advertise", // allow advertise page itself
 		"/advertise/tasks-history",
 		"/advertise/task-performance/:id",
-		"/advertise/post-advert",
+		"/advertise//post-advert?platform=${platform}",
 		"/advertise/engagement-tasks",
 		
 	];
