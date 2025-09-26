@@ -116,22 +116,18 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Platform Selection */}
         <CustomSelect
   options={socialMedia}
-  aria-label="Select Platform"
+  aria-label="Selected Platform"
   label={
     <Label
-      title="Select Platform"
-      description="Choose the platform where you'd like to share or promote your content."
+      title="Selected Platform"
+      description="This field is read-only because the platform was already selected on the advertise page."
     />
   }
   placeholder="Select platform"
   className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
   startContent={<Globe />}
   defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
-  onChange={(value) => {
-    const platformValue = Array.isArray(value) ? value[0] : value;
-    setSelectedPlatform(platformValue);
-    setValue("platforms", platformValue, { shouldValidate: true });
-  }}
+  isDisabled
   errorMessage={errors.platforms?.message as string}
 />
 
