@@ -37,30 +37,30 @@ const platformConfig: Record<
     inputLabel: "Select Number of WhatsApp Status to Post",
     inputDescription:
       "Enter the number of WhatsApp status advert posts you'd like to request.",
-    registerKey: "no_of_whatsapp_status_post",
+    registerKey: "no_of_status_post",
   },
   Instagram: {
     inputLabel: "Select Number of Instagram Story Posts",
     inputDescription:
       "Enter how many Instagram story adverts you'd like to request.",
-    registerKey: "no_of_instagram_story_post",
+    registerKey: "no_of_status_post",
   },
   Facebook: {
     inputLabel: "Select Number of Facebook Timeline Posts",
     inputDescription:
       "Enter the number of Facebook timeline adverts you'd like to request.",
-    registerKey: "no_of_facebook_timeline_post",
+    registerKey: "no_of_status_post",
   },
   X: {
     inputLabel: "Select Number of X (Twitter) Posts",
     inputDescription: "Enter how many X (Twitter) posts you'd like to request.",
-    registerKey: "no_of_x_post",
+    registerKey: "no_of_status_post",
   },
   TikTok: {
     inputLabel: "Select Number of TikTok Videos",
     inputDescription:
       "Enter how many TikTok video adverts you'd like to request.",
-    registerKey: "no_of_tiktok_video_post",
+    registerKey: "no_of_status_post",
   },
 };
 
