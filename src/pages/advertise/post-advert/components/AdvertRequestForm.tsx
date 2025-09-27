@@ -70,7 +70,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     new URLSearchParams(window.location.search).get("type") === "engagement";
 
   // ✅ state for currently selected platform
-  const [selectedPlatform, setSelectedPlatform] = useState<string>(
+  const [selectedPlatform] = useState<string>(
     platform || ""
   );
 
