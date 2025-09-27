@@ -70,7 +70,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     new URLSearchParams(window.location.search).get("type") === "engagement";
 
   // ✅ state for currently selected platform
-  const [selectedPlatform] = useState<string>(
+  const [selectedPlatform, setSelectedPlatform] = useState<string>(
     platform || ""
   );
 
@@ -128,6 +128,11 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   startContent={<Globe />}
   defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
   isDisabled
+  onChange={(value) => {
+    const platformValue = Array.isArray(value) ? value[0] : value;
+    setSelectedPlatform(platformValue);
+    setValue("platforms", platformValue, { shouldValidate: true });
+  }}
   errorMessage={errors.platforms?.message as string}
 />
 

@@ -38,7 +38,7 @@ export default function AdvertSummaryModal(props: {
 								{title}
 							</li>
 							<li>
-								<span className="font-medium">Status posts needed: </span>
+								<span className="font-medium">Posts needed: </span>
 								{no_of_status_post}
 							</li>
 							<li>
