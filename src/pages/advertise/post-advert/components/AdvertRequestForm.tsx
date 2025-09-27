@@ -101,6 +101,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     <>
       <form id="advert-form" className="p-6 space-y-6" ref={formRef}>
         {/* Title */}
+		{config && (
         <Input
           className="rounded-full bg-white"
           label={
@@ -120,29 +121,41 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           })}
           errorMessage={errors.title?.message as string}
         />
+        )}
+
 
         {/* Platform Selection */}
-        <CustomSelect
-          options={socialMedia}
-          aria-label="Selected Platform"
-          label={
-            <Label
-              title="Selected Platform"
-              description="This field is read-only because the platform was already selected on the advertise page."
-            />
-          }
-          placeholder="Select platform"
-          className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-          startContent={<Globe />}
-          defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
-          isDisabled={!!platform} // disable if platform prop is provided
-          onChange={(value) => {
-            const platformValue = Array.isArray(value) ? value[0] : value;
-            setSelectedPlatform(platformValue);
-            setValue("platforms", platformValue, { shouldValidate: true });
-          }}
-          errorMessage={errors.platforms?.message as string}
-        />
+       
+<CustomSelect
+  options={socialMedia}
+  aria-label="Selected Platform"
+  label={
+    <Label
+      title={
+        platform
+          ? "Selected Platform"
+          : "Choose Platform to create engagement On"
+      }
+      description={
+        platform
+          ? "This field is read-only because the platform was already selected on the advertise page."
+          : "Choose the platform where you'd like to advertise."
+      }
+    />
+  }
+  placeholder="Select platform"
+  className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+  startContent={<Globe />}
+  defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
+  isDisabled={!!platform} // ✅ disable only if platform was provided
+  onChange={(value) => {
+    const platformValue = Array.isArray(value) ? value[0] : value;
+    setSelectedPlatform(platformValue);
+    setValue("platforms", platformValue, { shouldValidate: true });
+  }}
+  errorMessage={errors.platforms?.message as string}
+/>
+
         {/* Hidden input so react-hook-form submits it */}
         <input
           type="hidden"
