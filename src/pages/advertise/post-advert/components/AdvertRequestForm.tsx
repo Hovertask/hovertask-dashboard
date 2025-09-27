@@ -87,6 +87,14 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     if (isValid) clearErrors();
   }, [isValid, clearErrors]);
 
+  // ✅ ensure platform is registered even if disabled
+  useEffect(() => {
+    if (platform) {
+      setValue("platforms", platform, { shouldValidate: true });
+      setSelectedPlatform(platform);
+    }
+  }, [platform, setValue]);
+
   const config = selectedPlatform ? platformConfig[selectedPlatform] : null;
 
   return (
@@ -115,28 +123,31 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
 
         {/* Platform Selection */}
         <CustomSelect
-  options={socialMedia}
-  aria-label="Selected Platform"
-  label={
-    <Label
-      title="Selected Platform"
-      description="This field is read-only because the platform was already selected on the advertise page."
-    />
-  }
-  placeholder="Select platform"
-  className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-  startContent={<Globe />}
-  defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
-  isDisabled
-  onChange={(value) => {
-    const platformValue = Array.isArray(value) ? value[0] : value;
-    setSelectedPlatform(platformValue);
-    setValue("platforms", platformValue, { shouldValidate: true });
-  }}
-  errorMessage={errors.platforms?.message as string}
-/>
-
-
+          options={socialMedia}
+          aria-label="Selected Platform"
+          label={
+            <Label
+              title="Selected Platform"
+              description="This field is read-only because the platform was already selected on the advertise page."
+            />
+          }
+          placeholder="Select platform"
+          className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+          startContent={<Globe />}
+          defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
+          isDisabled
+          onChange={(value) => {
+            const platformValue = Array.isArray(value) ? value[0] : value;
+            setSelectedPlatform(platformValue);
+            setValue("platforms", platformValue, { shouldValidate: true });
+          }}
+          errorMessage={errors.platforms?.message as string}
+        />
+        {/* Hidden input so react-hook-form submits it */}
+        <input
+          type="hidden"
+          {...register("platforms", { required: "Platform is required" })}
+        />
 
         {/* Dynamic input (based on platform) */}
         {config && (
@@ -178,6 +189,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           }
           errorMessage={errors.gender?.message as string}
         />
+        <input
+          type="hidden"
+          {...register("gender", { required: "Gender is required" })}
+        />
 
         {/* Location */}
         <CustomSelect
@@ -194,6 +209,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             setValue("location", value, { shouldValidate: true })
           }
           errorMessage={errors.location?.message as string}
+        />
+        <input
+          type="hidden"
+          {...register("location", { required: "Location is required" })}
         />
 
         {/* Religion */}
@@ -213,6 +232,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             setValue("religion", value, { shouldValidate: true })
           }
           errorMessage={errors.religion?.message as string}
+        />
+        <input
+          type="hidden"
+          {...register("religion", { required: "Religion is required" })}
         />
 
         {/* Engagement Task URL */}
