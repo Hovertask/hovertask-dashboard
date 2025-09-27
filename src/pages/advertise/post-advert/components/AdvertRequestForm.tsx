@@ -135,7 +135,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
           startContent={<Globe />}
           defaultSelectedKeys={platform ? [platform.toLowerCase()] : []} // ✅ match your keys
-          isDisabled
+          isDisabled={!!platform} // disable if platform prop is provided
           onChange={(value) => {
             const platformValue = Array.isArray(value) ? value[0] : value;
             setSelectedPlatform(platformValue);

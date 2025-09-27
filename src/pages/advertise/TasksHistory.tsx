@@ -192,10 +192,11 @@ function TaskCard(props: any) {
 		<div className="border rounded-xl p-4 shadow-sm bg-white">
 			<div className="flex items-center justify-between gap-4">
 				<img
-					src={platformsImgMap[props.platforms as string]}
-					alt="Instagram"
-					className="w-8 h-8 mt-1"
-				/>
+                   src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
+                   alt={(props.platforms as string)?.toLowerCase()}
+                   className="w-8 h-8 mt-1"
+            />
+
 
 				<div className="flex items-start gap-4 flex-1">
 					<div>

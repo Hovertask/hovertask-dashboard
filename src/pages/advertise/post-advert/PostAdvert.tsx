@@ -4,7 +4,7 @@ import Hero from "./components/Hero";
 
 export default function PostAdvertPage() {
   const query = new URLSearchParams(useLocation().search);
-  const platform = query.get("platform") || "WhatsApp"; // default
+  const platform = query.get("platform") || "Engagement"; // default
 
   return (
     <div className="mobile:grid gap-4 min-h-full">
