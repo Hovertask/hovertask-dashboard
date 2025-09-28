@@ -5,13 +5,14 @@ import {
   ModalContent,
   type useDisclosure,
 } from "@heroui/react";
-import type { FieldValues } from "react-hook-form";
+import type { FieldValues, UseFormSetError } from "react-hook-form";
 import submitAdvert from "../utils/submitAdvert";
 
 export default function AdvertSummaryModal(props: {
   modalProps: ReturnType<typeof useDisclosure>;
   successModalProps: ReturnType<typeof useDisclosure>;
   getFormValue: () => FieldValues;
+  setError: UseFormSetError<any>; // 👈 add setError
 }) {
   const {
     platform,
@@ -24,9 +25,9 @@ export default function AdvertSummaryModal(props: {
     deadline,
   } = props.getFormValue();
 
-  function initAdvertSubmission() {
+  async function initAdvertSubmission() {
     props.modalProps.onClose();
-    submitAdvert(props.successModalProps);
+    await submitAdvert(props.successModalProps, props.setError); // 👈 pass setError
   }
 
   return (

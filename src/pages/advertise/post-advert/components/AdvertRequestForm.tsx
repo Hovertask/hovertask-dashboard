@@ -1,4 +1,3 @@
-// src/features/advert/components/forms/AdvertRequestForm.tsx
 import { useDisclosure } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -91,6 +90,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     formState: { errors, isValid, isSubmitting },
     setValue,
     watch,
+    setError,
   } = useForm();
 
   useEffect(() => {
@@ -141,7 +141,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           />
         )}
 
-        {/* Platform Selection for advert*/}
+        {/* Platform Selection for advert */}
         {config && (
           <CustomSelect
             options={socialMedia}
@@ -225,79 +225,91 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Number of Participants */}
-        <Input
-          className="max-w-[250px] rounded-full bg-white"
-          label={
-            <Label
-              title="Number of Participants"
-              description="Enter how many participants should engage with this task."
-            />
-          }
-          icon={<Users size={16} />}
-          placeholder="0"
-          {...register("number_of_participants", {
-            required: "Enter number of participants",
-            pattern: {
-              value: /^\d+$/,
-              message: "Enter a valid number",
-            },
-          })}
-          errorMessage={errors.number_of_participants?.message as string}
-        />
+        {isEngagementTask && (
+          <Input
+            className="max-w-[250px] rounded-full bg-white"
+            label={
+              <Label
+                title="Number of Participants"
+                description="Enter how many participants should engage with this task."
+              />
+            }
+            icon={<Users size={16} />}
+            placeholder="0"
+            {...register("number_of_participants", {
+              required: "Enter number of participants",
+              pattern: {
+                value: /^\d+$/,
+                message: "Enter a valid number",
+              },
+            })}
+            errorMessage={errors.number_of_participants?.message as string}
+          />
+        )}
 
         {/* Payment per Task */}
-        <Input
-          className="max-w-[250px] rounded-full bg-white"
-          label={
-            <Label
-              title="Payment Per Task"
-              description="Enter the amount to be paid per task engagement."
-            />
-          }
-          icon={<DollarSign size={16} />}
-          placeholder="0"
-          {...register("payment_per_task", {
-            required: "Enter payment per task",
-            pattern: {
-              value: /^\d+$/,
-              message: "Enter a valid number",
-            },
-          })}
-          errorMessage={errors.payment_per_task?.message as string}
-        />
+        {isEngagementTask && (
+          <Input
+            className="max-w-[250px] rounded-full bg-white"
+            label={
+              <Label
+                title="Payment Per Task"
+                description="Enter the amount to be paid per task engagement."
+              />
+            }
+            icon={<DollarSign size={16} />}
+            placeholder="0"
+            {...register("payment_per_task", {
+              required: "Enter payment per task",
+              pattern: {
+                value: /^\d+$/,
+                message: "Enter a valid number",
+              },
+            })}
+            errorMessage={errors.payment_per_task?.message as string}
+          />
+        )}
 
-        {/* Estimated Cost (computed, read-only) */}
-        <Input
-          className="max-w-[250px] rounded-full bg-white"
-          label={
-            <Label
-              title="Estimated Cost"
-              description="Automatically calculated as participants × payment per task."
-            />
-          }
-          icon={<DollarSign size={16} />}
-          placeholder="0"
-          value={participants && paymentPerTask ? participants * paymentPerTask : ""}
-          readOnly
-          {...register("estimated_cost", { required: true })}
-        />
+        {/* Estimated Cost */}
+        {isEngagementTask && (
+          <Input
+            className="max-w-[250px] rounded-full bg-white"
+            label={
+              <Label
+                title="Estimated Cost"
+                description="Automatically calculated as participants × payment per task."
+              />
+            }
+            icon={<DollarSign size={16} />}
+            placeholder="0"
+            value={
+              participants && paymentPerTask
+                ? participants * paymentPerTask
+                : ""
+            }
+            readOnly
+            {...register("estimated_cost", { required: true })}
+          />
+        )}
 
         {/* Deadline */}
-        <Input
-          className="max-w-[250px] rounded-full bg-white"
-          type="date"
-          label={
-            <Label
-              title="Deadline"
-              description="Select the deadline date for this advert engagement."
-            />
-          }
-          icon={<Calendar size={16} />}
-          {...register("deadline", {
-            required: "Select a deadline",
-          })}
-          errorMessage={errors.deadline?.message as string}
-        />
+        {isEngagementTask && (
+          <Input
+            className="max-w-[250px] rounded-full bg-white"
+            type="date"
+            label={
+              <Label
+                title="Deadline"
+                description="Select the deadline date for this advert engagement."
+              />
+            }
+            icon={<Calendar size={16} />}
+            {...register("deadline", {
+              required: "Select a deadline",
+            })}
+            errorMessage={errors.deadline?.message as string}
+          />
+        )}
 
         {/* Gender */}
         <CustomSelect
@@ -386,6 +398,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           />
         )}
 
+        {/* Task type */}
+        <input
+          type="hidden"
+          value={isEngagementTask ? "engagement" : "advert"}
+          {...register("type")}
+        />
+
         {/* Description */}
         <div className="space-y-1 text-sm">
           <Label
@@ -448,6 +467,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             modalProps={modalProps}
             getFormValue={getValues}
             successModalProps={successModalProps}
+			setError={setError}
           />
         )}
         <AdvertUploadSuccessModal {...successModalProps} />
