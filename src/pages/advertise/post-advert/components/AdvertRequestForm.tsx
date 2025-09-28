@@ -1,8 +1,19 @@
+// src/features/advert/components/forms/AdvertRequestForm.tsx
 import { useDisclosure } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../../../../shared/components/Input";
-import { Church, Globe, Hash, LinkIcon, Speaker, User } from "lucide-react";
+import {
+  Church,
+  Globe,
+  Hash,
+  LinkIcon,
+  Speaker,
+  User,
+  DollarSign,
+  Users,
+  Calendar,
+} from "lucide-react";
 import CustomSelect from "../../../../shared/components/Select";
 import {
   genders,
@@ -21,7 +32,6 @@ import {
 import Label from "./Label";
 import SetPaymentMethod from "./SetPaymentMethod";
 
-// ✅ Centralized platform-specific config
 const platformConfig: Record<
   string,
   { inputLabel: string; inputDescription: string; registerKey: string }
@@ -58,7 +68,7 @@ const platformConfig: Record<
 };
 
 type AdvertRequestFormProps = {
-  platform?: string; // ✅ optional platform from props
+  platform?: string;
 };
 
 export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) {
@@ -69,7 +79,6 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   const isEngagementTask =
     new URLSearchParams(window.location.search).get("type") === "engagement";
 
-  // ✅ state for currently selected platform
   const [selectedPlatform, setSelectedPlatform] = useState<string>(
     platform || ""
   );
@@ -81,13 +90,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     clearErrors,
     formState: { errors, isValid, isSubmitting },
     setValue,
+    watch,
   } = useForm();
 
   useEffect(() => {
     if (isValid) clearErrors();
   }, [isValid, clearErrors]);
 
-  // ✅ ensure platform is registered even if disabled
   useEffect(() => {
     if (platform) {
       setValue("platforms", platform, { shouldValidate: true });
@@ -95,66 +104,96 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     }
   }, [platform, setValue]);
 
+  // watch participants + payment to compute cost
+  const participants = watch("number_of_participants") || 0;
+  const paymentPerTask = watch("payment_per_task") || 0;
+
+  useEffect(() => {
+    const cost = Number(participants) * Number(paymentPerTask);
+    setValue("estimated_cost", cost, { shouldValidate: true });
+  }, [participants, paymentPerTask, setValue]);
+
   const config = selectedPlatform ? platformConfig[selectedPlatform] : null;
 
   return (
     <>
       <form id="advert-form" className="p-6 space-y-6" ref={formRef}>
         {/* Title */}
-		{config && (
-        <Input
-          className="rounded-full bg-white"
-          label={
-            <Label
-              title="Title of advert"
-              description="Enter the title of your advert that will be displayed to others."
-            />
-          }
-          icon={<Speaker size={16} />}
-          placeholder="Enter the title of your advert"
-          {...register("title", {
-            required: "Enter the title of your advert",
-            pattern: {
-              value: /\w+(?:\s*.+)*/,
-              message: "Enter a valid title.",
-            },
-          })}
-          errorMessage={errors.title?.message as string}
-        />
+        {config && (
+          <Input
+            className="rounded-full bg-white"
+            label={
+              <Label
+                title="Title of advert"
+                description="Enter the title of your advert that will be displayed to others."
+              />
+            }
+            icon={<Speaker size={16} />}
+            placeholder="Enter the title of your advert"
+            {...register("title", {
+              required: "Enter the title of your advert",
+              pattern: {
+                value: /\w+(?:\s*.+)*/,
+                message: "Enter a valid title.",
+              },
+            })}
+            errorMessage={errors.title?.message as string}
+          />
         )}
 
+        {/* Platform Selection for advert*/}
+        {config && (
+          <CustomSelect
+            options={socialMedia}
+            aria-label="Selected Platform"
+            label={
+              <Label
+                title={
+                  platform
+                    ? "Selected Platform"
+                    : "Choose Platform to create engagement On"
+                }
+                description={
+                  platform
+                    ? "This field is read-only because the platform was already selected on the advertise page."
+                    : "Choose the platform where you'd like to advertise."
+                }
+              />
+            }
+            placeholder="Select platform"
+            className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+            startContent={<Globe />}
+            defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
+            isDisabled
+            onChange={(value) => {
+              const platformValue = Array.isArray(value) ? value[0] : value;
+              setSelectedPlatform(platformValue);
+              setValue("platforms", platformValue, { shouldValidate: true });
+            }}
+            errorMessage={errors.platforms?.message as string}
+          />
+        )}
 
-        {/* Platform Selection */}
-       
-<CustomSelect
-  options={socialMedia}
-  aria-label="Selected Platform"
-  label={
-    <Label
-      title={
-        platform
-          ? "Selected Platform"
-          : "Choose Platform to create engagement On"
-      }
-      description={
-        platform
-          ? "This field is read-only because the platform was already selected on the advertise page."
-          : "Choose the platform where you'd like to advertise."
-      }
-    />
-  }
-  placeholder="Select platform"
-  className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-  startContent={<Globe />}
-  defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
-  isDisabled={!!platform} // ✅ disable only if platform was provided
-  onChange={(value) => {
-    const platformValue = Array.isArray(value) ? value[0] : value;
-    setSelectedPlatform(platformValue);
-    setValue("platforms", platformValue, { shouldValidate: true });
-  }}
-  errorMessage={errors.platforms?.message as string}
-/>
+        {/* Platform Selection for engagement */}
+        {isEngagementTask && (
+          <CustomSelect
+            options={socialMedia}
+            aria-label="Select Platform"
+            label={
+              <Label
+                title="Select Platform"
+                description="Choose the platform where you'd like to create engagement on."
+              />
+            }
+            placeholder="Select platform"
+            className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+            startContent={<Globe />}
+            onChange={(value) =>
+              setValue("platforms", value, { shouldValidate: true })
+            }
+            errorMessage={errors.platforms?.message as string}
+          />
+        )}
 
         {/* Hidden input so react-hook-form submits it */}
         <input
@@ -184,6 +223,81 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             errorMessage={errors[config.registerKey]?.message as string}
           />
         )}
+
+        {/* Number of Participants */}
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          label={
+            <Label
+              title="Number of Participants"
+              description="Enter how many participants should engage with this task."
+            />
+          }
+          icon={<Users size={16} />}
+          placeholder="0"
+          {...register("number_of_participants", {
+            required: "Enter number of participants",
+            pattern: {
+              value: /^\d+$/,
+              message: "Enter a valid number",
+            },
+          })}
+          errorMessage={errors.number_of_participants?.message as string}
+        />
+
+        {/* Payment per Task */}
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          label={
+            <Label
+              title="Payment Per Task"
+              description="Enter the amount to be paid per task engagement."
+            />
+          }
+          icon={<DollarSign size={16} />}
+          placeholder="0"
+          {...register("payment_per_task", {
+            required: "Enter payment per task",
+            pattern: {
+              value: /^\d+$/,
+              message: "Enter a valid number",
+            },
+          })}
+          errorMessage={errors.payment_per_task?.message as string}
+        />
+
+        {/* Estimated Cost (computed, read-only) */}
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          label={
+            <Label
+              title="Estimated Cost"
+              description="Automatically calculated as participants × payment per task."
+            />
+          }
+          icon={<DollarSign size={16} />}
+          placeholder="0"
+          value={participants && paymentPerTask ? participants * paymentPerTask : ""}
+          readOnly
+          {...register("estimated_cost", { required: true })}
+        />
+
+        {/* Deadline */}
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          type="date"
+          label={
+            <Label
+              title="Deadline"
+              description="Select the deadline date for this advert engagement."
+            />
+          }
+          icon={<Calendar size={16} />}
+          {...register("deadline", {
+            required: "Select a deadline",
+          })}
+          errorMessage={errors.deadline?.message as string}
+        />
 
         {/* Gender */}
         <CustomSelect
