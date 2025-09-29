@@ -678,7 +678,7 @@ function GradientHeader({ children }: { children: string }) {
 function ListingPreviewModal(
 	props: ReturnType<typeof useDisclosure> & {
 		previewImageUrl: string;
-		submitForm(): any;
+		submitForm(): Promise<any>;
 		getValues(): any;
 		setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
 	},
@@ -693,35 +693,34 @@ function ListingPreviewModal(
 		>
 			<ModalContent>
 				{(onClose: () => any) => (
-					<ModalBody className="flex flex-col gap-2 justify-center items-center text-center p-4">
+					<ModalBody className="flex flex-col gap-4 justify-center items-center text-center p-4">
 						<p>
-							As you create your listing, preview how it will appear to others
-							on Marketplace.
+							Preview your listing before publishing. This is how other users
+							will see it in the marketplace:
 						</p>
+
 						<ProductCard
 							{...{
 								...(props.getValues() as Product),
 								images: [props.previewImageUrl],
 							}}
 						/>
+
 						<div className="space-x-4">
 							<button
 								onClick={async () => {
 									onClose();
-
 									try {
 										await props.submitForm();
 										successModalProps.onOpen();
 									} catch {
-										toast.error("Product listing failed. Please try again.");
-									} finally {
-										props.setIsSubmitting(false);
+										toast.error("❌ Product listing failed. Please try again.");
 									}
 								}}
 								className="px-4 py-1.5 text-sm rounded-full transition-all active:scale-95 bg-primary text-white"
 								type="button"
 							>
-								Confirm and Publish
+								Confirm & Publish
 							</button>
 							<button
 								onClick={onClose}
@@ -747,24 +746,25 @@ function ProductListingSuccessModal(props: ReturnType<typeof useDisclosure>) {
 		<Modal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange}>
 			<ModalContent>
 				{(_onClose: () => void) => (
-					<ModalBody>
-						<div className="flex flex-col gap-1 items-center justify-center">
-							<img src="/images/animated-checkmark.gif" alt="" />
-							<h3>Your Listing is Live!</h3>
-							<p>
-								Your product has been successfully added to the marketplace.
-							</p>
-							<div className="flex items-center justify-center gap-4">
-								<Link className="bg-primary text-white p-2 rounded-lg" to="/">
-									Go to Dashboard
-								</Link>
-								<button
-									className="border-primary text-primary p-2 rounded-lg"
-									onClick={_onClose}
-								>
-									Go to Dashboard
-								</button>
-							</div>
+					<ModalBody className="flex flex-col gap-4 items-center justify-center text-center p-6">
+						<img src="/images/animated-checkmark.gif" alt="success" />
+						<h3 className="text-lg font-semibold">🎉 Your Listing is Live!</h3>
+						<p className="text-sm text-zinc-600">
+							Your product has been successfully added to the marketplace.
+						</p>
+						<div className="flex items-center justify-center gap-4 mt-2">
+							<Link
+								className="bg-primary text-white px-4 py-2 rounded-lg"
+								to="/"
+							>
+								Go to Dashboard
+							</Link>
+							<button
+								className="border border-primary text-primary px-4 py-2 rounded-lg"
+								onClick={_onClose}
+							>
+								Close
+							</button>
 						</div>
 					</ModalBody>
 				)}
@@ -772,6 +772,7 @@ function ProductListingSuccessModal(props: ReturnType<typeof useDisclosure>) {
 		</Modal>
 	);
 }
+
 
 
 
