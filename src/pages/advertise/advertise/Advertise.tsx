@@ -109,17 +109,19 @@ export default function AdvertisePage() {
             Take advantage of Hovertask today and sell faster than ever!
           </p>
 
-          {/* Trigger Button */}
-          <div className="flex items-center gap-4 justify-between py-2 px-6 border border-zinc-400 rounded-full max-w-sm mx-auto">
-            <span className="text-xl font-medium">₦500</span>
-            <button
-              type="button"
-              onClick={handleContinue}
-              className="px-4 py-2 rounded-2xl text-sm text-white bg-primary active:scale-95 transition-transform"
-            >
-              Continue
-            </button>
-          </div>
+          {/* Setup Fee Trigger Button (only if not paid) */}
+          {!authUser.has_paid_advert_fee && (
+            <div className="flex items-center gap-4 justify-between py-2 px-6 border border-zinc-400 rounded-full max-w-sm mx-auto">
+              <span className="text-xl font-medium">₦500</span>
+              <button
+                type="button"
+                onClick={handleContinue}
+                className="px-4 py-2 rounded-2xl text-sm text-white bg-primary active:scale-95 transition-transform"
+              >
+                Continue
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Insufficient Funds Modal */}
@@ -153,35 +155,37 @@ export default function AdvertisePage() {
           </ModalContent>
         </Modal>
 
-        {/* Advert Types */}
-        <div className="space-y-6">
-          <div className="max-w-sm mx-auto flex items-center gap-4 p-4 rounded-3xl border-b border-primary overflow-x-auto">
-            <button
-              type="button"
-              className="flex items-center gap-2 flex-1 px-4 py-2 rounded-xl whitespace-nowrap text-sm active:scale-95 transition-all bg-primary text-white"
-            >
-              <Hexagon className="h-4 w-4" /> Advert Tasks
-            </button>
-            <Link
-              to="/advertise/engagement-tasks"
-              className="flex items-center gap-2 flex-1 px-4 py-2 rounded-xl whitespace-nowrap text-sm active:scale-95 transition-all text-primary"
-            >
-              <Megaphone className="h-4 w-4" /> Engagement Tasks
-            </Link>
-          </div>
+        {/* Advert Types (only if fee is paid) */}
+        {authUser.has_paid_advert_fee && (
+          <div className="space-y-6">
+            <div className="max-w-sm mx-auto flex items-center gap-4 p-4 rounded-3xl border-b border-primary overflow-x-auto">
+              <button
+                type="button"
+                className="flex items-center gap-2 flex-1 px-4 py-2 rounded-xl whitespace-nowrap text-sm active:scale-95 transition-all bg-primary text-white"
+              >
+                <Hexagon className="h-4 w-4" /> Advert Tasks
+              </button>
+              <Link
+                to="/advertise/engagement-tasks"
+                className="flex items-center gap-2 flex-1 px-4 py-2 rounded-xl whitespace-nowrap text-sm active:scale-95 transition-all text-primary"
+              >
+                <Megaphone className="h-4 w-4" /> Engagement Tasks
+              </Link>
+            </div>
 
-          <p className="text-sm text-center">
-            Pay users to perform specific actions that increase the reach and
-            visibility of your content. From likes to shares, get the engagement
-            you need to grow your brand.
-          </p>
+            <p className="text-sm text-center">
+              Pay users to perform specific actions that increase the reach and
+              visibility of your content. From likes to shares, get the engagement
+              you need to grow your brand.
+            </p>
 
-          <div className="space-y-4">
-            {advertTypes.map((ad) => (
-              <AdvertCard key={ad.platform} {...ad} />
-            ))}
+            <div className="space-y-4">
+              {advertTypes.map((ad) => (
+                <AdvertCard key={ad.platform} {...ad} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
