@@ -9,7 +9,7 @@ import { useDisclosure } from "@heroui/react";
 import { ArrowLeft, Hexagon, History, Megaphone } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import type { AuthUserDTO } from "../../../../types";
 import AdvertCard from "../components/AdvertCard";
 import FeatureCard from "../components/FeatureCard";
