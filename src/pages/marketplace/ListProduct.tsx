@@ -18,6 +18,8 @@ import { useForm } from "react-hook-form";
 import ProductCard from "../../shared/components/ProductCard";
 import Loading from "../../shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
+import { MessageSquare, PhoneCall } from "lucide-react";
+
 
 export default function ListProductPage() {
 	document.title = "List New Product - Hovertask Dashboard";
@@ -53,46 +55,70 @@ export default function ListProductPage() {
 	);
 }
 
-function SellerInformation() {
-	const authUser = useSelector<any, AuthUserDTO>(
-		(state: any) => state.auth.value,
-	);
 
-	return (
-		<div className="space-y-4">
-			<div className="flex items-center gap-4">
-				<img
-					src={authUser.avatar || "/images/default-user.png"}
-					width={50}
-					height={50}
-					className="rounded-full bg-zinc-200"
-					alt=""
-				/>
 
-				<div>
-					<p className="capitalize font-medium">
-						{authUser.fname} {authUser.lname}
-					</p>
-					<p className="text-xs">@{authUser.username}</p>
-				</div>
-			</div>
+ function SellerInformation() {
+  const authUser = useSelector<any, AuthUserDTO>(
+    (state: any) => state.auth.value
+  );
 
-			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm">
-					<img src="/images/nigerian-flag.png" width={20} alt="" /> |{" "}
-					<span className="relative">
-						<span className="absolute h-1 w-1 rounded-full bg-success -left-0.5 top-0.5"></span>{" "}
-						Online
-					</span>
-				</div>
+  return (
+    <div className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border">
+      {/* Left: Profile + Info */}
+      <div className="flex items-center gap-4">
+        <img
+          src={authUser.avatar || "/images/default-user.png"}
+          width={48}
+          height={48}
+          className="rounded-full bg-zinc-200"
+          alt={authUser.fname}
+        />
 
-				<div className="px-2 py-1 rounded-full bg-success/10 text-success text-xs w-fit">
-					Verified ID
-				</div>
-			</div>
-		</div>
-	);
+        <div className="space-y-1">
+          <p className="font-medium text-sm">
+            {authUser.fname} {authUser.lname}
+          </p>
+          <p className="text-xs text-zinc-500">@{authUser.username}</p>
+
+          {/* Online status */}
+          <div className="flex items-center gap-2 text-xs text-zinc-600">
+            <span className="flex items-center gap-1">
+              <img src="/images/nigerian-flag.png" width={16} alt="flag" />
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                Online
+              </span>
+            </span>
+          </div>
+
+          {/* Badges */}
+          <div className="flex items-center gap-2 text-xs mt-1">
+            <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
+              Verified ID
+            </span>
+            <span className="flex items-center gap-1">
+              ⭐ <span className="font-medium">4.8</span>
+            </span>
+            <button className="px-3 py-0.5 rounded-full bg-blue-500 text-white text-xs">
+              Follow
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Action Buttons */}
+      <div className="flex items-center gap-2">
+        <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-full">
+          <PhoneCall size={16} /> Contact Seller
+        </button>
+        <button className="flex items-center gap-2 px-4 py-2 border border-blue-400 text-blue-500 text-sm rounded-full">
+          <MessageSquare size={16} /> Start Chat
+        </button>
+      </div>
+    </div>
+  );
 }
+
 
 function ListingForm() {
 	const userId = useSelector<any, string>((state: any) => state.auth.value.id);
@@ -110,14 +136,15 @@ function ListingForm() {
 	} = useForm({ mode: "all" });
 	const formRef = useRef<HTMLFormElement>(null);
 
+	// ✅ Fix: cleanup blob correctly
 	useEffect(() => {
-		if (imagesLength) {
-			URL.revokeObjectURL(previewImageUrl);
-			setPreviewImageUrl(
-				URL.createObjectURL(imageInputRef.current?.files?.item(0)!),
-			);
+		if (imagesLength && imageInputRef.current?.files?.item(0)) {
+			const newUrl = URL.createObjectURL(imageInputRef.current.files.item(0)!);
+			setPreviewImageUrl(newUrl);
+
+			return () => URL.revokeObjectURL(newUrl);
 		}
-	}, [imagesLength, draggedOver]);
+	}, [imagesLength]);
 
 	function handleDragOver(e: DragEvent<HTMLDivElement>) {
 		e.preventDefault();
@@ -145,45 +172,62 @@ function ListingForm() {
 					return toast.warning("Only images are allowed.");
 				if (files.length > 5)
 					return toast.error("Only a maximum of 5 images is allowed");
-				if (imageInputRef.current)
-					(imageInputRef.current.files = files), setImagesLength(files.length);
+
+				if (imageInputRef.current) {
+					imageInputRef.current.files = files;
+					setImagesLength(files.length);
+				}
 			}
 		} finally {
 			setDraggedOver(false);
 		}
 	}
 
+	// ✅ Improved error handling
 	async function submitForm() {
-		setIsSubmitting(true);
-		const form = new FormData(formRef.current!);
+		try {
+			setIsSubmitting(true);
 
-		form.append("user_id", userId);
-		form.append("currency", "NGN");
-		form.append("stock", "100");
-		form.append("meet_up_preference", "");
+			const form = new FormData(formRef.current!);
+			form.append("user_id", userId);
+			form.append("currency", "NGN");
+			form.append("stock", "100");
+			form.append("meet_up_preference", "");
 
-		const response = await fetch(
-			apiEndpointBaseURL + "/products/create-product",
-			{
-				method: "post",
-				headers: {
-					authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+			const response = await fetch(
+				apiEndpointBaseURL + "/products/create-product",
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+					},
+					body: form,
 				},
-				body: form,
-			},
-		);
+			);
 
-		if (!response.ok) throw new Error();
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.message || "Failed to create product");
+			}
 
-		toast.success("Product listed successfully!");
+			toast.success("✅ Product listed successfully!");
+			modalProps.onClose();
+		} catch (err: any) {
+			toast.error(err.message || "Something went wrong, try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	return (
 		<form
 			ref={formRef}
-			onSubmit={handleSubmit(modalProps.onOpen)}
+			// ✅ Only open modal on submit
+			onSubmit={handleSubmit(() => modalProps.onOpen())}
 			className="space-y-6"
 		>
+			{/* form fields  ... */}
+
 			<h3 className="text-sm text-center font-medium">Images/Media Upload</h3>
 
 			<div className="flex max-sm:flex-col max-sm:gap-6 sm:items-end">
@@ -609,6 +653,7 @@ function ListingForm() {
 				</button>
 			</div>
 
+			{/* ✅ Pass submitForm into modal */}
 			<ListingPreviewModal
 				{...modalProps}
 				getValues={getValues}
@@ -727,3 +772,12 @@ function ProductListingSuccessModal(props: ReturnType<typeof useDisclosure>) {
 		</Modal>
 	);
 }
+
+
+
+
+
+
+
+
+
