@@ -123,9 +123,8 @@ export default function ListProductPage() {
 function ListingForm() {
 	const userId = useSelector<any, string>((state: any) => state.auth.value.id);
 	const [draggedOver, setDraggedOver] = useState(false);
-	const [imagesLength, setImagesLength] = useState<number>(0);
+	const [images, setImages] = useState<{ file_path: string }[]>([]);
 	const imageInputRef = useRef<HTMLInputElement>(null);
-	const [previewImageUrl, setPreviewImageUrl] = useState("");
 	const modalProps = useDisclosure();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const {
@@ -136,15 +135,12 @@ function ListingForm() {
 	} = useForm({ mode: "all" });
 	const formRef = useRef<HTMLFormElement>(null);
 
-	// ✅ Fix: cleanup blob correctly
+	// ✅ cleanup object URLs when component unmounts or images change
 	useEffect(() => {
-		if (imagesLength && imageInputRef.current?.files?.item(0)) {
-			const newUrl = URL.createObjectURL(imageInputRef.current.files.item(0)!);
-			setPreviewImageUrl(newUrl);
-
-			return () => URL.revokeObjectURL(newUrl);
-		}
-	}, [imagesLength]);
+		return () => {
+			images.forEach((img) => URL.revokeObjectURL(img.file_path));
+		};
+	}, [images]);
 
 	function handleDragOver(e: DragEvent<HTMLDivElement>) {
 		e.preventDefault();
@@ -158,24 +154,29 @@ function ListingForm() {
 
 	function handleDrop(e: DragEvent<HTMLDivElement>) {
 		e.preventDefault();
-
 		try {
 			const files = e.dataTransfer?.files;
-			function verifyMimetype(file: File) {
-				return /image\/.*/.test(file.type);
-			}
-
 			if (files && files.length) {
 				const fileArr = Array.from(files);
 
-				if (!fileArr.every(verifyMimetype))
+				// validate
+				if (!fileArr.every((f) => /image\/.*/.test(f.type)))
 					return toast.warning("Only images are allowed.");
-				if (files.length > 5)
+				if (fileArr.length > 5)
 					return toast.error("Only a maximum of 5 images is allowed");
 
+				// convert to object URLs
+				const mapped = fileArr.map((file) => ({
+					file_path: URL.createObjectURL(file),
+				}));
+
+				setImages(mapped);
+
+				// keep files in input for submission
 				if (imageInputRef.current) {
-					imageInputRef.current.files = files;
-					setImagesLength(files.length);
+					const dt = new DataTransfer();
+					fileArr.forEach((f) => dt.items.add(f));
+					imageInputRef.current.files = dt.files;
 				}
 			}
 		} finally {
@@ -183,7 +184,6 @@ function ListingForm() {
 		}
 	}
 
-	// ✅ Improved error handling
 	async function submitForm() {
 		try {
 			setIsSubmitting(true);
@@ -222,98 +222,68 @@ function ListingForm() {
 	return (
 		<form
 			ref={formRef}
-			// ✅ Only open modal on submit
 			onSubmit={handleSubmit(() => modalProps.onOpen())}
 			className="space-y-6"
 		>
-			{/* form fields  ... */}
-
-			<h3 className="text-sm text-center font-medium">Images/Media Upload</h3>
-
-			<div className="flex max-sm:flex-col max-sm:gap-6 sm:items-end">
-				<div className="flex-1 flex flex-col gap-2">
-					<div className="text-sm">
-						<h4>Add Images/Photos</h4>
-						<p className="text-zinc-700 text-xs">
-							Add visuals for better engagement
-						</p>
-					</div>
-					<div>
-						<h4>Video Upload</h4>
-						<p className="text-zinc-700 text-xs">
-							Showcase your product with a 30-seconds video
-						</p>
-					</div>
-				</div>
-
-				<div className="flex-1 space-y-3">
-					<p className="text-xs text-center">
-						Photos {imagesLength}/5 - You can add up to 5 photos.
-					</p>
-					<div
-						onClick={() => imageInputRef.current?.click()}
-						onDragOver={handleDragOver}
-						onDrop={handleDrop}
-						onDragLeave={handleDragOut}
-						className={cn(
-							"aspect-video bg-zinc-200 rounded-lg relative border border-zinc-400/80 text-sm",
-							{
-								"border-dashed border-4": draggedOver,
-							},
-						)}
-					>
-						<input
-							ref={imageInputRef}
-							onChange={(e) => {
-								if (e.target.files && e.target.files.length > 5) {
-									e.target.files = null;
+			{/* image upload */}
+			<div className="flex-1 space-y-3">
+				<p className="text-xs text-center">
+					Photos {images.length}/5 - You can add up to 5 photos.
+				</p>
+				<div
+					onClick={() => imageInputRef.current?.click()}
+					onDragOver={handleDragOver}
+					onDrop={handleDrop}
+					onDragLeave={handleDragOut}
+					className={cn(
+						"aspect-video bg-zinc-200 rounded-lg relative border border-zinc-400/80 text-sm flex items-center justify-center",
+						{ "border-dashed border-4": draggedOver },
+					)}
+				>
+					<input
+						ref={imageInputRef}
+						onChange={(e) => {
+							if (e.target.files) {
+								if (e.target.files.length > 5) {
+									e.target.value = "";
 									return toast.error("Only a maximum of 5 images is allowed");
 								}
+								const fileArr = Array.from(e.target.files);
+								const mapped = fileArr.map((f) => ({
+									file_path: URL.createObjectURL(f),
+								}));
+								setImages(mapped);
+							}
+						}}
+						type="file"
+						accept="image/*"
+						multiple
+						className="hidden"
+						name="file_path"
+						required
+					/>
 
-								if (!e.target.files || !e.target.files?.length)
-									return toast.warning("Please select an image");
-
-								setImagesLength(e.target.files?.length!);
-								setPreviewImageUrl((prev) => {
-									URL.revokeObjectURL(prev);
-									return URL.createObjectURL(e.target.files?.item(0)!);
-								});
-							}}
-							type="file"
-							accept="image/*"
-							multiple
-							className="opacity-0"
-							name="file_path"
-							required
-						/>
-
-						<div
-							className={cn(
-								"absolute inset-0 flex items-center justify-center flex-col gap-2 text-center",
-								{
-									"bg-white/50": !!imagesLength,
-								},
-							)}
-						>
-							{draggedOver ? (
-								<p>Drop it like it's hot</p>
-							) : (
-								<>
-									<Image />
-									Drag, Drop and Upload Your Photo
-								</>
-							)}
+					{images.length > 0 ? (
+						<div className="grid grid-cols-3 gap-2 p-2 w-full">
+							{images.map((img, i) => (
+								<img
+									key={i}
+									src={img.file_path}
+									className="h-24 w-full object-cover rounded"
+									alt={`preview-${i}`}
+								/>
+							))}
 						</div>
-
-						<img
-							src={previewImageUrl}
-							className="max-h-full max-w-full block mx-auto"
-							alt=""
-						/>
-					</div>
+					) : (
+						<div className="flex flex-col items-center justify-center gap-2 text-center">
+							<Image />
+							Drag, Drop and Upload Your Photos
+						</div>
+					)}
 				</div>
 			</div>
 
+			{/* other form fields ... */}
 			<hr className="border-dashed" />
 
 			<GradientHeader>Product/Service Details</GradientHeader>
@@ -653,11 +623,14 @@ function ListingForm() {
 				</button>
 			</div>
 
-			{/* ✅ Pass submitForm into modal */}
+
+
+			{/* preview modal */}
+        
 			<ListingPreviewModal
 				{...modalProps}
 				getValues={getValues}
-				previewImageUrl={previewImageUrl}
+				product_images={images}
 				submitForm={submitForm}
 				setIsSubmitting={setIsSubmitting}
 			/>
@@ -677,7 +650,7 @@ function GradientHeader({ children }: { children: string }) {
 
 function ListingPreviewModal(
 	props: ReturnType<typeof useDisclosure> & {
-		previewImageUrl: string;
+		product_images: { file_path: string }[];
 		submitForm(): Promise<any>;
 		getValues(): any;
 		setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
@@ -686,23 +659,16 @@ function ListingPreviewModal(
 	const successModalProps = useDisclosure();
 
 	return (
-		<Modal
-			isOpen={props.isOpen}
-			onOpenChange={props.onOpenChange}
-			onClose={props.onClose}
-		>
+		<Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange} onClose={props.onClose}>
 			<ModalContent>
 				{(onClose: () => any) => (
 					<ModalBody className="flex flex-col gap-4 justify-center items-center text-center p-4">
-						<p>
-							Preview your listing before publishing. This is how other users
-							will see it in the marketplace:
-						</p>
+						<p>Preview your listing before publishing. This is how other users will see it:</p>
 
 						<ProductCard
 							{...{
 								...(props.getValues() as Product),
-								images: [props.previewImageUrl],
+								product_images: props.product_images,
 							}}
 						/>
 
@@ -717,14 +683,14 @@ function ListingPreviewModal(
 										toast.error("❌ Product listing failed. Please try again.");
 									}
 								}}
-								className="px-4 py-1.5 text-sm rounded-full transition-all active:scale-95 bg-primary text-white"
+								className="px-4 py-1.5 text-sm rounded-full bg-primary text-white"
 								type="button"
 							>
 								Confirm & Publish
 							</button>
 							<button
 								onClick={onClose}
-								className="px-4 py-1.5 text-sm rounded-full transition-all active:scale-95 hover:bg-primary/20 border border-primary text-primary"
+								className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary"
 								type="button"
 							>
 								Edit Details
@@ -738,6 +704,7 @@ function ListingPreviewModal(
 		</Modal>
 	);
 }
+
 
 function ProductListingSuccessModal(props: ReturnType<typeof useDisclosure>) {
 	const { isOpen, onOpenChange, onClose } = props;
