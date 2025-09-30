@@ -226,63 +226,80 @@ function ListingForm() {
 			className="space-y-6"
 		>
 			{/* image upload */}
-			<div className="flex-1 space-y-3">
-				<p className="text-xs text-center">
-					Photos {images.length}/5 - You can add up to 5 photos.
-				</p>
-				<div
-					onClick={() => imageInputRef.current?.click()}
-					onDragOver={handleDragOver}
-					onDrop={handleDrop}
-					onDragLeave={handleDragOut}
-					className={cn(
-						"aspect-video bg-zinc-200 rounded-lg relative border border-zinc-400/80 text-sm flex items-center justify-center",
-						{ "border-dashed border-4": draggedOver },
-					)}
-				>
-					<input
-						ref={imageInputRef}
-						onChange={(e) => {
-							if (e.target.files) {
-								if (e.target.files.length > 5) {
-									e.target.value = "";
-									return toast.error("Only a maximum of 5 images is allowed");
-								}
-								const fileArr = Array.from(e.target.files);
-								const mapped = fileArr.map((f) => ({
-									file_path: URL.createObjectURL(f),
-								}));
-								setImages(mapped);
-							}
-						}}
-						type="file"
-						accept="image/*"
-						multiple
-						className="hidden"
-						name="file_path"
-						required
-					/>
+			<div className="flex border border-dashed border-zinc-300 rounded-md p-3">
+  {/* Left Section */}
+  <div className="w-1/2 flex flex-col justify-center space-y-2 text-sm">
+    <div>
+      <p className="font-semibold">Add Images/Photos</p>
+      <p className="text-zinc-500">Add Visuals for Better Engagement</p>
+    </div>
+    <div>
+      <p className="font-semibold">Video Upload</p>
+      <p className="text-zinc-500">Showcase your product with a 30-second video.</p>
+    </div>
+  </div>
 
-					{images.length > 0 ? (
-						<div className="grid grid-cols-3 gap-2 p-2 w-full">
-							{images.map((img, i) => (
-								<img
-									key={i}
-									src={img.file_path}
-									className="h-24 w-full object-cover rounded"
-									alt={`preview-${i}`}
-								/>
-							))}
-						</div>
-					) : (
-						<div className="flex flex-col items-center justify-center gap-2 text-center">
-							<Image />
-							Drag, Drop and Upload Your Photos
-						</div>
-					)}
-				</div>
-			</div>
+  {/* Right Section */}
+  <div className="w-1/2 flex flex-col items-center justify-center">
+    <p className="text-xs mb-2 text-center">
+      Photos {images.length}/5 - You can add up to 5 photos.
+    </p>
 
+    <div
+      onClick={() => imageInputRef.current?.click()}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      onDragLeave={handleDragOut}
+      className={cn(
+        "bg-zinc-200 rounded-lg relative border border-zinc-400/80 text-sm flex items-center justify-center aspect-video w-full",
+        { "border-dashed border-4": draggedOver },
+      )}
+    >
+      <input
+        ref={imageInputRef}
+        onChange={(e) => {
+          if (e.target.files) {
+            if (e.target.files.length > 5) {
+              e.target.value = "";
+              return toast.error("Only a maximum of 5 images is allowed");
+            }
+            const fileArr = Array.from(e.target.files);
+            const mapped = fileArr.map((f) => ({
+              file_path: URL.createObjectURL(f),
+            }));
+            setImages(mapped);
+          }
+        }}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        name="file_path"
+        required
+      />
+
+      {images.length > 0 ? (
+        <div className="grid grid-cols-3 gap-2 p-2 w-full">
+          {images.map((img, i) => (
+            <img
+              key={i}
+              src={img.file_path}
+              className="h-24 w-full object-cover rounded"
+              alt={`preview-${i}`}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <Image className="w-8 h-8" />
+          <span>Drag, Drop, and Upload Your Photo</span>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+			
 			{/* other form fields ... */}
 			<hr className="border-dashed" />
 
