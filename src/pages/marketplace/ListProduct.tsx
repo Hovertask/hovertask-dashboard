@@ -676,51 +676,55 @@ function ListingPreviewModal(
 	const successModalProps = useDisclosure();
 
 	return (
-		<Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange} onClose={props.onClose}>
-			<ModalContent>
-				{(onClose: () => any) => (
-					<ModalBody className="flex flex-col gap-4 justify-center items-center text-center p-4">
-						<p>Preview your listing before publishing. This is how other users will see it:</p>
+		<>
+			<Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange} onClose={props.onClose}>
+				<ModalContent>
+					{(onClose: () => any) => (
+						<ModalBody className="flex flex-col gap-4 justify-center items-center text-center p-4">
+							<p>Preview your listing before publishing. This is how other users will see it:</p>
 
-						<ProductCard
-							{...{
-								...(props.getValues() as Product),
-								product_images: props.product_images,
-							}}
-						/>
-
-						<div className="space-x-4">
-							<button
-								onClick={async () => {
-									onClose();
-									try {
-										await props.submitForm();
-										successModalProps.onOpen();
-									} catch {
-										toast.error("❌ Product listing failed. Please try again.");
-									}
+							<ProductCard
+								{...{
+									...(props.getValues() as Product),
+									product_images: props.product_images,
 								}}
-								className="px-4 py-1.5 text-sm rounded-full bg-primary text-white"
-								type="button"
-							>
-								Confirm & Publish
-							</button>
-							<button
-								onClick={onClose}
-								className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary"
-								type="button"
-							>
-								Edit Details
-							</button>
-						</div>
+							/>
 
-						<ProductListingSuccessModal {...successModalProps} />
-					</ModalBody>
-				)}
-			</ModalContent>
-		</Modal>
+							<div className="space-x-4">
+								<button
+									onClick={async () => {
+										onClose(); // close preview modal
+										try {
+											await props.submitForm();
+											successModalProps.onOpen(); // open success modal
+										} catch {
+											toast.error("❌ Product listing failed. Please try again.");
+										}
+									}}
+									className="px-4 py-1.5 text-sm rounded-full bg-primary text-white"
+									type="button"
+								>
+									Confirm & Publish
+								</button>
+								<button
+									onClick={onClose}
+									className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary"
+									type="button"
+								>
+									Edit Details
+								</button>
+							</div>
+						</ModalBody>
+					)}
+				</ModalContent>
+			</Modal>
+
+			{/* 🚀 Success modal is mounted outside, so it won't unmount when preview closes */}
+			<ProductListingSuccessModal {...successModalProps} />
+		</>
 	);
 }
+
 
 
 function ProductListingSuccessModal(props: ReturnType<typeof useDisclosure>) {
