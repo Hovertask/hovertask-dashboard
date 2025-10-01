@@ -39,7 +39,7 @@ import SellerChat from "./pages/marketplace/Chat";
 import ListProductPage from "./pages/marketplace/ListProduct";
 import MarketplacePage from "./pages/marketplace/Marketplace";
 import ProductCheckoutPage from "./pages/marketplace/ProductCheckout";
-import ProductListingsPage from "./pages/marketplace/ProductListings";
+import ProductDashboardPage from "./pages/marketplace/ProductDashboard";
 import ProductPerformancePage from "./pages/marketplace/ProductPerformance";
 import SellerPage from "./pages/marketplace/Seller";
 import SingleProductPage from "./pages/marketplace/SingleProduct";
@@ -118,7 +118,7 @@ export default function App() {
 							/>
 							<Route
 								path="marketplace/listings"
-								element={<ProductListingsPage />}
+								element={<ProductDashboardPage />}
 							/>
 							<Route
 								path="marketplace/performance"
