@@ -6,14 +6,16 @@ import type { MenuDropdownProps } from "../../types";
 import useActiveLink from "../hooks/useActiveLink";
 import cn from "../utils/cn";
 import menu from "../utils/menu";
+import ComingSoonModal from "../components/ComingSoonModal"; // 👈 make sure the path is correct
 
 export default function SideNav() {
 	const activeLink = useActiveLink();
+	const [comingSoonOpen, setComingSoonOpen] = useState(false);
+
 	const updatedMenu = menu.map((menuItem) => {
 		if (menuItem.label === "Buy Followers") {
 			menuItem.path = menuItem.basePath;
 		}
-
 		return menuItem;
 	});
 
@@ -24,6 +26,15 @@ export default function SideNav() {
 					{updatedMenu.map((menuItem) => {
 						return menuItem.options ? (
 							<MenuOptionDropdown key={menuItem.label} {...menuItem} />
+						) : menuItem.comingSoon ? (
+							<button
+								key={menuItem.label}
+								type="button"
+								onClick={() => setComingSoonOpen(true)}
+								className="flex items-center gap-3 px-3 py-1.5 rounded-xl hover:text-primary w-fit"
+							>
+								{menuItem.icon} {menuItem.label}
+							</button>
 						) : (
 							<Link
 								className={cn(
@@ -71,6 +82,12 @@ export default function SideNav() {
 					</p>
 				</Link>
 			</div>
+
+			{/* 🚧 Coming Soon Modal */}
+			<ComingSoonModal
+				isOpen={comingSoonOpen}
+				onClose={() => setComingSoonOpen(false)}
+			/>
 		</div>
 	);
 }

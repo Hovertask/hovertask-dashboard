@@ -25,9 +25,11 @@ import type { AuthUserDTO, CartProduct, MenuDropdownProps } from "../../types";
 import useActiveLink from "../hooks/useActiveLink";
 import cn from "../utils/cn";
 import menu from "../utils/menu";
+import ComingSoonModal from "./ComingSoonModal";
 
 export default function Header() {
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+	const [comingSoonOpen, setComingSoonOpen] = useState(false);
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
 	);
@@ -114,15 +116,26 @@ export default function Header() {
 										<MenuOptionDropdown
 											{...menuItem}
 											setIsMenuOpen={setIsMobileNavOpen}
+											setComingSoonOpen={setComingSoonOpen}
 											key={menuItem.label}
 										/>
+									) : menuItem.comingSoon ? (
+										<button
+											key={menuItem.label}
+											type="button"
+											onClick={() => setComingSoonOpen(true)}
+											className="flex items-center gap-3 px-3 py-1.5 rounded-xl hover:text-primary"
+										>
+											{menuItem.icon} {menuItem.label}
+										</button>
 									) : (
 										<Link
 											key={menuItem.label}
 											className={cn(
 												"flex items-center gap-3 px-3 py-1.5 rounded-xl",
 												{
-													"bg-primary text-white": activeLink === menuItem.path,
+													"bg-primary text-white":
+														activeLink === menuItem.path,
 												},
 											)}
 											to={menuItem.path}
@@ -158,7 +171,16 @@ export default function Header() {
 				</div>
 			</div>
 
-			<MobileNav setIsOpen={setIsMobileNavOpen} isOpen={isMobileNavOpen} />
+			<MobileNav
+				setIsOpen={setIsMobileNavOpen}
+				isOpen={isMobileNavOpen}
+				setComingSoonOpen={setComingSoonOpen}
+			/>
+			{/* 🚧 Coming Soon Modal */}
+			<ComingSoonModal
+				isOpen={comingSoonOpen}
+				onClose={() => setComingSoonOpen(false)}
+			/>
 		</header>
 	);
 }
@@ -166,9 +188,11 @@ export default function Header() {
 function MobileNav({
 	setIsOpen,
 	isOpen,
+	setComingSoonOpen,
 }: {
 	setIsOpen: React.Dispatch<SetStateAction<boolean>>;
 	isOpen: boolean;
+	setComingSoonOpen: React.Dispatch<SetStateAction<boolean>>;
 }) {
 	const activeLink = useActiveLink();
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
@@ -222,7 +246,17 @@ function MobileNav({
 								{...menuItem}
 								key={menuItem.basePath}
 								setIsMenuOpen={setIsOpen}
+								setComingSoonOpen={setComingSoonOpen}
 							/>
+						) : menuItem.comingSoon ? (
+							<button
+								key={menuItem.label}
+								type="button"
+								onClick={() => setComingSoonOpen(true)}
+								className="flex items-center gap-3 px-3 py-1.5 rounded-xl hover:text-primary"
+							>
+								{menuItem.icon} {menuItem.label}
+							</button>
 						) : (
 							<Link
 								key={menuItem.label}
@@ -248,6 +282,7 @@ function MobileNav({
 function MenuOptionDropdown(
 	props: MenuDropdownProps & {
 		setIsMenuOpen?: React.Dispatch<SetStateAction<boolean>>;
+		setComingSoonOpen?: React.Dispatch<SetStateAction<boolean>>;
 	},
 ) {
 	const { pathname } = useLocation();
@@ -304,25 +339,39 @@ function MenuOptionDropdown(
 					},
 				)}
 			>
-				{props.options.map((option) => (
-					<Link
-						key={option.label}
-						onClick={() => {
-							setIsOpen(false);
-							props?.setIsMenuOpen?.(false);
-						}}
-						className={cn(
-							"flex items-center gap-3 px-3 py-1.5 rounded-xl whitespace-nowrap",
-							{
-								"bg-primary text-white": option.path === pathname,
-								"hover:text-primary": option.path !== pathname,
-							},
-						)}
-						to={option.path}
-					>
-						{option.icon} {option.label}
-					</Link>
-				))}
+				{props.options.map((option) =>
+					option.comingSoon ? (
+						<button
+							key={option.label}
+							type="button"
+							onClick={() => {
+								setIsOpen(false);
+								props?.setComingSoonOpen?.(true);
+							}}
+							className="flex items-center gap-3 px-3 py-1.5 rounded-xl whitespace-nowrap hover:text-primary"
+						>
+							{option.icon} {option.label}
+						</button>
+					) : (
+						<Link
+							key={option.label}
+							onClick={() => {
+								setIsOpen(false);
+								props?.setIsMenuOpen?.(false);
+							}}
+							className={cn(
+								"flex items-center gap-3 px-3 py-1.5 rounded-xl whitespace-nowrap",
+								{
+									"bg-primary text-white": option.path === pathname,
+									"hover:text-primary": option.path !== pathname,
+								},
+							)}
+							to={option.path}
+						>
+							{option.icon} {option.label}
+						</Link>
+					),
+				)}
 			</div>
 		</div>
 	);

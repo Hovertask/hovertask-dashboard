@@ -74,7 +74,7 @@ export default function MarketplaceAside({
 					your price, and upload images to attract buyers.
 				</p>
 				<Link
-					to="/marketplace/list-product"
+					to="/marketplace/list-product?type=list-product"
 					className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-primary text-white w-full justify-center"
 				>
 					<ShoppingBag size={12} /> List a New Product

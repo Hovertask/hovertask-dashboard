@@ -20,6 +20,9 @@ import Loading from "../../shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import { MessageSquare, PhoneCall } from "lucide-react";
 
+const isAdvertiseTask =
+    new URLSearchParams(window.location.search).get("type") === "advertise";
+const islistProdut =new URLSearchParams(window.location.search).get("type") === "list-product";
 
 export default function ListProductPage() {
 	document.title = "List New Product - Hovertask Dashboard";
@@ -32,6 +35,7 @@ export default function ListProductPage() {
 						<ArrowLeft />
 					</Link>
 
+					{ islistProdut && (
 					<div className="space-y-2">
 						<h1 className="text-xl font-medium">List a New Product</h1>
 						<p className="text-sm text-zinc-500">
@@ -39,7 +43,15 @@ export default function ListProductPage() {
 							set your price, and upload images to attract buyers
 						</p>
 					</div>
+					)}
+					{isAdvertiseTask && (
+                    
+					<div className="space-y-2">
+						<h1 className="text-xl font-medium">List a New Product</h1>
+					</div>
+					)}
 				</div>
+				
 
 				<hr className="border-dashed" />
 

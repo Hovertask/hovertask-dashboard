@@ -131,11 +131,13 @@ export interface TransactionInitializationInfo {
 export interface MenuDropdownProps {
 	label: string;
 	icon: React.ReactNode;
+	comingSoon?: boolean;
 	basePath: string;
 	options: {
 		label: string;
 		icon: React.ReactNode;
 		path: string;
+		comingSoon?: boolean;
 	}[];
 }
 

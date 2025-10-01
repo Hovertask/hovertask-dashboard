@@ -32,7 +32,7 @@ export default [
 		icon: <Store size={13} />,
 		options: [
 			{
-				path: "/marketplace/list-product",
+				path: "/marketplace/list-product?type=list-product",
 				label: "List a New Product",
 				icon: <List size={13} />,
 			},
@@ -51,6 +51,7 @@ export default [
 	{
 		basePath: "#",
 		label: "Buy Followers",
+		comingSoon: true,
 		icon: <UserPlus size={13} />,
 		options: [
 			{
@@ -61,6 +62,7 @@ export default [
 			{
 				path: "/add-me-up",
 				label: "Add Me Up",
+				comingSoon: true,
 				icon: <UserPlus size={13} />,
 			},
 		],
@@ -68,6 +70,7 @@ export default [
 	{
 		path: "/add-me-up",
 		label: "Add Me Up",
+		comingSoon: true,
 		icon: <UserPlus size={13} />,
 	},
 	{
@@ -82,6 +85,7 @@ export default [
 	{
 		path: "/support-and-faq",
 		label: "Support and FAQ",
+		comingSoon: true,
 		icon: (
 			<span style={{ fontSize: 13 }} className="material-icons-outlined">
 				support_agent

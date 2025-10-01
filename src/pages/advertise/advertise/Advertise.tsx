@@ -19,10 +19,12 @@ import advertTypes from "../utils/advertTypes";
 import getAuthorization from "../../../utils/getAuthorization";
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 import { setAuthUser } from "../../../redux/slices/auth";
+import AdvertiseIntroModal from "./AdvertiseIntroModal";
 
 export default function AdvertisePage() {
   const modalProps = useDisclosure(); // Insufficient funds
   const advertFeeModal = useDisclosure(); // ₦500 setup fee modal
+  const nextStepModal = useDisclosure(); // <-- NEW: show next-step modal after payment
   const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
     (state) => state.auth.value
   );
@@ -68,6 +70,9 @@ export default function AdvertisePage() {
 
       toast.success("₦500 setup fee paid successfully!");
       advertFeeModal.onClose();
+
+      // 🚀 OPEN the Next Step modal so user knows what to do next
+      nextStepModal.onOpen();
     } catch (err) {
       toast.error("Network error. Please try again.");
     }
@@ -155,6 +160,46 @@ export default function AdvertisePage() {
           </ModalContent>
         </Modal>
 
+        {/* Next Step Modal (shown immediately after successful payment) */}
+        <Modal {...nextStepModal} size="md">
+          <ModalContent>
+            <ModalHeader className="font-medium text-lg">
+              Next Step: Choose Your Advert Type
+            </ModalHeader>
+            <ModalBody>
+              <p className="text-sm leading-relaxed">
+                🎉 Your one-time advert setup fee has been paid successfully.
+                <br />
+                <br />
+                To get started, please choose the type of advert you'd like to
+                run on Hovertask:
+                <br />
+                <br />
+                • <span className="font-semibold">Advert</span> — ideal for directly
+                promoting a product or service to potential buyers.
+                <br />
+                • <span className="font-semibold">Engagement</span> — perfect for
+                boosting interactions (likes, shares, comments) to increase
+                reach and awareness.
+                <br />
+                <br />
+                Scroll the page below and select the advert type that best fits
+                your goal. Once selected, you can proceed to create your advert task
+                and start reaching thousands of users.
+              </p>
+            </ModalBody>
+            <ModalFooter className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => nextStepModal.onClose()}
+                className="px-6 py-2 rounded-xl text-sm font-medium text-white bg-primary active:scale-95 transition-transform"
+              >
+                Got it
+              </button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
         {/* Advert Types (only if fee is paid) */}
         {authUser.has_paid_advert_fee && (
           <div className="space-y-6">
@@ -218,6 +263,8 @@ function Hero() {
           alt=""
         />
       </div>
+
+      <AdvertiseIntroModal />
     </div>
   );
 }
