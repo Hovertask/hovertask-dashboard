@@ -292,11 +292,15 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             }
             icon={<DollarSign size={16} />}
             placeholder="0"
-            value={
-              participants && paymentPerTask
-                ? participants * paymentPerTask
-                : ""
-            }
+			value={
+  isEngagementTask
+    ? participants && paymentPerTask
+      ? participants * paymentPerTask
+      : ""
+    : participants && noOfPosts
+      ? participants * noOfPosts
+      : ""
+}
             readOnly
             {...register("estimated_cost", { required: true })}
           />
