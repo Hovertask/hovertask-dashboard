@@ -12,7 +12,7 @@ function ProductDashboard() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${apiEndpointBaseURL}/auth-user-product`, {
+        const res = await fetch(`${apiEndpointBaseURL}/products/auth-user-product`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: getAuthorization(),
