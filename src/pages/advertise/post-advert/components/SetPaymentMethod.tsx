@@ -10,6 +10,7 @@ export default function SetPaymentMethod(props: {
 	onAdvertPreviewOpen: () => any;
 	isFormValid: boolean;
 	triggerValidationFn: () => any;
+	estimatedCost: number; // 👈 new prop
 }) {
 	const modalProps = useDisclosure();
 	const [selectedMethod, setSelectedMethod] = useState("");
@@ -21,11 +22,11 @@ export default function SetPaymentMethod(props: {
 				<PaymentMethodDropdown {...{ setSelectedMethod, selectedMethod }} />
 
 				<div className="flex gap-6 items-center">
-					<span className="font-medium">₦1,000</span>
+					<span className="font-medium">₦{props.estimatedCost.toLocaleString()}</span>
 					<button
 						type="button"
 						onClick={() => {
-							if (selectedMethod === "wallet" && user.balance < 1000)
+							if (selectedMethod === "wallet" && user.balance < props.estimatedCost)
 								modalProps.onOpen();
 							else if (props.isFormValid && selectedMethod)
 								props.onAdvertPreviewOpen();

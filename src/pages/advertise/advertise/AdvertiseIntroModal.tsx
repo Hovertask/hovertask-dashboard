@@ -4,22 +4,46 @@ import {
   ModalContent,
 } from "@heroui/react";
 import { useDisclosure } from "@heroui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router"; // 👈 import Link for navigation
+import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
+import getAuthorization from "../../../utils/getAuthorization";
 
 export default function AdvertiseIntroModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure(); 
- 
+  const [userBalance, setUserBalance] = useState<number | null>(null);
+
 
   // 👇 Open modal immediately when the page loads
   useEffect(() => {
     onOpen();
+
+    // Example: fetch balance from API (replace URL with your backend route)
+   const fetchBalance = async () => {
+  try {
+    const res = await fetch(`${apiEndpointBaseURL}/wallet/balance`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthorization(), // ✅ add auth header
+      },
+    });
+
+    const data = await res.json();
+    setUserBalance(data.balance); // 👈 backend should return { balance: 2500 }
+  } catch (error) {
+    console.error("Failed to fetch balance:", error);
+  }
+};
+
+
+    fetchBalance();
   }, [onOpen]);
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
       <ModalContent>
-        {(close) => ( // 👈 renamed _onClose → close for clarity
+        {(close) => (
           <ModalBody className="text-center space-y-6 p-6">
             {/* Top Illustration */}
             <div className="flex justify-center">
@@ -42,11 +66,22 @@ export default function AdvertiseIntroModal() {
               needs and start reaching thousands of potential buyers today!
             </p>
 
+            {/* 🔔 Balance Reminder */}
+            {userBalance !== null && (
+              <div className="bg-zinc-100 border border-zinc-200 rounded-xl py-3 px-4 text-sm text-zinc-700">
+                💰 You still have a balance of{" "}
+                <span className="font-semibold text-primary">
+                  ₦{userBalance.toLocaleString()}
+                </span>.  
+                Create a task now to start earning!
+              </div>
+            )}
+
             {/* Option Buttons */}
             <div className="space-y-4">
               {/* ✅ Button 1: Link to product listing page */}
               <Link
-                to="/marketplace/list-product?type=advertise" // ✅ navigate to product listing page
+                to="/marketplace/list-product?type=advertise"
                 className="block w-full border border-primary text-primary rounded-2xl py-4 text-sm hover:bg-primary/5 transition"
               >
                 Advertise on the Hovertask Market <br />
@@ -58,7 +93,7 @@ export default function AdvertiseIntroModal() {
 
               {/* ✅ Button 2: Close modal */}
               <button
-                onClick={close} // ✅ closes modal using HeroUI’s close function
+                onClick={close}
                 className="w-full border border-primary text-primary rounded-2xl py-4 text-sm hover:bg-primary/5 transition"
               >
                 Advertise on Social Media <br />

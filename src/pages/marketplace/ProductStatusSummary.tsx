@@ -1,45 +1,46 @@
-import { CircleCheck, CircleDashed, Clock, LoaderCircle } from "lucide-react";
-
-function ProductStatusSummary({ products }: { products: any[] }) {
-  const statusCounts = {
+function ProductStatusSummary({
+  products,
+  filter,
+  setFilter,
+}: {
+  products: any[];
+  filter: string;
+  setFilter: (val: string) => void;
+}) {
+  const counts = {
+    total: products.length,
     active: products.filter((p) => p.is_active).length,
     inactive: products.filter((p) => !p.is_active).length,
     pending: products.filter((p) => p.status === "pending").length,
-    draft: products.filter((p) => p.status === "draft").length,
+    review: products.filter((p) => p.status === "review").length,
+    failed: products.filter((p) => p.status === "failed").length,
   };
 
+  const tabs = [
+    { key: "all", label: `Total ${counts.total}`, color: "text-indigo-600 bg-indigo-50" },
+    { key: "active", label: `${counts.active} Active`, color: "text-green-600 bg-green-50" },
+    { key: "inactive", label: `${counts.inactive} Inactive`, color: "text-yellow-600 bg-yellow-50" },
+    { key: "pending", label: `${counts.pending} Pending`, color: "text-blue-600 bg-blue-50" },
+    { key: "review", label: `${counts.review} In Review`, color: "text-gray-600 bg-gray-50" },
+    { key: "failed", label: `${counts.failed} Failed`, color: "text-red-600 bg-red-50" },
+  ];
+
   return (
-    <div className="grid grid-cols-2 gap-3 mb-6">
-      <div className="flex items-center gap-3 bg-green-50 text-green-700 p-3 rounded-lg">
-        <CircleCheck size={20} />
-        <div>
-          <p className="text-sm font-medium">{statusCounts.active} Active</p>
-          <p className="text-xs text-green-600">Products live now</p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 bg-yellow-50 text-yellow-700 p-3 rounded-lg">
-        <CircleDashed size={20} />
-        <div>
-          <p className="text-sm font-medium">{statusCounts.inactive} Inactive</p>
-          <p className="text-xs text-yellow-600">Products not visible</p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 bg-blue-50 text-blue-700 p-3 rounded-lg">
-        <Clock size={20} />
-        <div>
-          <p className="text-sm font-medium">{statusCounts.pending} Pending</p>
-          <p className="text-xs text-blue-600">Awaiting approval</p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 bg-gray-50 text-gray-700 p-3 rounded-lg">
-        <LoaderCircle size={20} />
-        <div>
-          <p className="text-sm font-medium">{statusCounts.draft} Draft</p>
-          <p className="text-xs text-gray-600">Saved but not published</p>
-        </div>
+    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <div className="flex flex-wrap items-center gap-3 text-sm font-medium">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={`px-3 py-1 rounded-md transition ${
+              filter === tab.key
+                ? `${tab.color} font-semibold ring-1 ring-offset-1 ring-indigo-500`
+                : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
     </div>
   );

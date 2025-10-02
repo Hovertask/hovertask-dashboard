@@ -104,17 +104,27 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     }
   }, [platform, setValue]);
 
-  // watch participants + payment to compute cost
-  const participants = watch("number_of_participants") || 0;
-  const paymentPerTask = watch("payment_per_task") || 0;
-
-  useEffect(() => {
-    const cost = Number(participants) * Number(paymentPerTask);
-    setValue("estimated_cost", cost, { shouldValidate: true });
-  }, [participants, paymentPerTask, setValue]);
-
   const config = selectedPlatform ? platformConfig[selectedPlatform] : null;
 
+  const participants = watch("number_of_participants") || 0;
+  const paymentPerTask = watch("payment_per_task") || 0;
+  const noOfPosts = config ? watch(config.registerKey) || 0 : 0;
+
+  useEffect(() => {
+    let cost = 0;
+
+    if (isEngagementTask) {
+      // Engagement task = participants × payment per task
+      cost = Number(participants) * Number(paymentPerTask);
+    } else {
+      // Advert task = participants × number of posts (status/story/etc.)
+      cost = Number(participants) * Number(noOfPosts);
+    }
+
+    setValue("estimated_cost", cost, { shouldValidate: true });
+  }, [participants, paymentPerTask, noOfPosts, isEngagementTask, setValue]);
+
+ 
   return (
     <>
       <form id="advert-form" className="p-6 space-y-6" ref={formRef}>
@@ -225,7 +235,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Number of Participants */}
-        {isEngagementTask && (
+        
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -245,10 +255,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             })}
             errorMessage={errors.number_of_participants?.message as string}
           />
-        )}
+       
 
         {/* Payment per Task */}
-        {isEngagementTask && (
+       
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -268,7 +278,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             })}
             errorMessage={errors.payment_per_task?.message as string}
           />
-        )}
+       
 
         {/* Estimated Cost */}
         {isEngagementTask && (
@@ -459,6 +469,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           onAdvertPreviewOpen={modalProps.onOpen}
           isFormValid={isValid}
           triggerValidationFn={trigger}
+		  estimatedCost={watch("estimated_cost") || 0}   // 👈 pass cost here
         />
 
         {/* Modals */}

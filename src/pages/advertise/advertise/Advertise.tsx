@@ -161,44 +161,52 @@ export default function AdvertisePage() {
         </Modal>
 
         {/* Next Step Modal (shown immediately after successful payment) */}
-        <Modal {...nextStepModal} size="md">
-          <ModalContent>
-            <ModalHeader className="font-medium text-lg">
-              Next Step: Choose Your Advert Type
-            </ModalHeader>
-            <ModalBody>
-              <p className="text-sm leading-relaxed">
-                🎉 Your one-time advert setup fee has been paid successfully.
-                <br />
-                <br />
-                To get started, please choose the type of advert you'd like to
-                run on Hovertask:
-                <br />
-                <br />
-                • <span className="font-semibold">Advert</span> — ideal for directly
-                promoting a product or service to potential buyers.
-                <br />
-                • <span className="font-semibold">Engagement</span> — perfect for
-                boosting interactions (likes, shares, comments) to increase
-                reach and awareness.
-                <br />
-                <br />
-                Scroll the page below and select the advert type that best fits
-                your goal. Once selected, you can proceed to create your advert task
-                and start reaching thousands of users.
-              </p>
-            </ModalBody>
-            <ModalFooter className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => nextStepModal.onClose()}
-                className="px-6 py-2 rounded-xl text-sm font-medium text-white bg-primary active:scale-95 transition-transform"
-              >
-                Got it
-              </button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        
+		{/* Next Step Modal (shown immediately after successful payment) */}
+<Modal {...nextStepModal} size="md">
+  <ModalContent>
+    <ModalHeader className="font-medium text-lg">
+      Next Step: Choose Your Advert Type
+    </ModalHeader>
+    <ModalBody>
+      <p className="text-sm leading-relaxed">
+        🎉 Your one-time advert setup fee has been paid successfully.
+        <br /><br />
+        To get started, please choose the type of advert you'd like to
+        run on Hovertask:
+        <br /><br />
+        • <span className="font-semibold">Advert</span> — ideal for directly
+        promoting a product or service to potential buyers.
+        <br />
+        • <span className="font-semibold">Engagement</span> — perfect for
+        boosting interactions (likes, shares, comments) to increase
+        reach and awareness.
+        <br /><br />
+        Scroll the page below and select the advert type that best fits
+        your goal. Once selected, you can proceed to create your advert task
+        and start reaching thousands of users.
+      </p>
+
+      {/* ✅ Balance Display */}
+      <div className="mt-4 bg-zinc-100 border border-zinc-200 rounded-xl p-3 text-sm text-zinc-700 text-center">
+        💰 Your current balance:{" "}
+        <span className="font-semibold text-primary">
+          ₦{authUser.balance.toLocaleString()}
+        </span>
+      </div>
+    </ModalBody>
+    <ModalFooter className="flex justify-end">
+      <button
+        type="button"
+        onClick={() => nextStepModal.onClose()}
+        className="px-6 py-2 rounded-xl text-sm font-medium text-white bg-primary active:scale-95 transition-transform"
+      >
+        Got it
+      </button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
 
         {/* Advert Types (only if fee is paid) */}
         {authUser.has_paid_advert_fee && (

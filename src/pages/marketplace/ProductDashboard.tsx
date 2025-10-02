@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import getAuthorization from "../../utils/getAuthorization";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
-import ProductListings from "./ProductListings";
 import ProductStatusSummary from "./ProductStatusSummary";
+import ProductListings from "./ProductListings";
 
 function ProductDashboard() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<string>("all"); // 👈 active tab filter
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${apiEndpointBaseURL}/auth/products`, {
+        const res = await fetch(`${apiEndpointBaseURL}/auth-user-product`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: getAuthorization(),
@@ -19,7 +20,6 @@ function ProductDashboard() {
         });
 
         const data = await res.json();
-
         if (data.status) {
           setProducts(data.data);
         }
@@ -37,11 +37,19 @@ function ProductDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* ✅ Status Summary */}
-      <ProductStatusSummary products={products} />
+      {/* ✅ Header */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">View Product Listings</h2>
+        <p className="text-sm text-gray-500">
+          Manage all your listed products. Edit details, update stock, and track live status.
+        </p>
+      </div>
 
-      {/* ✅ Product Table */}
-      <ProductListings products={products} />
+      {/* ✅ Summary with Filter */}
+      <ProductStatusSummary products={products} filter={filter} setFilter={setFilter} />
+
+      {/* ✅ Product Listings */}
+      <ProductListings products={products} filter={filter} />
     </div>
   );
 }
