@@ -8,9 +8,9 @@ import useCartItem from "../../hooks/useCartItem";
 import { addProduct, removeProduct } from "../../redux/slices/cart";
 import Feedback from "../../shared/components/Feedback";
 import Loading from "../../shared/components/Loading";
-import SellerInfoAside from "../../shared/components/SellerInfoAside"; // <- restored
-import shareProduct from "../../utils/shareProduct"; // <- restored
-import addProductToWishlist from "./utils/addProductToWishlist"; // <- restored
+import SellerInfoAside from "../../shared/components/SellerInfoAside"; // ✅ restored
+import shareProduct from "../../utils/shareProduct"; // ✅ restored
+import addProductToWishlist from "./utils/addProductToWishlist"; // ✅ restored
 import useProductWithSeller from "../../hooks/useProductWithSeller"; // ✅ merged hook
 
 export default function SingleProductPage() {
@@ -27,12 +27,19 @@ export default function SingleProductPage() {
   const dispatch = useDispatch();
   const cartProduct = useCartItem(id!);
 
+  // ✅ Choose images (fallback to demo)
+  const images =
+    product?.product_images && product.product_images.length > 0
+      ? product.product_images.map((i) => i.file_path)
+      : demoImages;
+
   // scroll to active slide when activeImageIndex changes
   useEffect(() => {
     if (!imageCarouselRef.current) return;
     const singleSlideWidth = imageCarouselRef.current.clientWidth;
     imageCarouselRef.current.scroll({
       left: singleSlideWidth * activeImageIndex,
+      behavior: "smooth",
     });
   }, [activeImageIndex]);
 
@@ -59,12 +66,6 @@ export default function SingleProductPage() {
 
   if (loading) return <Loading />;
   if (error) return <p className="text-red-500">{error}</p>;
-
-  // choose images (product images if available, otherwise fall back)
-  const images =
-    product?.product_images && product.product_images.length > 0
-      ? product.product_images.map((i) => i.file_path)
-      : demoImages;
 
   return (
     <div className="mobile:grid grid-cols-[1fr_260px] gap-6 min-h-full max-w-6xl mx-auto p-6">
@@ -139,7 +140,7 @@ export default function SingleProductPage() {
                     >
                       <img
                         src={src}
-                        alt={product.name}
+                        alt={`${product.name}-${i}`}
                         className="mx-auto max-h-[420px] object-contain"
                       />
                     </div>
@@ -156,12 +157,16 @@ export default function SingleProductPage() {
                         activeImageIndex === i ? "border-primary" : "border-[#E5E7EB]"
                       }`}
                     >
-                      <img src={src} alt={`thumb-${i}`} className="w-full h-full object-cover" />
+                      <img
+                        src={src}
+                        alt={`thumb-${i}`}
+                        className="w-full h-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>
 
-                {/* progress dots / bars */}
+                {/* progress dots */}
                 <div
                   style={{ gridTemplateColumns: `repeat(${images.length}, 14px)` }}
                   className="w-fit grid gap-2 mx-auto mt-2"
@@ -182,9 +187,11 @@ export default function SingleProductPage() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                   <div className="col-span-9 space-y-2">
                     <h2 className="text-lg font-semibold">{product.name}</h2>
-                    <p className="text-sm text-secondary leading-relaxed">{product.description}</p>
+                    <p className="text-sm text-secondary leading-relaxed">
+                      {product.description}
+                    </p>
 
-                    <Info heading="Brand" value={"None"} />
+                    <Info heading="Brand" value={product.brand || "None"} />
                     <Info heading="Size" value={"None"} />
                     <Info heading="Colour" value={"None"} />
                   </div>
@@ -241,12 +248,13 @@ export default function SingleProductPage() {
 
                 <div className="h-1 border-t border-dashed border-[#66666666] w-[85%] mx-auto mt-2"></div>
 
+                {/* product meta */}
                 <div className="flex gap-x-4 gap-y-2 justify-between text-sm text-[#77777A] whitespace-nowrap flex-wrap">
                   <div className="flex gap-6 items-center">
                     <span className="inline-flex items-center gap-2">
                       <span style={{ fontSize: 14 }} className="material-icons-outlined">
                         location_on
-                      </span>{" "}
+                      </span>
                       Address not provided
                     </span>
                     <span>|</span>
@@ -255,14 +263,20 @@ export default function SingleProductPage() {
                     </span>
                   </div>
                   <div className="flex gap-6 items-center">
-                    <span className="text-primary">({product.reviews_count || 0} Reviews)</span>
+                    <span className="text-primary">
+                      ({product.reviews_count || 0} Reviews)
+                    </span>
                     <span>{product.stock || 0} units</span>
                     <span className="flex items-center gap-1">
                       <b className="text-black">{product.rating || 0}</b>
                       {Array(5)
                         .fill(true)
                         .map((_, i) => (
-                          <span style={{ fontSize: 14 }} className="material-icons-outlined" key={i}>
+                          <span
+                            style={{ fontSize: 14 }}
+                            className="material-icons-outlined"
+                            key={i}
+                          >
                             star
                           </span>
                         ))}
@@ -270,6 +284,7 @@ export default function SingleProductPage() {
                   </div>
                 </div>
 
+                {/* buttons */}
                 <div className="flex gap-4 flex-wrap mt-3">
                   <button className="px-4 py-2 active:scale-90 transition-transform bg-primary rounded-xl text-sm text-white">
                     Contact Seller
@@ -278,7 +293,8 @@ export default function SingleProductPage() {
                   {cartProduct ? (
                     <button
                       onClick={() =>
-                        (dispatch(removeProduct(id)), toast.success("Product removed from cart!"))
+                        (dispatch(removeProduct(id)),
+                        toast.success("Product removed from cart!"))
                       }
                       className="px-4 py-2 active:scale-90 transition-transform border-primary border rounded-xl text-sm text-primary"
                     >
@@ -287,7 +303,8 @@ export default function SingleProductPage() {
                   ) : (
                     <button
                       onClick={() =>
-                        (dispatch(addProduct({ ...product, cartQuantity: 1 })), toast.success("Product added to cart!"))
+                        (dispatch(addProduct({ ...product, cartQuantity: 1 })),
+                        toast.success("Product added to cart!"))
                       }
                       className="px-4 py-2 active:scale-90 transition-transform border-primary border rounded-xl text-sm text-primary"
                     >
@@ -323,18 +340,17 @@ export default function SingleProductPage() {
                 You want to resell this Product and make profit?
               </h2>
               <p className="font-light">
-                To start reselling this product, simply click the button below to generate
-                your unique reseller link. This personalized link will track all your sales for
-                this specific product. 💰 Commission Details: You will earn a reseller commission
-                of ₦10,000 every time someone purchases this product using your unique link.
+                To start reselling this product, simply click the button below to
+                generate your unique reseller link. This personalized link will track
+                all your sales for this specific product.
               </p>
 
               <div className="flex justify-between flex-wrap gap-2 items-end">
                 <div>
                   <h3 className="text-lg">💰Commission Details:</h3>
                   <p className="font-light">
-                    You will earn a reseller commission of ₦10,000 every time someone
-                    purchases this product using your unique link.
+                    You will earn a reseller commission of ₦10,000 every time
+                    someone purchases this product using your unique link.
                   </p>
                 </div>
                 <button className="px-4 py-2 active:scale-90 transition-transform bg-primary rounded-xl text-white text-sm h-fit">
@@ -347,9 +363,7 @@ export default function SingleProductPage() {
       </div>
 
       {/* ASIDE / SELLER CARD */}
-      <aside>
-        {seller && <SellerInfoAside {...seller} />}
-      </aside>
+      <aside>{seller && <SellerInfoAside {...seller} />}</aside>
     </div>
   );
 }
