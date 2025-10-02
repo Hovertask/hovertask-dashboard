@@ -184,7 +184,7 @@ export default function SingleProductPage() {
                     <h2 className="text-lg font-semibold">{product.name}</h2>
                     <p className="text-sm text-secondary leading-relaxed">{product.description}</p>
 
-                    <Info heading="Brand" value={product.brand || "None"} />
+                    <Info heading="Brand" value={"None"} />
                     <Info heading="Size" value={"None"} />
                     <Info heading="Colour" value={"None"} />
                   </div>
