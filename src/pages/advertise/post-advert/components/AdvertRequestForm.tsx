@@ -298,7 +298,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
       ? participants * paymentPerTask
       : ""
     : noOfPosts && paymentPerTask
-      ? noOfPosts * participants
+      ? noOfPosts * paymentPerTask
       : ""
 }
             readOnly
