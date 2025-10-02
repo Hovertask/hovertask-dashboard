@@ -235,7 +235,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Number of Participants */}
-        
+        {isEngagementTask && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -255,10 +255,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             })}
             errorMessage={errors.number_of_participants?.message as string}
           />
-       
+        )}
 
         {/* Payment per Task */}
-       
+        {isEngagementTask && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -278,10 +278,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             })}
             errorMessage={errors.payment_per_task?.message as string}
           />
-       
+        )}
 
         {/* Estimated Cost */}
-        {isEngagementTask && (
+        
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -300,7 +300,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             readOnly
             {...register("estimated_cost", { required: true })}
           />
-        )}
+        
 
         {/* Deadline */}
         {isEngagementTask && (
