@@ -191,7 +191,7 @@ export default function SingleProductPage() {
                       {product.description}
                     </p>
 
-                    <Info heading="Brand" value={product.brand || "None"} />
+                    <Info heading="Brand" value={"None"} />
                     <Info heading="Size" value={"None"} />
                     <Info heading="Colour" value={"None"} />
                   </div>
