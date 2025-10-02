@@ -118,7 +118,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
       cost = Number(participants) * Number(paymentPerTask);
     } else {
       // Advert task = participants × number of posts (status/story/etc.)
-      cost = Number(paymentPerTask) * Number(noOfPosts);
+      cost = Number(noOfPosts) * Number(paymentPerTask);
     }
 
     setValue("estimated_cost", cost, { shouldValidate: true });
@@ -297,8 +297,8 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     ? participants && paymentPerTask
       ? participants * paymentPerTask
       : ""
-    : participants && noOfPosts
-      ? participants * noOfPosts
+    : noOfPosts && paymentPerTask
+      ? noOfPosts * participants
       : ""
 }
             readOnly
