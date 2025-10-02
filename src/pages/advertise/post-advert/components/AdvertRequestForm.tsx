@@ -118,7 +118,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
       cost = Number(participants) * Number(paymentPerTask);
     } else {
       // Advert task = participants × number of posts (status/story/etc.)
-      cost = Number(participants) * Number(noOfPosts);
+      cost = Number(paymentPerTask) * Number(noOfPosts);
     }
 
     setValue("estimated_cost", cost, { shouldValidate: true });
@@ -258,7 +258,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Payment per Task */}
-        {isEngagementTask && (
+      
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -278,7 +278,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             })}
             errorMessage={errors.payment_per_task?.message as string}
           />
-        )}
+       
 
         {/* Estimated Cost */}
         
