@@ -13,6 +13,7 @@ import shareProduct from "../../utils/shareProduct"; // ✅ restored
 import addProductToWishlist from "./utils/addProductToWishlist"; // ✅ restored
 import useProductWithSeller from "../../hooks/useProductWithSeller"; // ✅ merged hook
 import ResellerLinkModal from "../../shared/components/ResellerLinkModal";
+import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 
 
 export default function SingleProductPage() {
@@ -35,6 +36,31 @@ export default function SingleProductPage() {
       ? product.product_images.map((i) => i.file_path)
       : demoImages;
 
+
+	  const [resellerModalOpen, setResellerModalOpen] = useState(false);
+      const [resellerData, setResellerData] = useState<any>(null);
+
+const handleGenerateResellerLink = async () => {
+  try {
+    const res = await fetch(`${apiEndpointBaseURL}/products/reseller-link/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // if protected route
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Failed to generate link");
+
+    setResellerData(data);
+    setResellerModalOpen(true);
+  } catch (err: any) {
+    console.error(err);
+    toast.error(err.message || "Something went wrong");
+  }
+};
   // scroll to active slide when activeImageIndex changes
   useEffect(() => {
     if (!imageCarouselRef.current) return;
@@ -69,30 +95,7 @@ export default function SingleProductPage() {
   if (loading) return <Loading />;
   if (error) return <p className="text-red-500">{error}</p>;
   // state for reseller modal
-const [resellerModalOpen, setResellerModalOpen] = useState(false);
-const [resellerData, setResellerData] = useState<any>(null);
 
-const handleGenerateResellerLink = async () => {
-  try {
-    const res = await fetch(`/api/reseller-link/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // if protected route
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.message || "Failed to generate link");
-
-    setResellerData(data);
-    setResellerModalOpen(true);
-  } catch (err: any) {
-    console.error(err);
-    toast.error(err.message || "Something went wrong");
-  }
-};
 
 
   return (
