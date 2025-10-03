@@ -1,5 +1,5 @@
 // src/shared/components/ResellerLinkModal.tsx
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { X, Copy } from "lucide-react";
 import { toast } from "sonner";
 

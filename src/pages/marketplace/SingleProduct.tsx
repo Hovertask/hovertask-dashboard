@@ -240,6 +240,49 @@ export default function SingleProductPage() {
                   </div>
                 </div>
 
+               <div className="h-1 border-t border-dashed border-[#66666666] w-[85%] mx-auto mt-2"></div>
+
+                {/* product meta */}
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-[#77777A] whitespace-nowrap flex-wrap">
+                  <div className="flex gap-4 items-center">
+                    <span className="inline-flex items-center gap-1.5">
+                      <span
+                        style={{ fontSize: 14 }}
+                        className="material-icons-outlined"
+                      >
+                        location_on
+                      </span>
+                      Address not provided
+                    </span>
+                    <span className="hidden sm:inline">|</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Eye size={14} /> {product.reviews_count || 0} views
+                    </span>
+                  </div>
+                  <div className="flex gap-4 items-center">
+                    <span className="text-primary">
+                      ({product.reviews_count || 0} Reviews)
+                    </span>
+                    <span>{product.stock || 0} units</span>
+                    <span className="flex items-center gap-1">
+                      <b className="text-black">{product.rating || 0}</b>
+                      {Array(5)
+                        .fill(true)
+                        .map((_, i) => (
+                          <span
+                            style={{ fontSize: 14 }}
+                            className="material-icons-outlined"
+                            key={i}
+                          >
+                            star
+                          </span>
+                        ))}
+                    </span>
+                  </div>
+                </div>
+
+
+
                 {/* Cart / Contact */}
                 <div className="flex flex-wrap gap-2 mt-2">
                   <button className="flex-1 px-3 py-2 bg-primary rounded-lg text-white text-xs sm:text-sm">
