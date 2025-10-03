@@ -442,6 +442,8 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         </div>
 
         {/* Media Upload */}
+
+		{config && (
         <div>
           <Label
             title="Choose Your Advert Media Upload Option"
@@ -467,6 +469,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             </div>
           </div>
         </div>
+		)}
 
         {/* Payment */}
         <SetPaymentMethod
