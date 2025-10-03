@@ -77,6 +77,7 @@ interface Product {
 	phone_number?: string | null;
 	email?: string | null;
 	social_media_link?: string | null;
+	brand: string | null;
 }
 
 export interface ProductCardProps extends Product {
