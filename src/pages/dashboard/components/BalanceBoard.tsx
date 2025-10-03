@@ -33,7 +33,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
 	setLoading(true);
 	try {
-		const res = await fetch(`{apiEndpointBaseURL}/withdraw`, {
+		const res = await fetch(`${apiEndpointBaseURL}/withdraw`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
