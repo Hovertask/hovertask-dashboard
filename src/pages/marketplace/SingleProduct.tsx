@@ -12,6 +12,8 @@ import SellerInfoAside from "../../shared/components/SellerInfoAside"; // ✅ re
 import shareProduct from "../../utils/shareProduct"; // ✅ restored
 import addProductToWishlist from "./utils/addProductToWishlist"; // ✅ restored
 import useProductWithSeller from "../../hooks/useProductWithSeller"; // ✅ merged hook
+import ResellerLinkModal from "../../shared/components/ResellerLinkModal";
+
 
 export default function SingleProductPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -66,6 +68,32 @@ export default function SingleProductPage() {
 
   if (loading) return <Loading />;
   if (error) return <p className="text-red-500">{error}</p>;
+  // state for reseller modal
+const [resellerModalOpen, setResellerModalOpen] = useState(false);
+const [resellerData, setResellerData] = useState<any>(null);
+
+const handleGenerateResellerLink = async () => {
+  try {
+    const res = await fetch(`/api/reseller-link/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // if protected route
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Failed to generate link");
+
+    setResellerData(data);
+    setResellerModalOpen(true);
+  } catch (err: any) {
+    console.error(err);
+    toast.error(err.message || "Something went wrong");
+  }
+};
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6 min-h-full max-w-6xl mx-auto p-3 sm:p-6">
@@ -368,9 +396,13 @@ export default function SingleProductPage() {
                     someone purchases this product using your unique link.
                   </p>
                 </div>
-                <button className="px-3 sm:px-4 py-2 active:scale-90 transition-transform bg-primary rounded-xl text-white text-xs sm:text-sm h-fit">
-                  Generate Reseller Link
-                </button>
+				<button
+  onClick={handleGenerateResellerLink}
+  className="px-3 sm:px-4 py-2 active:scale-90 transition-transform bg-primary rounded-xl text-white text-xs sm:text-sm h-fit"
+>
+  Generate Reseller Link
+</button>
+
               </div>
             </div>
           </>
@@ -381,7 +413,14 @@ export default function SingleProductPage() {
       <aside className="order-first lg:order-last">
         {seller && <SellerInfoAside {...seller} />}
       </aside>
+	    <ResellerLinkModal
+        open={resellerModalOpen}
+        onClose={() => setResellerModalOpen(false)}
+         data={resellerData}
+    />
+
     </div>
+	
   );
 }
 
