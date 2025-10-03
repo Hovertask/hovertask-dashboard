@@ -14,6 +14,7 @@ import addProductToWishlist from "./utils/addProductToWishlist"; // ✅ restored
 import useProductWithSeller from "../../hooks/useProductWithSeller"; // ✅ merged hook
 import ResellerLinkModal from "../../shared/components/ResellerLinkModal";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
+import getAuthorization from "../../utils/getAuthorization";
 
 
 export default function SingleProductPage() {
@@ -45,8 +46,8 @@ const handleGenerateResellerLink = async () => {
     const res = await fetch(`${apiEndpointBaseURL}/products/reseller-link/${id}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // if protected route
+       "Content-Type": "application/json",
+	   Authorization: getAuthorization(),
       },
     });
 
