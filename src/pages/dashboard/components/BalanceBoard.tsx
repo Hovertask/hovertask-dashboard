@@ -37,7 +37,6 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-			    Authorization: getAuthorization(),
 			},
 			body: JSON.stringify({
 				amount: Number(amount),
