@@ -1,8 +1,6 @@
 import { Wallet } from "lucide-react";
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import getAuthorization from "../../../utils/getAuthorization";
-import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
 export default function BalanceBoard({ balance }: { balance?: number }) {
 	const [showWithdraw, setShowWithdraw] = useState(false);
@@ -33,7 +31,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
 	setLoading(true);
 	try {
-		const res = await fetch(`${apiEndpointBaseURL}/withdraw`, {
+		const res = await fetch(`https://backend.hovertask.com//api/withdraw`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
