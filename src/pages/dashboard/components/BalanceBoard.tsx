@@ -31,7 +31,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
 	setLoading(true);
 	try {
-		const res = await fetch(`https://backend.hovertask.com//api/withdraw`, {
+		const res = await fetch(`https://backend.hovertask.com/api/withdraw`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
