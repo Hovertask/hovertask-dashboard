@@ -1,6 +1,5 @@
 import { ArrowLeft, Hexagon, Megaphone } from "lucide-react";
 import { Link } from "react-router";
-import LinkAccountsModal from "../components/LinkAccountsModal";
 import TasksTabs from "./components/TasksTabs";
 
 export default function Tasks() {
@@ -51,7 +50,7 @@ export default function Tasks() {
 					</div>
 
 					<TasksTabs />
-					<LinkAccountsModal />
+					
 				</div>
 			</div>
 		</div>

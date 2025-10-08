@@ -33,36 +33,41 @@ import SetPaymentMethod from "./SetPaymentMethod";
 
 const platformConfig: Record<
   string,
-  { inputLabel: string; inputDescription: string; registerKey: string }
+  { inputLabel: string; inputDescription: string; registerKey: string; paymentPerAdvert: number}
 > = {
   WhatsApp: {
     inputLabel: "Select Number of WhatsApp Status to Post",
     inputDescription:
       "Enter the number of WhatsApp status advert posts you'd like to request.",
     registerKey: "no_of_status_post",
+    paymentPerAdvert: 100,
   },
   Instagram: {
     inputLabel: "Select Number of Instagram Story Posts",
     inputDescription:
       "Enter how many Instagram story adverts you'd like to request.",
     registerKey: "no_of_status_post",
+    paymentPerAdvert: 150,
   },
   Facebook: {
     inputLabel: "Select Number of Facebook Timeline Posts",
     inputDescription:
       "Enter the number of Facebook timeline adverts you'd like to request.",
     registerKey: "no_of_status_post",
+    paymentPerAdvert: 150,
   },
   X: {
     inputLabel: "Select Number of X (Twitter) Posts",
     inputDescription: "Enter how many X (Twitter) posts you'd like to request.",
     registerKey: "no_of_status_post",
+     paymentPerAdvert: 150,
   },
   TikTok: {
     inputLabel: "Select Number of TikTok Videos",
     inputDescription:
       "Enter how many TikTok video adverts you'd like to request.",
     registerKey: "no_of_status_post",
+    paymentPerAdvert: 150,
   },
 };
 
@@ -104,11 +109,18 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   }, [isValid, clearErrors]);
 
   useEffect(() => {
-    if (platform) {
-      setValue("platforms", platform, { shouldValidate: true });
-      setSelectedPlatform(platform);
+  if (platform) {
+    setValue("platforms", platform, { shouldValidate: true });
+    setSelectedPlatform(platform);
+
+    // ✅ Get paymentPerAdvert from the config object
+    const config = platformConfig[platform];
+    if (config) {
+      setValue("payment_per_task", config.paymentPerAdvert);
     }
-  }, [platform, setValue]);
+  }
+}, [platform, setValue]);
+
 
   const config = selectedPlatform ? platformConfig[selectedPlatform] : null;
 
@@ -171,91 +183,90 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     }
   }, [isEngagementTask, engagementType, setValue]);
 
- /* ------------------------------- 👇 FIXED NEW LOGIC ------------------------------- */
+  /* ------------------------------- 👇 FIXED NEW LOGIC ------------------------------- */
 
-// ✅ Mapping of engagement types → allowed social platforms
-const engagementPlatformMap: Record<string, string[]> = {
-  "Get Real People to Like your Social Media Post": [
-    "Instagram",
-    "Facebook",
-    "X",
-    "TikTok",
-  ],
-  "Get Real People to Follow you": ["Instagram", "X", "TikTok"],
-  "Get Real People to Comment to your Social Media Post": [
-    "Instagram",
-    "Facebook",
-    "X",
-  ],
-  "Get Real People to Subscribe to your Channel": ["YouTube"],
-};
-
-// ✅ Normalize helper for consistent string comparison
-const normalize = (s: unknown): string =>
-  String(s ?? "")
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/[^a-z0-9]/g, "");
-
-// ✅ Force all socialMedia items to match { key, label, value } shape
-type Option = { key: string; label: string; value: string };
-
-// ✅ Ensure the base list has uniform Option type
-const normalizedSocialMedia: Option[] = (socialMedia as any[]).map((opt) => {
-  if (typeof opt === "string") {
-    return { key: opt.toLowerCase(), label: opt, value: opt };
-  }
-  return {
-    key: opt.key || opt.value || opt.label,
-    label: opt.label || opt.value || opt.key,
-    value: opt.value || opt.label || opt.key,
+  // ✅ Mapping of engagement types → allowed social platforms
+  const engagementPlatformMap: Record<string, string[]> = {
+    "Get Real People to Like your Social Media Post": [
+      "Instagram",
+      "Facebook",
+      "X",
+      "TikTok",
+    ],
+    "Get Real People to Follow you": ["Instagram", "X", "TikTok"],
+    "Get Real People to Comment to your Social Media Post": [
+      "Instagram",
+      "Facebook",
+      "X",
+    ],
+    "Get Real People to Subscribe to your Channel": ["YouTube"],
   };
-});
 
-// ✅ Filter social media options based on engagement type
-const filteredSocialMedia: Option[] = useMemo(() => {
-  if (!isEngagementTask || !engagementType) return normalizedSocialMedia;
+  // ✅ Normalize helper for consistent string comparison
+  const normalize = (s: unknown): string =>
+    String(s ?? "")
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/[^a-z0-9]/g, "");
 
-  const allowed = engagementPlatformMap[engagementType] ?? [];
-  if (!allowed.length) return normalizedSocialMedia;
+  // ✅ Force all socialMedia items to match { key, label, value } shape
+  type Option = { key: string; label: string; value: string };
 
-  const allowedNorm = allowed.map(normalize);
+  // ✅ Ensure the base list has uniform Option type
+  const normalizedSocialMedia: Option[] = (socialMedia as any[]).map((opt) => {
+    if (typeof opt === "string") {
+      return { key: opt.toLowerCase(), label: opt, value: opt };
+    }
+    return {
+      key: opt.key || opt.value || opt.label,
+      label: opt.label || opt.value || opt.key,
+      value: opt.value || opt.label || opt.key,
+    };
+  });
 
-  return normalizedSocialMedia.filter((opt) =>
-    allowedNorm.includes(normalize(opt.value))
-  );
-}, [isEngagementTask, engagementType, socialMedia]);
+  // ✅ Filter social media options based on engagement type
+  const filteredSocialMedia: Option[] = useMemo(() => {
+    if (!isEngagementTask || !engagementType) return normalizedSocialMedia;
 
-// ✅ Auto-select platform if only one option remains
-useEffect(() => {
-  if (!isEngagementTask) return;
-  if (!filteredSocialMedia || filteredSocialMedia.length !== 1) return;
+    const allowed = engagementPlatformMap[engagementType] ?? [];
+    if (!allowed.length) return normalizedSocialMedia;
 
-  const first = filteredSocialMedia[0];
-  setValue("platforms", first.value, { shouldValidate: true });
-  setSelectedPlatform(first.value);
-}, [filteredSocialMedia, isEngagementTask, setValue]);
+    const allowedNorm = allowed.map(normalize);
 
-// ✅ Clear platform if current selection no longer allowed
-useEffect(() => {
-  if (!isEngagementTask) return;
+    return normalizedSocialMedia.filter((opt) =>
+      allowedNorm.includes(normalize(opt.value))
+    );
+  }, [isEngagementTask, engagementType]); // ✅ cleaned dependency list
 
-  const current = getValues("platforms");
-  const allowed = engagementPlatformMap[engagementType ?? ""] ?? [];
+  // ✅ Auto-select platform if only one option remains
+  useEffect(() => {
+    if (!isEngagementTask) return;
+    if (!filteredSocialMedia || filteredSocialMedia.length !== 1) return;
 
-  if (
-    current &&
-    allowed.length &&
-    !allowed.map(normalize).includes(normalize(current))
-  ) {
-    setValue("platforms", "", { shouldValidate: true });
-    setSelectedPlatform("");
-  }
-}, [engagementType, isEngagementTask, getValues, setValue]);
+    const first = filteredSocialMedia[0];
+    setValue("platforms", first.value, { shouldValidate: true });
+    setSelectedPlatform(first.value);
+  }, [filteredSocialMedia, isEngagementTask, setValue]);
 
-/* --------------------------------------------------------------------------- */
+  // ✅ Clear platform if current selection no longer allowed
+  useEffect(() => {
+    if (!isEngagementTask) return;
 
-  
+    const current = getValues("platforms");
+    const allowed = engagementPlatformMap[engagementType ?? ""] ?? [];
+
+    if (
+      current &&
+      allowed.length &&
+      !allowed.map(normalize).includes(normalize(current))
+    ) {
+      setValue("platforms", "", { shouldValidate: true });
+      setSelectedPlatform("");
+    }
+  }, [engagementType, isEngagementTask, getValues, setValue]);
+
+  /* --------------------------------------------------------------------------- */
+
   return (
     <>
       <form id="advert-form" className="p-6 space-y-6" ref={formRef}>
@@ -267,7 +278,7 @@ useEffect(() => {
         )}
 
         {/* Title */}
-        {config && (
+        {!isEngagementTask && config && (
           <Input
             className="rounded-full bg-white"
             label={
@@ -287,7 +298,7 @@ useEffect(() => {
         )}
 
         {/* Platform selection for normal adverts */}
-        {config && (
+        {!isEngagementTask && config && (
           <CustomSelect
             options={socialMedia}
             aria-label="Selected Platform"
@@ -356,7 +367,7 @@ useEffect(() => {
           {...register("platforms", { required: "Platform is required" })}
         />
 
-         {/* Dynamic input (based on platform) */}
+        {/* Dynamic input (based on platform) */}
         {config && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
@@ -440,8 +451,8 @@ useEffect(() => {
                 ? participants * paymentPerTask
                 : ""
               : noOfPosts && paymentPerTask
-                ? noOfPosts * paymentPerTask
-                : ""
+              ? noOfPosts * paymentPerTask
+              : ""
           }
           readOnly
           {...register("estimated_cost", { required: true })}
@@ -560,39 +571,49 @@ useEffect(() => {
           {...register("type")}
         />
 
-         {/* Task category */}
-        <input
-          type="hidden"
-          value="social_media"
-          {...register("category")}
-        />
+        {/* Task category */}
+        <input type="hidden" value="social_media" {...register("category")} />
 
         {/* Description */}
-        {config && (
-          <div className="space-y-1 text-sm">
-            <Label
-              title="Enter Advert Text or Caption"
-              description="Write the text or caption for your advert."
-            />
-            <textarea
-              {...register("description", {
-                required: "Enter task description.",
-                pattern: descriptionValidation,
-                min: { value: 20, message: "Description is too short." },
-              })}
-              id="description"
-              className="bg-white border border-zinc-300 rounded-2xl w-full h-40 focus:outline-primary p-4"
-            />
-            {errors.description && (
-              <small className="text-danger">
-                {errors.description.message as string}
-              </small>
-            )}
-          </div>
-        )}
+{config && (
+  <div className="space-y-1 text-sm">
+    <Label
+      title={
+        isEngagementTask && engagementType === "Get Real People to Comment to your Social Media Post"
+          ? "Enter Comment Instruction or Example"
+          : "Enter Advert Text or Caption"
+      }
+      description={
+        isEngagementTask && engagementType === "Get Real People to Comment to your Social Media Post"
+          ? "Provide clear instructions for the comment you want users to make. Example: ‘Comment “Great work!” on our latest video.’"
+          : "Write the text or caption for your advert."
+      }
+    />
+
+    <textarea
+      {...register("description", {
+        required: "Enter task description.",
+        pattern: descriptionValidation,
+        minLength: {
+          value: 20,
+          message: "Description is too short.",
+        },
+      })}
+      id="description"
+      className="bg-white border border-zinc-300 rounded-2xl w-full h-40 focus:outline-primary p-4"
+    />
+
+    {errors.description && (
+      <small className="text-danger">
+        {errors.description.message as string}
+      </small>
+    )}
+  </div>
+)}
+
 
         {/* Media Upload */}
-        {config && (
+        {!isEngagementTask && config && (
           <div>
             <Label
               title="Choose Your Advert Media Upload Option"
@@ -644,4 +665,3 @@ useEffect(() => {
     </>
   );
 }
-
