@@ -1,5 +1,5 @@
 import { useDisclosure } from "@heroui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react"; // ✅ added useMemo
 import { useForm } from "react-hook-form";
 import Input from "../../../../shared/components/Input";
 import {
@@ -75,8 +75,14 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   const successModalProps = useDisclosure();
   const modalProps = useDisclosure();
 
+  // ✅ check if this is an engagement-type advert from the URL
   const isEngagementTask =
     new URLSearchParams(window.location.search).get("type") === "engagement";
+
+  // ✅ get specific engagement type (like "Get Real People to Like your Post")
+  const engagementType = new URLSearchParams(window.location.search).get(
+    "engagementType"
+  );
 
   const [selectedPlatform, setSelectedPlatform] = useState<string>(
     platform || ""
@@ -110,24 +116,156 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   const paymentPerTask = watch("payment_per_task") || 0;
   const noOfPosts = config ? watch(config.registerKey) || 0 : 0;
 
+  // ✅ Dynamically calculate estimated cost
   useEffect(() => {
     let cost = 0;
 
     if (isEngagementTask) {
-      // Engagement task = participants × payment per task
       cost = Number(participants) * Number(paymentPerTask);
     } else {
-      // Advert task = participants × number of posts (status/story/etc.)
       cost = Number(noOfPosts) * Number(paymentPerTask);
     }
 
     setValue("estimated_cost", cost, { shouldValidate: true });
   }, [participants, paymentPerTask, noOfPosts, isEngagementTask, setValue]);
 
- 
+  // ✅ Auto-fill engagement templates (title, description, payment)
+  useEffect(() => {
+    if (isEngagementTask && engagementType) {
+      const templates: Record<
+        string,
+        { title: string; description: string; payment: number }
+      > = {
+        "Get Real People to Like your Social Media Post": {
+          title: "Social Media Likes Campaign",
+          description:
+            "Engage real users to like your post and boost its visibility organically.",
+          payment: 5,
+        },
+        "Get Real People to Follow you": {
+          title: "Follower Growth Campaign",
+          description:
+            "Increase your social following with genuine and verified users.",
+          payment: 10,
+        },
+        "Get Real People to Comment to your Social Media Post": {
+          title: "Post Comments Campaign",
+          description:
+            "Encourage authentic comments to increase engagement and trust.",
+          payment: 10,
+        },
+        "Get Real People to Subscribe to your Channel": {
+          title: "Channel Subscription Campaign",
+          description:
+            "Get more subscribers who are interested in your content.",
+          payment: 15,
+        },
+      };
+
+      const selected = templates[engagementType];
+      if (selected) {
+        setValue("title", selected.title);
+        setValue("description", selected.description);
+        setValue("payment_per_task", selected.payment);
+      }
+    }
+  }, [isEngagementTask, engagementType, setValue]);
+
+ /* ------------------------------- 👇 FIXED NEW LOGIC ------------------------------- */
+
+// ✅ Mapping of engagement types → allowed social platforms
+const engagementPlatformMap: Record<string, string[]> = {
+  "Get Real People to Like your Social Media Post": [
+    "Instagram",
+    "Facebook",
+    "X",
+    "TikTok",
+  ],
+  "Get Real People to Follow you": ["Instagram", "X", "TikTok"],
+  "Get Real People to Comment to your Social Media Post": [
+    "Instagram",
+    "Facebook",
+    "X",
+  ],
+  "Get Real People to Subscribe to your Channel": ["YouTube"],
+};
+
+// ✅ Normalize helper for consistent string comparison
+const normalize = (s: unknown): string =>
+  String(s ?? "")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+// ✅ Force all socialMedia items to match { key, label, value } shape
+type Option = { key: string; label: string; value: string };
+
+// ✅ Ensure the base list has uniform Option type
+const normalizedSocialMedia: Option[] = (socialMedia as any[]).map((opt) => {
+  if (typeof opt === "string") {
+    return { key: opt.toLowerCase(), label: opt, value: opt };
+  }
+  return {
+    key: opt.key || opt.value || opt.label,
+    label: opt.label || opt.value || opt.key,
+    value: opt.value || opt.label || opt.key,
+  };
+});
+
+// ✅ Filter social media options based on engagement type
+const filteredSocialMedia: Option[] = useMemo(() => {
+  if (!isEngagementTask || !engagementType) return normalizedSocialMedia;
+
+  const allowed = engagementPlatformMap[engagementType] ?? [];
+  if (!allowed.length) return normalizedSocialMedia;
+
+  const allowedNorm = allowed.map(normalize);
+
+  return normalizedSocialMedia.filter((opt) =>
+    allowedNorm.includes(normalize(opt.value))
+  );
+}, [isEngagementTask, engagementType, socialMedia]);
+
+// ✅ Auto-select platform if only one option remains
+useEffect(() => {
+  if (!isEngagementTask) return;
+  if (!filteredSocialMedia || filteredSocialMedia.length !== 1) return;
+
+  const first = filteredSocialMedia[0];
+  setValue("platforms", first.value, { shouldValidate: true });
+  setSelectedPlatform(first.value);
+}, [filteredSocialMedia, isEngagementTask, setValue]);
+
+// ✅ Clear platform if current selection no longer allowed
+useEffect(() => {
+  if (!isEngagementTask) return;
+
+  const current = getValues("platforms");
+  const allowed = engagementPlatformMap[engagementType ?? ""] ?? [];
+
+  if (
+    current &&
+    allowed.length &&
+    !allowed.map(normalize).includes(normalize(current))
+  ) {
+    setValue("platforms", "", { shouldValidate: true });
+    setSelectedPlatform("");
+  }
+}, [engagementType, isEngagementTask, getValues, setValue]);
+
+/* --------------------------------------------------------------------------- */
+
+  
   return (
     <>
       <form id="advert-form" className="p-6 space-y-6" ref={formRef}>
+        {/* ✅ Engagement header */}
+        {isEngagementTask && engagementType && (
+          <div className="bg-primary/10 border border-primary text-primary rounded-xl p-3 text-sm mb-3">
+            <strong>Selected Engagement Type:</strong> {engagementType}
+          </div>
+        )}
+
         {/* Title */}
         {config && (
           <Input
@@ -142,16 +280,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             placeholder="Enter the title of your advert"
             {...register("title", {
               required: "Enter the title of your advert",
-              pattern: {
-                value: /\w+(?:\s*.+)*/,
-                message: "Enter a valid title.",
-              },
+              pattern: { value: /\w+(?:\s*.+)*/, message: "Enter a valid title." },
             })}
             errorMessage={errors.title?.message as string}
           />
         )}
 
-        {/* Platform Selection for advert */}
+        {/* Platform selection for normal adverts */}
         {config && (
           <CustomSelect
             options={socialMedia}
@@ -184,34 +319,44 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           />
         )}
 
-        {/* Platform Selection for engagement */}
+        {/* ✅ Updated Platform Selection for Engagement */}
         {isEngagementTask && (
-          <CustomSelect
-            options={socialMedia}
-            aria-label="Select Platform"
-            label={
-              <Label
-                title="Select Platform"
-                description="Choose the platform where you'd like to create engagement on."
-              />
-            }
-            placeholder="Select platform"
-            className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-            startContent={<Globe />}
-            onChange={(value) =>
-              setValue("platforms", value, { shouldValidate: true })
-            }
-            errorMessage={errors.platforms?.message as string}
-          />
+          <div>
+            <CustomSelect
+              options={filteredSocialMedia}
+              aria-label="Select Platform"
+              label={
+                <Label
+                  title="Select Platform"
+                  description="Choose the platform where you'd like to create engagement on."
+                />
+              }
+              placeholder="Select platform"
+              className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+              startContent={<Globe />}
+              onChange={(value) =>
+                setValue("platforms", value, { shouldValidate: true })
+              }
+              errorMessage={errors.platforms?.message as string}
+            />
+
+            {/* Helper note showing allowed platforms */}
+            {engagementType && (
+              <small className="block mt-2 text-xs text-zinc-500">
+                Platforms available for this engagement:{" "}
+                {(engagementPlatformMap[engagementType] ?? []).join(", ") || "All"}
+              </small>
+            )}
+          </div>
         )}
 
-        {/* Hidden input so react-hook-form submits it */}
+        {/* Hidden input for validation */}
         <input
           type="hidden"
           {...register("platforms", { required: "Platform is required" })}
         />
 
-        {/* Dynamic input (based on platform) */}
+         {/* Dynamic input (based on platform) */}
         {config && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
@@ -258,53 +403,49 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Payment per Task */}
-      
-          <Input
-            className="max-w-[250px] rounded-full bg-white"
-            label={
-              <Label
-                title="Payment Per Task"
-                description="Enter the amount to be paid per task engagement."
-              />
-            }
-            icon={<DollarSign size={16} />}
-            placeholder="0"
-            {...register("payment_per_task", {
-              required: "Enter payment per task",
-              pattern: {
-                value: /^\d+$/,
-                message: "Enter a valid number",
-              },
-            })}
-            errorMessage={errors.payment_per_task?.message as string}
-          />
-       
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          label={
+            <Label
+              title="Payment Per Task"
+              description="Enter the amount to be paid per task engagement."
+            />
+          }
+          icon={<DollarSign size={16} />}
+          placeholder="0"
+          {...register("payment_per_task", {
+            required: "Enter payment per task",
+            pattern: {
+              value: /^\d+$/,
+              message: "Enter a valid number",
+            },
+          })}
+          errorMessage={errors.payment_per_task?.message as string}
+        />
 
         {/* Estimated Cost */}
-        
-          <Input
-            className="max-w-[250px] rounded-full bg-white"
-            label={
-              <Label
-                title="Estimated Cost"
-                description="Automatically calculated as participants × payment per task."
-              />
-            }
-            icon={<DollarSign size={16} />}
-            placeholder="0"
-			value={
-  isEngagementTask
-    ? participants && paymentPerTask
-      ? participants * paymentPerTask
-      : ""
-    : noOfPosts && paymentPerTask
-      ? noOfPosts * paymentPerTask
-      : ""
-}
-            readOnly
-            {...register("estimated_cost", { required: true })}
-          />
-        
+        <Input
+          className="max-w-[250px] rounded-full bg-white"
+          label={
+            <Label
+              title="Estimated Cost"
+              description="Automatically calculated as participants × payment per task."
+            />
+          }
+          icon={<DollarSign size={16} />}
+          placeholder="0"
+          value={
+            isEngagementTask
+              ? participants && paymentPerTask
+                ? participants * paymentPerTask
+                : ""
+              : noOfPosts && paymentPerTask
+                ? noOfPosts * paymentPerTask
+                : ""
+          }
+          readOnly
+          {...register("estimated_cost", { required: true })}
+        />
 
         {/* Deadline */}
         {isEngagementTask && (
@@ -419,64 +560,72 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           {...register("type")}
         />
 
+         {/* Task category */}
+        <input
+          type="hidden"
+          value="social_media"
+          {...register("category")}
+        />
+
         {/* Description */}
-        <div className="space-y-1 text-sm">
-          <Label
-            title="Enter Advert Text or Caption"
-            description="Write the text or caption for your advert."
-          />
-          <textarea
-            {...register("description", {
-              required: "Enter task description.",
-              pattern: descriptionValidation,
-              min: { value: 20, message: "Description is too short." },
-            })}
-            id="description"
-            className="bg-white border border-zinc-300 rounded-2xl w-full h-40 focus:outline-primary p-4"
-          />
-          {errors.description && (
-            <small className="text-danger">
-              {errors.description.message as string}
-            </small>
-          )}
-        </div>
+        {config && (
+          <div className="space-y-1 text-sm">
+            <Label
+              title="Enter Advert Text or Caption"
+              description="Write the text or caption for your advert."
+            />
+            <textarea
+              {...register("description", {
+                required: "Enter task description.",
+                pattern: descriptionValidation,
+                min: { value: 20, message: "Description is too short." },
+              })}
+              id="description"
+              className="bg-white border border-zinc-300 rounded-2xl w-full h-40 focus:outline-primary p-4"
+            />
+            {errors.description && (
+              <small className="text-danger">
+                {errors.description.message as string}
+              </small>
+            )}
+          </div>
+        )}
 
         {/* Media Upload */}
-
-		{config && (
-        <div>
-          <Label
-            title="Choose Your Advert Media Upload Option"
-            description="Upload media for your advert."
-          />
-          <div className="flex gap-6 items-center">
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
-                htmlFor="images"
-              >
-                Upload video advert
-              </label>
-              <label
-                className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
-                htmlFor="images"
-              >
-                Upload image advert
-              </label>
-            </div>
-            <div className="max-w-[250px]">
-              <ImageInput id="images" maxLength={3} required />
+        {config && (
+          <div>
+            <Label
+              title="Choose Your Advert Media Upload Option"
+              description="Upload media for your advert."
+            />
+            <div className="flex gap-6 items-center">
+              <div className="flex flex-col gap-2">
+                <label
+                  className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
+                  htmlFor="images"
+                >
+                  Upload video advert
+                </label>
+                <label
+                  className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
+                  htmlFor="images"
+                >
+                  Upload image advert
+                </label>
+              </div>
+              <div className="max-w-[250px]">
+                <ImageInput id="images" maxLength={3} required />
+              </div>
             </div>
           </div>
-        </div>
-		)}
+        )}
 
         {/* Payment */}
         <SetPaymentMethod
           onAdvertPreviewOpen={modalProps.onOpen}
           isFormValid={isValid}
           triggerValidationFn={trigger}
-		  estimatedCost={watch("estimated_cost") || 0}   // 👈 pass cost here
+          estimatedCost={watch("estimated_cost") || 0}
         />
 
         {/* Modals */}
@@ -485,7 +634,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             modalProps={modalProps}
             getFormValue={getValues}
             successModalProps={successModalProps}
-			setError={setError}
+            setError={setError}
           />
         )}
         <AdvertUploadSuccessModal {...successModalProps} />
@@ -495,3 +644,4 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     </>
   );
 }
+

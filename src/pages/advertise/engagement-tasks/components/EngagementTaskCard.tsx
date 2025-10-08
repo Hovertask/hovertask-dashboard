@@ -18,7 +18,7 @@ export default function EngagementTaskCard({
 				<p className="text-gray-800 mt-2 font-medium text-xs">{price}</p>
 			</div>
 			<Link
-				to="/advertise/post-advert?type=engagement"
+				to={`/advertise/post-advert?type=engagement?title=${title}`}
 				type="button"
 				className="text-xs p-2 bg-primary text-white rounded-xl"
 			>

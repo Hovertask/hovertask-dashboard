@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import cn from "../../../../utils/cn";
 import Input from "../../../../shared/components/Input";
+import { toast } from "sonner"; // ✅ added toast notifications
 
 export default function ConnectAccountInputGroup(props: {
 	index: number;
@@ -9,8 +10,32 @@ export default function ConnectAccountInputGroup(props: {
 	placeholders: [forUsername: string, forProfileLink: string];
 	values: [username: string, profileLink: string];
 	validationState: string | boolean | undefined;
-	validateFn(): void;
+	validateFn(): boolean; // ✅ changed return type to boolean (so we know if valid)
 }) {
+	// ✅ Local submission function for each platform
+	const handleLinkAccount = async () => {
+		const isValid = props.validateFn(); // validate fields first
+
+		if (!isValid) {
+			toast.error(`Please enter a valid ${props.platform} username and profile link.`);
+			return;
+		}
+
+		try {
+			toast.loading(`Linking your ${props.platform} account...`, { id: props.platform });
+
+			// 🟢 simulate backend submission (replace with your API call later)
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+
+			toast.success(`${props.platform} account linked successfully!`, {
+				id: props.platform,
+			});
+		} catch (error) {
+			console.error(error);
+			toast.error(`Failed to link ${props.platform} account.`);
+		}
+	};
+
 	return (
 		<div className="space-y-4">
 			<div className="text-sm flex items-center gap-4 pl-4">
@@ -19,6 +44,7 @@ export default function ConnectAccountInputGroup(props: {
 				</span>
 				<span className="capitalize">{props.platform}</span>
 			</div>
+
 			<div className="flex items-center gap-4">
 				<div className="space-y-2 max-w-md w-full">
 					<Input
@@ -35,9 +61,10 @@ export default function ConnectAccountInputGroup(props: {
 					/>
 				</div>
 
+				{/* 🟢 if not validated yet, show link button */}
 				{props.validationState === false && (
 					<button
-						onClick={props.validateFn}
+						onClick={handleLinkAccount} // ✅ changed from validateFn to handleLinkAccount
 						disabled={!props.values[0] && !props.values[1]}
 						className={cn(
 							"whitespace-nowrap text-[10.84px] p-2 rounded-full text-secondary hover:bg-zinc-100 transition-all disabled:transform-none active:scale-95 disabled:cursor-not-allowed",
@@ -52,12 +79,15 @@ export default function ConnectAccountInputGroup(props: {
 					</button>
 				)}
 
-				{props.validationState === true && <Check />}
+				{/*  if validated */}
+				{props.validationState === true && <Check className="text-green-500" />}
 
+				{/*  if validation returns string error */}
 				{typeof props.validationState === "string" && (
 					<span className="text-sm text-danger">{props.validationState}</span>
 				)}
 
+				{/*  pending review */}
 				{props.validationState === undefined && <span>Pending review</span>}
 			</div>
 		</div>

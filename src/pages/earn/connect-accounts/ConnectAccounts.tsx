@@ -1,11 +1,13 @@
 import { ArrowLeft } from "lucide-react";
 import { type ChangeEvent, useState } from "react";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import type { ActivationState } from "../../../../types";
 import useDebounced from "../../../hooks/useDebounced";
 import ConnectAccountInputGroup from "./components/ConnectAccountInputGroup";
 import validateConnectAccountFormGroup from "./utils/validateConnectAccountFormGroup";
 import connectAccountFormInitialState from "./utils/connectAccountFormInitialState";
+import connectAccount from "./utils/connectAccount"; // ✅ keep this since we’ll use it
 
 export default function ConnectAccountsPage() {
 	const resetGroupActivationState = useDebounced(
@@ -13,14 +15,46 @@ export default function ConnectAccountsPage() {
 			setActivationState({ ...activationState, [groupName]: false }),
 		600,
 	);
+
 	const [form, setForm] = useState(connectAccountFormInitialState);
-	// Keeps track of the validation state of a social media input group.
 	const [activationState, setActivationState] = useState<ActivationState>({
 		facebook: false,
 		twitter: false,
 		instagram: false,
 		tikTok: false,
 	});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	// ✅ Handle full form submission
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		const validGroups = Object.entries(activationState).filter(
+			([, state]) => state === true
+		);
+
+		if (validGroups.length === 0) {
+			toast.error("Please validate at least one social account before submitting.");
+			return;
+		}
+
+		try {
+			setIsSubmitting(true);
+
+			// ✅ Submit only validated accounts
+			const activeAccounts = Object.entries(form)
+				.filter(([key]) => activationState[key as keyof ActivationState] === true)
+				.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+			await connectAccount(activeAccounts); // ✅ now actively used
+			toast.success("Accounts submitted successfully!");
+		} catch (error) {
+			console.error(error);
+			toast.error("Failed to submit accounts. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	return (
 		<div className="mobile:grid mobile:max-w-[724px] gap-4 min-h-full">
@@ -51,7 +85,11 @@ export default function ConnectAccountsPage() {
 					</div>
 				</div>
 
-				<form className="space-y-12 p-4 rounded-3xl border border-zinc-300">
+				<form
+					className="space-y-12 p-4 rounded-3xl border border-zinc-300"
+					onSubmit={handleSubmit}
+				>
+					{/* ✅ Facebook */}
 					<ConnectAccountInputGroup
 						index={1}
 						platform="facebook"
@@ -78,17 +116,18 @@ export default function ConnectAccountsPage() {
 							validateConnectAccountFormGroup(
 								"facebook",
 								form.facebook,
-								setActivationState,
+								setActivationState
 							)
 						}
 						validationState={activationState.facebook}
 						values={[form.facebook.username, form.facebook.profileLink]}
 						placeholders={[
-							"Enter your FaceBook username",
-							"Enter your FaceBook profile link",
+							"Enter your Facebook username",
+							"Enter your Facebook profile link",
 						]}
 					/>
 
+					{/* ✅ Instagram */}
 					<ConnectAccountInputGroup
 						index={2}
 						platform="instagram"
@@ -115,7 +154,7 @@ export default function ConnectAccountsPage() {
 							validateConnectAccountFormGroup(
 								"instagram",
 								form.instagram,
-								setActivationState,
+								setActivationState
 							)
 						}
 						validationState={activationState.instagram}
@@ -126,6 +165,7 @@ export default function ConnectAccountsPage() {
 						]}
 					/>
 
+					{/* ✅ Twitter */}
 					<ConnectAccountInputGroup
 						index={3}
 						platform="twitter"
@@ -152,7 +192,7 @@ export default function ConnectAccountsPage() {
 							validateConnectAccountFormGroup(
 								"twitter",
 								form.twitter,
-								setActivationState,
+								setActivationState
 							)
 						}
 						validationState={activationState.twitter}
@@ -163,6 +203,7 @@ export default function ConnectAccountsPage() {
 						]}
 					/>
 
+					{/* ✅ TikTok */}
 					<ConnectAccountInputGroup
 						index={4}
 						platform="tikTok"
@@ -189,7 +230,7 @@ export default function ConnectAccountsPage() {
 							validateConnectAccountFormGroup(
 								"tikTok",
 								form.tikTok,
-								setActivationState,
+								setActivationState
 							)
 						}
 						validationState={activationState.tikTok}
@@ -209,11 +250,16 @@ export default function ConnectAccountsPage() {
 
 					<div className="space-x-4">
 						<button
-							className="p-2 rounded-2xl text-sm transition-all bg-primary text-white active:scale-95"
+							className="p-2 rounded-2xl text-sm transition-all bg-primary text-white active:scale-95 disabled:opacity-50"
 							type="submit"
+							disabled={
+								isSubmitting ||
+								!Object.values(activationState).some((s) => s === true)
+							}
 						>
-							Submit Details
+							{isSubmitting ? "Submitting..." : "Submit Details"}
 						</button>
+
 						<button
 							className="p-2 rounded-2xl text-sm transition-all bg-primary text-white active:scale-95"
 							onClick={() => setForm(connectAccountFormInitialState)}
