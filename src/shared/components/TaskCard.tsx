@@ -24,7 +24,7 @@ export default function TaskCard(props: Task) {
 					</div>
 
 					<p className="text-lg font-semibold">
-						₦{props.task_amount.toLocaleString()}
+						₦{props.payment_per_task.toLocaleString()}
 					</p>
 				</div>
 			</div>

@@ -183,6 +183,18 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     }
   }, [isEngagementTask, engagementType, setValue]);
 
+  // ✅ Auto-set deadline for engagement tasks (30 days ahead)
+  useEffect(() => {
+    if (isEngagementTask) {
+      const today = new Date();
+      const futureDate = new Date(today);
+      futureDate.setDate(today.getDate() + 30);
+      const formattedDate = futureDate.toISOString().split("T")[0];
+      setValue("deadline", formattedDate);
+    }
+  }, [isEngagementTask, setValue]);
+
+
   /* ------------------------------- 👇 FIXED NEW LOGIC ------------------------------- */
 
   // ✅ Mapping of engagement types → allowed social platforms
@@ -374,7 +386,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         />
 
         {/* Dynamic input (based on platform) */}
-        {config && (
+         {!isEngagementTask && config && (
           <Input
             className="max-w-[250px] rounded-full bg-white"
             label={
@@ -421,7 +433,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
 
         {/* Payment per Task */}
         <Input
-          className="max-w-[250px] rounded-full bg-white"
+          className="hidden"
           label={
             <Label
               title="Payment Per Task"
@@ -442,7 +454,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
 
         {/* Estimated Cost */}
         <Input
-          className="max-w-[250px] rounded-full bg-white"
+          className="hidden"
           label={
             <Label
               title="Estimated Cost"
@@ -464,24 +476,11 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           {...register("estimated_cost", { required: true })}
         />
 
-        {/* Deadline */}
+        {/* Deadline - hidden automatically set */}
         {isEngagementTask && (
-          <Input
-            className="max-w-[250px] rounded-full bg-white"
-            type="date"
-            label={
-              <Label
-                title="Deadline"
-                description="Select the deadline date for this advert engagement."
-              />
-            }
-            icon={<Calendar size={16} />}
-            {...register("deadline", {
-              required: "Select a deadline",
-            })}
-            errorMessage={errors.deadline?.message as string}
-          />
+          <input type="hidden" {...register("deadline", { required: true })} />
         )}
+
 
         {/* Gender */}
         <CustomSelect
