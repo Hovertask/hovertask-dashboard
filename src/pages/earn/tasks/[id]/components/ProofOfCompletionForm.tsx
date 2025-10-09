@@ -32,7 +32,7 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
 			
 			// Send request
 			const response = await fetch(
-				`${apiEndpointBaseURL}/submit-task/${taskId}`,
+				`${apiEndpointBaseURL}/submit-task/tasks/${taskId}`,
 				{
 					method: "POST",
 					body: formData,
