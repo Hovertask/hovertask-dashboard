@@ -575,7 +575,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         <input type="hidden" value="social_media" {...register("category")} />
 
         {/* Description */}
-{config && (
+{config &&  (
   <div className="space-y-1 text-sm">
     <Label
       title={

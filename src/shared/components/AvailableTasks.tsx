@@ -11,42 +11,31 @@ export default function AvailableTasks({
 	const { tasks, reload } = useTasks();
 	console.log(tasks);
 
+	if (tasks === null) {
+		return <Loading />;
+	}
+
+	// Filter tasks based on the selected category (if provided)
+	const filteredTasks = filter
+		? tasks.filter((task) => task.category === filter)
+		: tasks;
+
+	// For preview mode, show only the first 4 tasks
+	const displayedTasks =
+		mode === "preview" ? filteredTasks.slice(0, 4) : filteredTasks;
+
 	return (
 		<div className="space-y-3">
 			<h2 className="text-[20.8px]">New Available Tasks</h2>
 
-			{tasks === null && <Loading />}
-
-			{/* Without preview mode on, show all the tasks without filtering */}
-			{!filter && tasks && tasks.length > 0 && (
+			{/* Render Tasks */}
+			{displayedTasks.length > 0 ? (
 				<div className="space-y-4">
-					{tasks.map((task) => (
-						<TaskCard {...task} key={task.user_id} />
+					{displayedTasks.map((task) => (
+						<TaskCard {...task} key={task.id} />
 					))}
 				</div>
-			)}
-
-			{/* Without preview mode on, show all the tasks with filtering */}
-			{filter && tasks && tasks.length > 0 && (
-				<div className="space-y-4">
-					{tasks.map((task) =>
-						task.category === filter ? (
-							<TaskCard {...task} key={task.user_id} />
-						) : null,
-					)}
-				</div>
-			)}
-
-			{/* With preview mode on, show only 4 tasks */}
-			{tasks && tasks.length > 0 && (
-				<div className="space-y-4">
-					{tasks.map((task, i) =>
-						i < 4 ? <TaskCard {...task} key={task.user_id} /> : null,
-					)}
-				</div>
-			)}
-
-			{tasks && tasks.length === 0 && (
+			) : (
 				<EmptyMapErr
 					description="There are no tasks available at the moment"
 					buttonInnerText="Refresh"
@@ -54,7 +43,8 @@ export default function AvailableTasks({
 				/>
 			)}
 
-			{mode === "preview" && tasks && tasks.length > 4 && (
+			{/* Show “See all tasks” button if in preview mode */}
+			{mode === "preview" && filteredTasks.length > 4 && (
 				<Link
 					to="/earn/tasks"
 					className="block w-fit mx-auto px-4 py-2 rounded-full border border-primary text-sm text-primary transition-colors hover:bg-primary/20"
