@@ -24,7 +24,7 @@ export interface AuthUserDTO {
 }
 
 export interface Task {
-	id: string;
+	id: number;
 	user_id: number;
 	title: string;
 	social_media_url: string | null;
