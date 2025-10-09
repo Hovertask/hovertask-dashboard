@@ -615,6 +615,10 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   </div>
 )}
 
+        <input 
+          type="hidden"
+          {...register("description")}
+        />
 
         {/* Media Upload */}
         {!isEngagementTask && config && (
