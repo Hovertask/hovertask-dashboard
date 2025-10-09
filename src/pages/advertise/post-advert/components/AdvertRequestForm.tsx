@@ -149,25 +149,25 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         { title: string; description: string; payment: number }
       > = {
         "Get Real People to Like your Social Media Post": {
-          title: "Social Media Likes Campaign",
+          title: "Like pepoles Social Media Post",
           description:
             "Engage real users to like your post and boost its visibility organically.",
           payment: 5,
         },
         "Get Real People to Follow you": {
-          title: "Follower Growth Campaign",
+          title: "Follow peoples Social Media Account",
           description:
             "Increase your social following with genuine and verified users.",
           payment: 10,
         },
         "Get Real People to Comment to your Social Media Post": {
-          title: "Post Comments Campaign",
+          title: "Post Comments on peoples Social Media Post",
           description:
             "Encourage authentic comments to increase engagement and trust.",
           payment: 10,
         },
         "Get Real People to Subscribe to your Channel": {
-          title: "Channel Subscription Campaign",
+          title: "subscribe to peoples Channel",
           description:
             "Get more subscribers who are interested in your content.",
           payment: 15,
@@ -296,6 +296,12 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             errorMessage={errors.title?.message as string}
           />
         )}
+
+       <input
+          type="hidden"
+          {...register("title", { required: "title is required" })}
+        />
+
 
         {/* Platform selection for normal adverts */}
         {!isEngagementTask && config && (
@@ -556,7 +562,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             icon={<LinkIcon size={16} />}
             placeholder="Enter your post link"
             type="url"
-            {...register("url", {
+            {...register("social_media_url", {
               required: "Enter your post link",
               pattern: urlValidation,
             })}

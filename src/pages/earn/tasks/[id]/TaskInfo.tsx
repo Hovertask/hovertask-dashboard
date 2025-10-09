@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import cn from "../../../../utils/cn";
 import { CircularProgress } from "@heroui/react";
 import { AlarmClock, Copy } from "lucide-react";
-import { TaskByline } from "../../../../../types.d";
 import Loading from "../../../../shared/components/Loading";
 import ProofOfTaskCompletionForm from "./components/ProofOfCompletionForm";
 import copy from "./utils/copy";
@@ -31,7 +30,7 @@ export default function TaskInfoPage() {
 					<div>
 						<h1 className="text-xl">
 							<span className="font-medium">
-								{TaskByline[task.category]}{" "}
+								{task.title}
 								{task.category !== "telegram" && " - "}
 							</span>
 							<span>
@@ -79,7 +78,7 @@ export default function TaskInfoPage() {
 							Hours <AlarmClock size={14} />
 						</span>
 						<span className="text-base font-semibold text-primary">
-							₦{task.task_amount.toLocaleString()}
+							₦{task.payment_per_task.toLocaleString()}
 						</span>
 					</div>
 				</div>
@@ -106,7 +105,7 @@ export default function TaskInfoPage() {
 						<div className="whitespace-pre-line">{task.description}</div>
 						<p className="font-medium">Reward</p>
 						<p>
-							Earn ₦{task.task_amount.toLocaleString()} per post engagement.{" "}
+							Earn ₦{task.payment_per_task.toLocaleString()} per  engagement.{" "}
 						</p>
 						{task.social_media_url && (
 							<p>
@@ -125,7 +124,8 @@ export default function TaskInfoPage() {
 					</div>
 				</div>
 
-				<ProofOfTaskCompletionForm />
+				{task?.id && <ProofOfTaskCompletionForm taskId={task.id} />}
+
 
 				<div>
 					<img src="/images/Group 1000004391.png" alt="" />

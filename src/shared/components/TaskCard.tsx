@@ -1,6 +1,6 @@
 import { CircularProgress } from "@heroui/react";
 import { Link } from "react-router";
-import { type Task, TaskByline } from "../../../types.d";
+import { type Task } from "../../../types.d";
 
 export default function TaskCard(props: Task) {
 	return (
@@ -10,11 +10,11 @@ export default function TaskCard(props: Task) {
 					<div className="text-sm">
 						<p>
 							<span className="font-medium">
-								{TaskByline[props.category]}{" "}
+								{props.title}
 								{props.category !== "telegram" && ":"}
 							</span>
 							<span>
-								{props.category !== "telegram" && "1000 Followers Required"}
+								{props.category !== "telegram" && ":"}
 							</span>
 						</p>
 						<p>

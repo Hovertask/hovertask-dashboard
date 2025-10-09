@@ -39,7 +39,7 @@ export interface Task {
 	due_date: string;
 	type_of_comment: string | null;
 	religion: string | null;
-	payment_per_task: number | null;
+	payment_per_task: number;
 	no_of_participants: number | null;
 	location: string | null;
 	gender: string | null;

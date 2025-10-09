@@ -3,24 +3,55 @@ import { Camera } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import Loading from "../../../../../shared/components/Loading";
 import { Link } from "react-router";
+import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
+import getAuthorization from "../../../../../utils/getAuthorization";
 
-export default function ProofOfTaskCompletionForm() {
+export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }) {
 	const [selectedImageUrl, setSelectedImageUrl] = useState("");
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [username, setUsername] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { onOpen, onOpenChange, isOpen } = useDisclosure();
 
 	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
+		if (!selectedFile) {
+			alert("Please upload a screenshot before submitting");
+			return;
+		}
+
 		try {
 			setIsSubmitting(true);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setTimeout(() => {
-				setIsSubmitting(false);
+
+			// Prepare form data
+			const formData = new FormData();
+			formData.append("screenshot", selectedFile);
+			formData.append("username", username);
+
+			
+			// Send request
+			const response = await fetch(
+				`${apiEndpointBaseURL}/submit-task/${taskId}`,
+				{
+					method: "POST",
+					body: formData,
+					headers:{ authorization: getAuthorization() },
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok && data.status) {
 				onOpen();
-			}, 3000);
+			} else {
+				alert(data.message || "Something went wrong");
+			}
+		} catch (error) {
+			console.error("Error submitting task:", error);
+			alert("Failed to submit task");
+		} finally {
+			setIsSubmitting(false);
 		}
 	}
 
@@ -35,36 +66,44 @@ export default function ProofOfTaskCompletionForm() {
 						<span>Upload proof</span>
 					</span>
 					<input
-						onChange={(e) =>
-							e.target.files![0] &&
-							setSelectedImageUrl((prev) => {
-								URL.revokeObjectURL(prev);
-								return URL.createObjectURL(e.target.files![0]);
-							})
-						}
+						onChange={(e) => {
+							const file = e.target.files?.[0];
+							if (file) {
+								setSelectedFile(file);
+								setSelectedImageUrl(URL.createObjectURL(file));
+							}
+						}}
 						type="file"
-						name="image"
+						name="screenshot"
 						className="absolute inset-0 opacity-0"
 						accept="image/*"
 						required
 					/>
-					<img src={selectedImageUrl} alt="" className="h-full block mx-auto" />
+					{selectedImageUrl && (
+						<img
+							src={selectedImageUrl}
+							alt="proof"
+							className="h-full w-full object-cover block mx-auto"
+						/>
+					)}
 				</div>
 
 				<div className="space-y-1">
 					<p>
-						Please enter the username of the account you used to perform the
-						task, e.g. Instagram username.
+						Please enter the username of the account you used to perform the task,
+						e.g. Instagram username.
 					</p>
 					<div className="flex items-center gap-4">
 						<input
 							placeholder="Enter your username"
 							className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
 							type="text"
-							pattern="^\s"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							required
 						/>
 						<button
-							type="button"
+							type="submit"
 							className="px-2 py-1.5 text-sm bg-primary text-white active:scale-95 transition-transform rounded-full"
 						>
 							Submit Proof
