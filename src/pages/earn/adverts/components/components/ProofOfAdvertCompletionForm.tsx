@@ -6,7 +6,7 @@ import { Link } from "react-router";
 import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
 
-export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }) {
+export default function ProofOfTaskCompletionForm({ advertId }: { advertId: number }) {
     const [selectedImageUrl, setSelectedImageUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [username, setUsername] = useState("");
@@ -32,7 +32,7 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
             
             // Send request
             const response = await fetch(
-                `${apiEndpointBaseURL}/tasks/submit-task/${taskId}`,
+                `${apiEndpointBaseURL}/tasks/submit-task/${advertId}`,
                 {
                     method: "POST",
                     body: formData,
