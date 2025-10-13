@@ -23,6 +23,7 @@ import ChangePasswordPage from "./pages/ChangePassword";
 import ChoosePaymentMethodPage from "./pages/choose-online-payment-method/ChoosePaymentMethod";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AdvertsPage from "./pages/earn/adverts/Adverts";
+import AdvertsInfoPage from "./pages/earn/adverts/components/AdvertInfo";
 import ConnectAccountsPage from "./pages/earn/connect-accounts/ConnectAccounts";
 import Earn from "./pages/earn/earn/Earn";
 import ResellPage from "./pages/earn/resell/Resell";
@@ -93,6 +94,7 @@ export default function App() {
 							<Route path="earn/tasks-history" element={<TasksHistory />} />
 							<Route path="earn/tasks/:id" element={<TaskInfoPage />} />
 							<Route path="earn/adverts" element={<AdvertsPage />} />
+							<Route path="earn/adverts/:id" element={<AdvertsInfoPage/>} />
 							<Route path="earn/resell" element={<ResellPage />} />
 							<Route
 								path="earn/connect-accounts"
