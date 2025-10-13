@@ -171,3 +171,50 @@ export interface Transaction {
 	type: "debit" | "credit";
 	date: string;
 }
+
+
+export interface Advert {
+	id: number;
+	user_id: number;
+
+	title: string | null;
+	description: string | null;
+	social_media_url: string | null;
+
+	// Platform(s) where the advert runs — e.g. Facebook, Instagram
+	platforms: string | null;
+
+	// Filters or targeting options
+	gender: string | null;
+	religion: string | null;
+	location: string | null;
+	category:
+	| "social_media"
+	| "video_marketing"
+	| "micro_influence"
+	| "promotion"
+	| "telegram";
+
+	// Engagement counts and progress
+	no_of_status_post: number | null; // Total number of expected posts
+	task_count_total: number; // Mirror of no_of_status_post
+	task_count_remaining: number; // Remaining number of users that can engage
+
+	// Payment-related
+	payment_method: string | null;
+	payment_per_task: number;
+	estimated_cost: number | null;
+	number_of_participants: number | null;
+
+	// Timeline and progress
+	deadline: string | null;
+	priority: "low" | "medium" | "high";
+	completed: "Available" | "Not Available";
+
+	// System & metadata
+	admin_approval_status: "pending" | "approved" | "completed" | "in-progress";
+	completion_percentage: number;
+	posted_status: "new" | "old";
+	created_at: string;
+	updated_at: string;
+}
