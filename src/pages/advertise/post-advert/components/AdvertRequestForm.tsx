@@ -336,18 +336,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     label={
       <Label
         title={platform ? "Selected Platform" : "Choose Platform to create advert on"}
-        description={
-          platform
-            ? "This field is read-only because the platform was already selected."
-            : "Choose the platform where you'd like to advertise."
-        }
+        description="Choose the platform where you'd like to advertise."
       />
     }
     placeholder="Select platform"
     className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
     startContent={<Globe />}
     defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
-    isDisabled={!!platform} // ✅ make read-only if platform is passed
     onChange={(value) => {
       const platformValue = Array.isArray(value) ? value[0] : value;
       setSelectedPlatform(platformValue);
