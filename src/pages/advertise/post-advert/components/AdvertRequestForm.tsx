@@ -32,43 +32,56 @@ import SetPaymentMethod from "./SetPaymentMethod";
 
 const platformConfig: Record<
   string,
-  { inputLabel: string; inputDescription: string; registerKey: string; paymentPerAdvert: number}
+  {
+    illustrativeTitle: string;
+    inputLabel: string;
+    inputDescription: string;
+    registerKey: string;
+    paymentPerAdvert: number;
+  }
 > = {
   WhatsApp: {
+    illustrativeTitle: "Promote Brands on Your WhatsApp Status",
     inputLabel: "Select Number of WhatsApp Status to Post",
     inputDescription:
-      "Enter the number of WhatsApp status advert posts you'd like to request.",
+      "Earn by posting sponsored content on your WhatsApp status. Choose how many posts you want to share.",
     registerKey: "no_of_status_post",
     paymentPerAdvert: 100,
   },
   Instagram: {
+    illustrativeTitle: "Earn by Posting Brand Stories on Instagram",
     inputLabel: "Select Number of Instagram Story Posts",
     inputDescription:
-      "Enter how many Instagram story adverts you'd like to request.",
+      "Share brand adverts on your Instagram story and get paid per post.",
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
   Facebook: {
+    illustrativeTitle: "Help Businesses Grow on Facebook",
     inputLabel: "Select Number of Facebook Timeline Posts",
     inputDescription:
-      "Enter the number of Facebook timeline adverts you'd like to request.",
+      "Promote business adverts on your Facebook timeline and earn rewards for each post.",
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
   X: {
+    illustrativeTitle: "Post Sponsored Tweets and Get Paid",
     inputLabel: "Select Number of X (Twitter) Posts",
-    inputDescription: "Enter how many X (Twitter) posts you'd like to request.",
+    inputDescription:
+      "Support brands by tweeting their adverts on your X (Twitter) profile. Earn per post.",
     registerKey: "no_of_status_post",
-     paymentPerAdvert: 150,
+    paymentPerAdvert: 150,
   },
   TikTok: {
+    illustrativeTitle: "Create TikTok Videos for Brand Promotions",
     inputLabel: "Select Number of TikTok Videos",
     inputDescription:
-      "Enter how many TikTok video adverts you'd like to request.",
+      "Promote products or brands with short TikTok videos and earn money for each video you post.",
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
 };
+
 
 type AdvertRequestFormProps = {
   platform?: string;
@@ -112,10 +125,11 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
     setValue("platforms", platform, { shouldValidate: true });
     setSelectedPlatform(platform);
 
-    // ✅ Get paymentPerAdvert from the config object
+    // ✅ Get paymentPerAdvert,illustrativeTitle from the config object
     const config = platformConfig[platform];
     if (config) {
       setValue("payment_per_task", config.paymentPerAdvert);
+      setValue("title", config.illustrativeTitle);
     }
   }
 }, [platform, setValue]);
@@ -291,13 +305,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Title */}
         {!isEngagementTask && config && (
           <Input
-            className="rounded-full bg-white"
-            label={
-              <Label
-                title="Title of advert"
-                description="Enter the title of your advert that will be displayed to others."
-              />
-            }
+            className="hidden"    
             icon={<Speaker size={16} />}
             placeholder="Enter the title of your advert"
             {...register("title", {
@@ -308,11 +316,13 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
           />
         )}
 
+        {/* Hidden input for validation */}
+        {isEngagementTask && (
        <input
           type="hidden"
           {...register("title", { required: "title is required" })}
         />
-
+        )}
 
         {/* Platform selection for normal adverts */}
         {!isEngagementTask && config && (
@@ -337,7 +347,6 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
             startContent={<Globe />}
             defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
-            isDisabled
             onChange={(value) => {
               const platformValue = Array.isArray(value) ? value[0] : value;
               setSelectedPlatform(platformValue);
@@ -433,12 +442,6 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Payment per Task */}
         <Input
           className="hidden"
-          label={
-            <Label
-              title="Payment Per Task"
-              description="Enter the amount to be paid per task engagement."
-            />
-          }
           icon={<DollarSign size={16} />}
           placeholder="0"
           {...register("payment_per_task", {
@@ -454,12 +457,6 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Estimated Cost */}
         <Input
           className="hidden"
-          label={
-            <Label
-              title="Estimated Cost"
-              description="Automatically calculated as participants × payment per task."
-            />
-          }
           icon={<DollarSign size={16} />}
           placeholder="0"
           value={
@@ -578,21 +575,34 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         {/* Task category */}
         <input type="hidden" value="social_media" {...register("category")} />
 
-        {/* Description */}
-{config &&  (
+{/* Description */}
+{config && (
   <div className="space-y-1 text-sm">
     <Label
       title={
-        isEngagementTask && engagementType === "Get Real People to Comment to your Social Media Post"
+        isEngagementTask &&
+        engagementType ===
+          "Get Real People to Comment to your Social Media Post"
           ? "Enter Comment Instruction or Example"
           : "Enter Advert Text or Caption"
       }
       description={
-        isEngagementTask && engagementType === "Get Real People to Comment to your Social Media Post"
+        isEngagementTask &&
+        engagementType ===
+          "Get Real People to Comment to your Social Media Post"
           ? "Provide clear instructions for the comment you want users to make. Example: ‘Comment “Great work!” on our latest video.’"
           : "Write the text or caption for your advert."
       }
     />
+
+    {/* 👇 Added this explanatory helper text */}
+    {!isEngagementTask && (
+      <p className="text-xs text-gray-600 leading-relaxed mb-2">
+        Please enter the advert text or caption. The advert text or caption should be well detailed.
+        You can also include a link to your site, a phone number for people to contact you, or any
+        information you want people to see on your advert.
+      </p>
+    )}
 
     <textarea
       {...register("description", {
@@ -615,10 +625,12 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   </div>
 )}
 
+         {isEngagementTask && (
         <input 
           type="hidden"
           {...register("description")}
         />
+        )}
 
         {/* Media Upload */}
         {!isEngagementTask && config && (

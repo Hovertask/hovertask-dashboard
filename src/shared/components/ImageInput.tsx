@@ -24,13 +24,15 @@ export default function ImageInput(
 	if (!maxLength) maxLength = Number.POSITIVE_INFINITY;
 
 	useEffect(() => {
-		if (imagesLength) {
-			URL.revokeObjectURL(previewImageUrl);
-			setPreviewImageUrl(
-				URL.createObjectURL(imageInputRef.current?.files?.item(0)!),
-			);
-		}
-	}, [imagesLength, previewImageUrl]);
+  if (imageInputRef.current?.files?.length) {
+    const file = imageInputRef.current.files[0];
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewImageUrl(objectUrl);
+
+    // ✅ cleanup old URL when component unmounts or file changes
+    return () => URL.revokeObjectURL(objectUrl);
+  }
+}, [imagesLength]);
 
 	function handleDragOver(e: DragEvent<HTMLDivElement>) {
 		e.preventDefault();
