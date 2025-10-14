@@ -40,7 +40,7 @@ const platformConfig: Record<
     paymentPerAdvert: number;
   }
 > = {
-  WhatsApp: {
+  whatsapp: {
     illustrativeTitle: "Promote Brands on Your WhatsApp Status",
     inputLabel: "Select Number of WhatsApp Status to Post",
     inputDescription:
@@ -48,7 +48,7 @@ const platformConfig: Record<
     registerKey: "no_of_status_post",
     paymentPerAdvert: 100,
   },
-  Instagram: {
+  instagram: {
     illustrativeTitle: "Earn by Posting Brand Stories on Instagram",
     inputLabel: "Select Number of Instagram Story Posts",
     inputDescription:
@@ -56,7 +56,7 @@ const platformConfig: Record<
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
-  Facebook: {
+  facebook: {
     illustrativeTitle: "Help Businesses Grow on Facebook",
     inputLabel: "Select Number of Facebook Timeline Posts",
     inputDescription:
@@ -64,7 +64,7 @@ const platformConfig: Record<
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
-  X: {
+  x: {
     illustrativeTitle: "Post Sponsored Tweets and Get Paid",
     inputLabel: "Select Number of X (Twitter) Posts",
     inputDescription:
@@ -72,7 +72,7 @@ const platformConfig: Record<
     registerKey: "no_of_status_post",
     paymentPerAdvert: 150,
   },
-  TikTok: {
+  tiktok: {
     illustrativeTitle: "Create TikTok Videos for Brand Promotions",
     inputLabel: "Select Number of TikTok Videos",
     inputDescription:
@@ -81,7 +81,6 @@ const platformConfig: Record<
     paymentPerAdvert: 150,
   },
 };
-
 
 type AdvertRequestFormProps = {
   platform?: string;
@@ -124,25 +123,9 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   if (platform) {
     setValue("platforms", platform, { shouldValidate: true });
     setSelectedPlatform(platform);
-    
 
     // ✅ Get paymentPerAdvert,illustrativeTitle from the config object
-    
-    const normalizePlatform = (platform: string) => {
-  if (!platform) return "";
-  // Try smart lookup first
-  const match = Object.keys(platformConfig).find(
-    key => key.toLowerCase() === platform.toLowerCase()
-  );
-  if (match) return match;
-
-  // Fallback to simple capitalization (your method)
-  return platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
-};
-
-const normalizedPlatform = normalizePlatform(selectedPlatform);
-const config = platformConfig[normalizedPlatform];
-
+    const config = platformConfig[platform.toLowerCase()];
     if (config) {
       setValue("payment_per_task", config.paymentPerAdvert);
       setValue("title", config.illustrativeTitle);
@@ -151,12 +134,10 @@ const config = platformConfig[normalizedPlatform];
 }, [platform, setValue]);
 
 
-  // ✅ Fix capitalization issues
-const normalizedPlatform =
-  selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1).toLowerCase();
+  const config = selectedPlatform
+  ? platformConfig[selectedPlatform.toLowerCase()]
+  : null;
 
-const config = platformConfig[normalizedPlatform] || null;
-  // ✅ Dynamically set payment_per_task based on selected platform
   const participants = watch("number_of_participants") || 0;
   const paymentPerTask = watch("payment_per_task") || 0;
   const noOfPosts = config ? watch(config.registerKey) || 0 : 0;
