@@ -346,7 +346,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             placeholder="Select platform"
             className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
             startContent={<Globe />}
-            defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
+            defaultSelectedKeys={platform ? [platform] : []}
             onChange={(value) => {
               const platformValue = Array.isArray(value) ? value[0] : value;
               setSelectedPlatform(platformValue);
