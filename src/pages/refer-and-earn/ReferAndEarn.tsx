@@ -156,7 +156,7 @@ export default function ReferAndEarnPage() {
               <small>Completed Earnings</small>
             </div>
 
-            <button
+            { /*<button
               type="button"
               className="px-4 py-3 rounded-xl text-sm transition-all active:scale-95 bg-primary text-white ml-auto"
               onClick={() => {
@@ -170,7 +170,7 @@ export default function ReferAndEarnPage() {
               }}
             >
               Withdraw Earnings
-            </button>
+            </button>*/}
           </div>
 
           {/* referred users list */}
@@ -204,7 +204,7 @@ export default function ReferAndEarnPage() {
 
                         <div className="text-right">
                           <div className={`text-sm ${r.status === 'paid' ? 'text-emerald-700' : (r.status === 'pending' ? 'text-amber-700' : 'text-zinc-600')}`}>
-                            {r.status?.charAt(0).toUpperCase() + r.status?.slice(1)}
+                            {r.status?.charAt(0).toUpperCase() + r.status?.slice(1)}in your wallet
                           </div>
                           <div className="font-medium">₦{Number(r.amount).toLocaleString()}</div>
                         </div>

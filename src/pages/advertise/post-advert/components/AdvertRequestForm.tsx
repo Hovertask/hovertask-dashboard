@@ -124,9 +124,25 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   if (platform) {
     setValue("platforms", platform, { shouldValidate: true });
     setSelectedPlatform(platform);
+    
 
     // ✅ Get paymentPerAdvert,illustrativeTitle from the config object
-    const config = platformConfig[platform];
+    
+    const normalizePlatform = (platform: string) => {
+  if (!platform) return "";
+  // Try smart lookup first
+  const match = Object.keys(platformConfig).find(
+    key => key.toLowerCase() === platform.toLowerCase()
+  );
+  if (match) return match;
+
+  // Fallback to simple capitalization (your method)
+  return platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
+};
+
+const normalizedPlatform = normalizePlatform(selectedPlatform);
+const config = platformConfig[normalizedPlatform];
+
     if (config) {
       setValue("payment_per_task", config.paymentPerAdvert);
       setValue("title", config.illustrativeTitle);
@@ -135,8 +151,12 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
 }, [platform, setValue]);
 
 
-  const config = selectedPlatform ? platformConfig[selectedPlatform] : null;
+  // ✅ Fix capitalization issues
+const normalizedPlatform =
+  selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1).toLowerCase();
 
+const config = platformConfig[normalizedPlatform] || null;
+  // ✅ Dynamically set payment_per_task based on selected platform
   const participants = watch("number_of_participants") || 0;
   const paymentPerTask = watch("payment_per_task") || 0;
   const noOfPosts = config ? watch(config.registerKey) || 0 : 0;
