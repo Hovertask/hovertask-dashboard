@@ -324,38 +324,39 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         />
         )}
 
-        {/* Platform selection for normal adverts */}
-        {!isEngagementTask && config && (
-          <CustomSelect
-  options={socialMedia}
-  aria-label="Selected Platform"
-  label={
-    <Label
-      title={
-        platform
-          ? "Selected Platform"
-          : "Choose Platform to create engagement On"
-      }
-      description={
-        platform
-          ? "This field is read-only because the platform was already selected on the advertise page."
-          : "Choose the platform where you'd like to advertise."
-      }
-    />
-  }
-  placeholder="Select platform"
-  className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
-  startContent={<Globe />}
-  defaultSelectedKeys={platform ? new Set([platform]) : new Set()}
-  onChange={(value) => {
-    const platformValue = Array.isArray(value) ? value[0] : value;
-    setSelectedPlatform(platformValue);
-    setValue("platforms", platformValue, { shouldValidate: true });
-  }}
-  errorMessage={errors.platforms?.message as string}
-/>
+       {/* ✅ Platform selection for normal adverts */}
+{!isEngagementTask && (
+  <CustomSelect
+    options={
+      platform
+        ? [{ key: platform.toLowerCase(), label: platform }]
+        : socialMedia
+    }
+    aria-label="Selected Platform"
+    label={
+      <Label
+        title={platform ? "Selected Platform" : "Choose Platform to create advert on"}
+        description={
+          platform
+            ? "This field is read-only because the platform was already selected."
+            : "Choose the platform where you'd like to advertise."
+        }
+      />
+    }
+    placeholder="Select platform"
+    className="[&_button]:rounded-full max-w-[250px] [&_button]:bg-white"
+    startContent={<Globe />}
+    defaultSelectedKeys={platform ? [platform.toLowerCase()] : []}
+    isDisabled={!!platform} // ✅ make read-only if platform is passed
+    onChange={(value) => {
+      const platformValue = Array.isArray(value) ? value[0] : value;
+      setSelectedPlatform(platformValue);
+      setValue("platforms", platformValue, { shouldValidate: true });
+    }}
+    errorMessage={errors.platforms?.message as string}
+  />
+)}
 
-        )}
 
         {/* ✅ Updated Platform Selection for Engagement */}
         {isEngagementTask && (
