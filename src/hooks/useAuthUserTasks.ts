@@ -10,7 +10,7 @@ export default function useAuthUserTasks() {
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${apiEndpointBaseURL}/tasks?type=history`, {
+      const res = await fetch(`${apiEndpointBaseURL}/tasks/completed-task-history?type=approved`, {
         headers: {
           authorization: getAuthorization(),
         },
