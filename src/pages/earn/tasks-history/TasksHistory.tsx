@@ -24,11 +24,11 @@ function PageHeader() {
 }
 
 export default function TasksHistoryPage() {
-	const { tasks, reload } = useAuthUserTasks();
+	const { tasks, stats, reload, loading } = useAuthUserTasks();
 	const [category, setCategory] = useState("pending");
 
 	const filteredTasks = tasks?.filter(
-		(task) => task.admin_approval_status === category,
+		(task) => task.status === category || task.admin_approval_status === category
 	);
 
 	return (
@@ -36,16 +36,28 @@ export default function TasksHistoryPage() {
 			<div className="bg-white shadow p-4 py-12 space-y-12 min-h-full">
 				<PageHeader />
 
-				{tasks ? (
+				{loading ? (
+					<Loading fixed />
+				) : tasks ? (
 					<>
+						{/* ✅ Total Earnings Section */}
+						<div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+							<p className="text-sm text-gray-700">Total Earnings</p>
+							<h2 className="text-2xl font-semibold text-green-700">
+								₦{stats?.earnings?.toLocaleString() ?? "0.00"}
+							</h2>
+						</div>
+
+						{/* ✅ Task Filter Buttons */}
 						<TaskFilter
 							category={category}
 							setCategory={setCategory}
-							tasks={tasks}
+							stats={stats}
 						/>
 
 						<hr className="border-dashed" />
 
+						{/* ✅ Task List */}
 						<div className="space-y-2">
 							{filteredTasks?.length ? (
 								filteredTasks.map((task) => (

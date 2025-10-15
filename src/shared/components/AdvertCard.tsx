@@ -31,7 +31,7 @@ export default function AdvertCard(props: Advert) {
 					color={
 						props.completion_percentage > 69
 							? "success"
-							: props.completion_percentage > 44
+							: props.completion_percentage < 44
 								? "warning"
 								: "danger"
 					}

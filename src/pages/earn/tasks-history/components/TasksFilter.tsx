@@ -4,11 +4,11 @@ import CategoryButton, { TASK_CATEGORIES } from "./TaskCategoryButton";
 export default function TaskFilter({
 	category,
 	setCategory,
-	tasks,
+	stats,
 }: {
 	category: string;
 	setCategory: React.Dispatch<React.SetStateAction<string>>;
-	tasks: ReturnType<typeof useAuthUserTasks>["tasks"];
+	stats: ReturnType<typeof useAuthUserTasks>["stats"];
 }) {
 	return (
 		<div className="flex items-center gap-2 p-6 rounded-2xl border border-gray-200 shadow-sm bg-white">
@@ -17,8 +17,8 @@ export default function TaskFilter({
 					key={cat.key}
 					category={cat}
 					currentCategory={category}
-					tasks={tasks}
 					setCategory={setCategory}
+					stats={stats}
 				/>
 			))}
 		</div>

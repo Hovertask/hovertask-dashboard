@@ -9,7 +9,7 @@ import getAuthorization from "../../../../../utils/getAuthorization";
 export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }) {
 	const [selectedImageUrl, setSelectedImageUrl] = useState("");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const [username, setUsername] = useState("");
+	const [social_media_url, setSocialMediaUrl] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { onOpen, onOpenChange, isOpen } = useDisclosure();
 
@@ -27,7 +27,7 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
 			// Prepare form data
 			const formData = new FormData();
 			formData.append("screenshot", selectedFile);
-			formData.append("username", username);
+			formData.append("social_media_url", social_media_url);
 
 			
 			// Send request
@@ -98,8 +98,8 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
 							placeholder="Enter your username"
 							className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
 							type="text"
-							value={username}
-							onChange={(e) => setUsername(e.target.value)}
+							value={social_media_url}
+							onChange={(e) =>  setSocialMediaUrl(e.target.value)}
 							required
 						/>
 						<button

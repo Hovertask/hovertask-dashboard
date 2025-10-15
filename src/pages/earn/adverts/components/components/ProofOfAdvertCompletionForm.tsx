@@ -7,9 +7,9 @@ import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
 
 export default function ProofOfTaskCompletionForm({ advertId }: { advertId: number }) {
-    const [selectedImageUrl, setSelectedImageUrl] = useState("");
+    const [selectedMediaUrl, setSelectedMediaUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [username, setUsername] = useState("");
+    const [social_media_url, setSocialMediaUrl] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { onOpen, onOpenChange, isOpen } = useDisclosure();
 
@@ -17,26 +17,23 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
         e.preventDefault();
 
         if (!selectedFile) {
-            alert("Please upload a screenshot before submitting");
+            alert("Please upload an image or video before submitting");
             return;
         }
 
         try {
             setIsSubmitting(true);
 
-            // Prepare form data
             const formData = new FormData();
             formData.append("screenshot", selectedFile);
-            formData.append("username", username);
+            formData.append("social_media_url", social_media_url);
 
-            
-            // Send request
             const response = await fetch(
-                `${apiEndpointBaseURL}/tasks/submit-task/${advertId}`,
+                `${apiEndpointBaseURL}/advertise/submit-advert/${advertId}`,
                 {
                     method: "POST",
                     body: formData,
-                    headers:{ authorization: getAuthorization() },
+                    headers: { authorization: getAuthorization() },
                 }
             );
 
@@ -55,6 +52,14 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
         }
     }
 
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            setSelectedMediaUrl(URL.createObjectURL(file));
+        }
+    }
+
     return (
         <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
             <h3 className="font-medium">Provide Proof of Task Completion</h3>
@@ -63,28 +68,31 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
                 <div className="min-w-28 h-28 bg-black/15 rounded border border-zinc-300 relative [&>*]:cursor-pointer overflow-hidden">
                     <span className="absolute flex text-center items-center flex-col justify-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs">
                         <Camera size={12} />
-                        <span>Upload proof</span>
+                        <span>Upload proof (image/video)</span>
                     </span>
                     <input
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                                setSelectedFile(file);
-                                setSelectedImageUrl(URL.createObjectURL(file));
-                            }
-                        }}
+                        onChange={handleFileChange}
                         type="file"
                         name="screenshot"
                         className="absolute inset-0 opacity-0"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         required
                     />
-                    {selectedImageUrl && (
-                        <img
-                            src={selectedImageUrl}
-                            alt="proof"
-                            className="h-full w-full object-cover block mx-auto"
-                        />
+
+                    {selectedMediaUrl && selectedFile && (
+                        selectedFile.type.startsWith("video/") ? (
+                            <video
+                                src={selectedMediaUrl}
+                                controls
+                                className="h-full w-full object-cover block mx-auto"
+                            />
+                        ) : (
+                            <img
+                                src={selectedMediaUrl}
+                                alt="proof"
+                                className="h-full w-full object-cover block mx-auto"
+                            />
+                        )
                     )}
                 </div>
 
@@ -98,8 +106,8 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
                             placeholder="Enter your username"
                             className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
                             type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={social_media_url}
+                            onChange={(e) => setSocialMediaUrl(e.target.value)}
                             required
                         />
                         <button

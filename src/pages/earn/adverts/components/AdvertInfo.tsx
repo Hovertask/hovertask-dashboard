@@ -105,7 +105,7 @@ export default function AdvertInfoPage() {
 						<div className="whitespace-pre-line">{advert.description}</div>
 						<p className="font-medium">Reward</p>
 						<p>
-							Earn ₦{advert.payment_per_task.toLocaleString()} per engagement.{" "}
+							Earn ₦{advert.payment_per_task.toLocaleString()} per advert.{" "}
 						</p>
 						{advert.social_media_url && (
 							<p>

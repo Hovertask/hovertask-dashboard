@@ -1,22 +1,44 @@
-import type { Task } from "../../types";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthUserTasks } from "../redux/slices/authUserTasks";
-import { useEffect } from "react";
-import getAuthUserTasks from "../pages/earn/utils/getAuthUserTasks";
+import { useEffect, useState, useCallback } from "react";
+import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
+import getAuthorization from "../utils/getAuthorization";
 
-const useAuthUserTasks = () => {
-  const dispatch = useDispatch();
-  const tasks = useSelector((state: { authUserTasks: { value: (Task & { admin_approval_status: string, link?: string })[] } }) => state.authUserTasks.value);
-  const reload = () => dispatch(setAuthUserTasks(null))
+export default function useAuthUserTasks() {
+  const [tasks, setTasks] = useState<any[] | null>(null);
+  const [stats, setStats] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
+  const fetchTasks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${apiEndpointBaseURL}/tasks?type=history`, {
+        headers: {
+          authorization: getAuthorization(),
+        },
+      });
+
+      const data = await res.json();
+      if (data.status) {
+        setTasks(data.data);
+        setStats(data.stats || {});
+      } else {
+        setTasks([]);
+      }
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!tasks) (async () => dispatch(setAuthUserTasks(await getAuthUserTasks())))()
-  }, [tasks, dispatch])
+    fetchTasks();
+  }, [fetchTasks]);
 
   return {
     tasks,
-    reload
-  }
+    stats,
+    reload: fetchTasks,
+    loading,
+  };
 }
-
-export default useAuthUserTasks;

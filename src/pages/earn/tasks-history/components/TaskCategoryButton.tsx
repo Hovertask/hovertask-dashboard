@@ -1,43 +1,41 @@
 import type useAuthUserTasks from "../../../../hooks/useAuthUserTasks";
 import cn from "../../../../utils/cn";
 
-// Constants for task categories
+// ✅ Define consistent categories with backend statuses
 export const TASK_CATEGORIES = [
 	{ key: "pending", label: "Pending" },
-	{ key: "in_review", label: "In Review" },
-	{ key: "failed", label: "Failed" },
 	{ key: "approved", label: "Approved" },
 	{ key: "rejected", label: "Rejected" },
+	{ key: "total", label: "All Tasks" },
 ];
 
 export default function CategoryButton({
 	category,
 	currentCategory,
-	tasks,
 	setCategory,
+	stats,
 }: {
 	category: (typeof TASK_CATEGORIES)[number];
 	setCategory: React.Dispatch<React.SetStateAction<string>>;
-	tasks: ReturnType<typeof useAuthUserTasks>["tasks"];
 	currentCategory: string;
+	stats: ReturnType<typeof useAuthUserTasks>["stats"];
 }) {
-	const filteredTasksCount = tasks?.filter(
-		(task) => task.admin_approval_status === category.key,
-	).length;
+	// ✅ Pull count directly from backend stats
+	const count = stats?.[category.key] ?? 0;
 
 	return (
 		<button
 			type="button"
 			onClick={() => setCategory(category.key)}
 			className={cn(
-				"px-4 py-1 rounded-lg flex flex-col gap-y-1 flex-1 border border-gray-300 text-gray-700 font-medium text-sm text-left",
+				"px-4 py-1 rounded-lg flex flex-col gap-y-1 flex-1 border border-gray-300 text-gray-700 font-medium text-sm text-left transition-all",
 				{
-					"bg-primary/10 text-primary border border-gray-300":
+					"bg-primary/10 text-primary border-primary":
 						currentCategory === category.key,
 				},
 			)}
 		>
-			<span>{filteredTasksCount}</span>
+			<span className="text-lg font-semibold">{count}</span>
 			{category.label}
 		</button>
 	);
