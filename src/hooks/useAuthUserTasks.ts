@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
 import getAuthorization from "../utils/getAuthorization";
 
-export default function useAuthUserTasks() {
+export default function useAuthUserTasks(type: string) {
   const [tasks, setTasks] = useState<any[] | null>(null);
   const [stats, setStats] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -10,11 +10,14 @@ export default function useAuthUserTasks() {
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${apiEndpointBaseURL}/tasks/completed-task-history?type=approved`, {
-        headers: {
-          authorization: getAuthorization(),
-        },
-      });
+      const res = await fetch(
+        `${apiEndpointBaseURL}/tasks/completed-task-history?type=${type}`,
+        {
+          headers: {
+            authorization: getAuthorization(),
+          },
+        }
+      );
 
       const data = await res.json();
       if (data.status) {
@@ -29,7 +32,7 @@ export default function useAuthUserTasks() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [type]);
 
   useEffect(() => {
     fetchTasks();

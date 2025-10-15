@@ -24,12 +24,8 @@ function PageHeader() {
 }
 
 export default function TasksHistoryPage() {
-	const { tasks, stats, reload, loading } = useAuthUserTasks();
-	const [category, setCategory] = useState("pending");
-
-	const filteredTasks = tasks?.filter(
-		(task) => task.status === category || task.admin_approval_status === category
-	);
+	const [category, setCategory] = useState("approved");
+	const { tasks, stats, reload, loading } = useAuthUserTasks(category);
 
 	return (
 		<div className="mobile:grid mobile:max-w-[724px] gap-4 min-h-full">
@@ -59,10 +55,8 @@ export default function TasksHistoryPage() {
 
 						{/* ✅ Task List */}
 						<div className="space-y-2">
-							{filteredTasks?.length ? (
-								filteredTasks.map((task) => (
-									<TaskCard key={task.id} {...task} />
-								))
+							{tasks?.length ? (
+								tasks.map((task) => <TaskCard key={task.id} {...task} />)
 							) : (
 								<EmptyMapErr
 									buttonInnerText="Reload"
