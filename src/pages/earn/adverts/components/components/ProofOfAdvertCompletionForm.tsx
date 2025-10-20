@@ -1,12 +1,13 @@
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import { Camera } from "lucide-react";
 import { type FormEvent, useState } from "react";
-import Loading from "../../../../../shared/components/Loading";
 import { Link } from "react-router";
+import Loading from "../../../../../shared/components/Loading";
 import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
+import { toast } from "sonner";
 
-export default function ProofOfTaskCompletionForm({ advertId }: { advertId: number }) {
+export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: number }) {
     const [selectedMediaUrl, setSelectedMediaUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [social_media_url, setSocialMediaUrl] = useState("");
@@ -17,7 +18,7 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
         e.preventDefault();
 
         if (!selectedFile) {
-            alert("Please upload an image or video before submitting");
+            toast.error("Please upload an image or video before submitting");
             return;
         }
 
@@ -37,16 +38,33 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
                 }
             );
 
-            const data = await response.json();
+            // Ensure backend response can be parsed
+            const data = await response.json().catch(() => ({
+                status: false,
+                message: "Invalid server response",
+            }));
 
-            if (response.ok && data.status) {
-                onOpen();
-            } else {
-                alert(data.message || "Something went wrong");
+            // ✅ Validation error (Laravel 422)
+            if (response.status === 422) {
+                const errors = data.errors || {};
+                const message =
+                    Object.values(errors).flat().join("\n") || data.message || "Validation failed";
+                toast.error(message);
+                return;
             }
+
+            // ⚠️ Backend custom error (e.g., 400, 404)
+            if (!response.ok || !data.status) {
+                toast.error(data.message || "Something went wrong");
+                return;
+            }
+
+            // ✅ Success
+            toast.success("Advert submitted successfully!");
+            onOpen();
         } catch (error) {
-            console.error("Error submitting task:", error);
-            alert("Failed to submit task");
+            console.error("Error submitting advert:", error);
+            toast.error("Failed to submit advert. Please try again later.");
         } finally {
             setIsSubmitting(false);
         }
@@ -62,7 +80,7 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
 
     return (
         <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-            <h3 className="font-medium">Provide Proof of Task Completion</h3>
+            <h3 className="font-medium">Provide Proof of Advert Completion</h3>
 
             <div className="max-sm:flex-wrap flex text-sm items-center gap-4">
                 <div className="min-w-28 h-28 bg-black/15 rounded border border-zinc-300 relative [&>*]:cursor-pointer overflow-hidden">
@@ -98,7 +116,7 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
 
                 <div className="space-y-1">
                     <p>
-                        Please enter the username of the account you used to perform the task,
+                        Please enter the username of the account you used to perform the advert,
                         e.g. Instagram username.
                     </p>
                     <div className="flex items-center gap-4">
@@ -112,9 +130,10 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
                         />
                         <button
                             type="submit"
-                            className="px-2 py-1.5 text-sm bg-primary text-white active:scale-95 transition-transform rounded-full"
+                            disabled={isSubmitting}
+                            className="px-2 py-1.5 text-sm bg-primary text-white active:scale-95 transition-transform rounded-full disabled:opacity-50"
                         >
-                            Submit Proof
+                            {isSubmitting ? "Submitting..." : "Submit Proof"}
                         </button>
                     </div>
                 </div>
@@ -128,10 +147,10 @@ export default function ProofOfTaskCompletionForm({ advertId }: { advertId: numb
                         <ModalBody className="space-y-1 text-center pb-8">
                             <img src="/images/animated-checkmark.gif" alt="" />
                             <h3 className="font-medium text-lg">
-                                Task Submitted Successfully!
+                                Advert Submitted Successfully!
                             </h3>
                             <p className="text-sm">
-                                Your task submission has been received and is pending review.
+                                Your advert submission has been received and is pending review.
                                 You'll be notified once it is verified.
                             </p>
                             <div className="flex items-center justify-center gap-4">

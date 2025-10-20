@@ -1,11 +1,11 @@
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/react";
 import { Camera } from "lucide-react";
 import { type FormEvent, useState } from "react";
-import Loading from "../../../../../shared/components/Loading";
 import { Link } from "react-router";
+import Loading from "../../../../../shared/components/Loading";
 import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
-
+import { toast } from "sonner";
 export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }) {
 	const [selectedImageUrl, setSelectedImageUrl] = useState("");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -17,39 +17,51 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
 		e.preventDefault();
 
 		if (!selectedFile) {
-			alert("Please upload a screenshot before submitting");
+			toast.error("Please upload a screenshot before submitting");
 			return;
 		}
 
 		try {
 			setIsSubmitting(true);
 
-			// Prepare form data
 			const formData = new FormData();
 			formData.append("screenshot", selectedFile);
 			formData.append("social_media_url", social_media_url);
 
-			
-			// Send request
 			const response = await fetch(
 				`${apiEndpointBaseURL}/tasks/submit-task/${taskId}`,
 				{
 					method: "POST",
 					body: formData,
-					headers:{ authorization: getAuthorization() },
+					headers: { authorization: getAuthorization() },
 				}
 			);
 
-			const data = await response.json();
+			const data = await response.json().catch(() => ({
+				status: false,
+				message: "Unexpected server response",
+			}));
 
-			if (response.ok && data.status) {
-				onOpen();
-			} else {
-				alert(data.message || "Something went wrong");
+			// 🧾 Handle Laravel validation errors (422)
+			if (response.status === 422) {
+				const errors = data.errors || {};
+				const errorMessages = Object.values(errors).flat().join("\n");
+				toast.error(errorMessages || data.message || "Validation failed");
+				return;
 			}
+
+			// ⚠️ Handle other backend custom errors
+			if (!response.ok || !data.status) {
+				toast.error(data.message || "Something went wrong");
+				return;
+			}
+
+			// ✅ Success
+			toast.success("Task submitted successfully!");
+			onOpen();
 		} catch (error) {
 			console.error("Error submitting task:", error);
-			alert("Failed to submit task");
+			toast.error("Failed to submit task. Please try again later.");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -99,7 +111,7 @@ export default function ProofOfTaskCompletionForm({ taskId }: { taskId: number }
 							className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
 							type="text"
 							value={social_media_url}
-							onChange={(e) =>  setSocialMediaUrl(e.target.value)}
+							onChange={(e) => setSocialMediaUrl(e.target.value)}
 							required
 						/>
 						<button
