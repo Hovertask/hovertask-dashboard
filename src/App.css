@@ -69,3 +69,15 @@ div[data-slot="wrapper"][data-open="true"] {
 	-webkit-backdrop-filter: blur(4px) !important;
 	z-index: 9999 !important;
 }
+
+/* Ensure modal content has a solid background (library theme classes may be missing on live) */
+div[data-slot="wrapper"] section[role="dialog"],
+section[role="dialog"][data-open="true"],
+section[role="dialog"].bg-content1,
+.heroui-modal-content,
+.modal-content {
+	background-color: #ffffff !important;
+	color: #000000 !important;
+	border-radius: 0.75rem !important; /* match rounded-large */
+	box-shadow: 0 8px 24px rgba(16,24,40,0.12) !important;
+}
