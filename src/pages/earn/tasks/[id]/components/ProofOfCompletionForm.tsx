@@ -43,7 +43,7 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 	  formData.append("social_media_url", social_media_url);
 
 	  const response = await fetch(
-		`${apiEndpointBaseURL}/task/submit-task/${taskId}`,
+		`${apiEndpointBaseURL}/tasks/submit-task/${taskId}`,
 		{
 		  method: "POST",
 		  body: formData,
