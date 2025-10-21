@@ -13,19 +13,9 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
   const [social_media_url, setSocialMediaUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ For success modal
-  const {
-    onOpen: onOpenSuccess,
-    onOpenChange: onOpenChangeSuccess,
-    isOpen: isOpenSuccess,
-  } = useDisclosure();
-
-  // ✅ For already-submitted modal
-  const {
-    onOpen: onOpenAlready,
-    onOpenChange: onOpenChangeAlready,
-    isOpen: isOpenAlready,
-  } = useDisclosure();
+  // ✅ Unified modal
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [modalType, setModalType] = useState<"success" | "already" | null>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,7 +66,8 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
           data.message?.toLowerCase().includes("already submitted") ||
           data.message?.toLowerCase().includes("submitted this advert")
         ) {
-          onOpenAlready();
+          setModalType("already");
+          onOpen();
         }
 
         return;
@@ -84,7 +75,8 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
 
       // ✅ Success case
       toast.success(data.message || "Advert submitted successfully!");
-      onOpenSuccess();
+      setModalType("success");
+      onOpen();
     } catch (error) {
       console.error("Error submitting advert:", error);
       toast.error("Failed to submit advert. Please try again later.");
@@ -164,57 +156,51 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
 
       {isSubmitting && <Loading fixed />}
 
-      {/* ✅ Success Modal */}
-      <Modal size="md" onOpenChange={onOpenChangeSuccess} isOpen={isOpenSuccess}>
+      {/* ✅ Unified Modal (Handles both Success & Already Submitted) */}
+      <Modal size="md" onOpenChange={onOpenChange} isOpen={isOpen}>
         <ModalContent>
           {() => (
-            <ModalBody className="space-y-1 text-center pb-8">
-              <img src="/images/animated-checkmark.gif" alt="" />
-              <h3 className="font-medium text-lg">
-                Advert Submitted Successfully!
-              </h3>
-              <p className="text-sm">
-                Your advert submission has been received and is pending review.
-                You'll be notified once it is verified.
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <Link
-                  to="/earn/tasks-history"
-                  className="p-2 rounded-xl text-sm transition-all bg-primary text-white active:scale-95"
-                >
-                  View Tasks History
-                </Link>
-                <Link
-                  to="/"
-                  className="p-2 rounded-xl text-sm transition-all border border-primary text-primary active:scale-95"
-                >
-                  Go to Dashboard
-                </Link>
-              </div>
-            </ModalBody>
-          )}
-        </ModalContent>
-      </Modal>
+            <ModalBody className="space-y-2 text-center pb-8 pt-6">
+              {modalType === "success" && (
+                <>
+                  <img
+                    src="/images/animated-checkmark.gif"
+                    alt="Success"
+                    className="mx-auto w-20"
+                  />
+                  <h3 className="font-medium text-lg">
+                    Advert Submitted Successfully!
+                  </h3>
+                  <p className="text-sm">
+                    Your advert submission has been received and is pending review.
+                    You'll be notified once it is verified.
+                  </p>
+                </>
+              )}
 
-      {/* ⚠️ Already Submitted Modal */}
-      <Modal size="md" onOpenChange={onOpenChangeAlready} isOpen={isOpenAlready}>
-        <ModalContent>
-          {() => (
-            <ModalBody className="space-y-1 text-center pb-8">
-              <img src="/images/warning.gif" alt="warning" className="mx-auto w-24" />
-              <h3 className="font-medium text-lg text-red-600">
-                Already Submitted!
-              </h3>
-              <p className="text-sm">
-                You have already submitted proof for this advert. You cannot
-                submit it again.
-              </p>
-              <div className="flex items-center justify-center gap-4">
+              {modalType === "already" && (
+                <>
+                  <img
+                    src="/images/warning.gif"
+                    alt="Already Submitted"
+                    className="mx-auto w-20"
+                  />
+                  <h3 className="font-medium text-lg text-red-600">
+                    Already Submitted!
+                  </h3>
+                  <p className="text-sm">
+                    You have already submitted proof for this advert. You cannot
+                    submit it again.
+                  </p>
+                </>
+              )}
+
+              <div className="flex items-center justify-center gap-4 pt-2">
                 <Link
                   to="/earn/tasks-history"
                   className="p-2 rounded-xl text-sm transition-all bg-primary text-white active:scale-95"
                 >
-                  View Submissions
+                  {modalType === "success" ? "View Tasks History" : "View Submissions"}
                 </Link>
                 <Link
                   to="/"

@@ -13,19 +13,9 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
   const [social_media_url, setSocialMediaUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ For success modal
-  const {
-	onOpen: onOpenSuccess,
-	onOpenChange: onOpenChangeSuccess,
-	isOpen: isOpenSuccess,
-  } = useDisclosure();
-
-  // ✅ For already-submitted modal
-  const {
-	onOpen: onOpenAlready,
-	onOpenChange: onOpenChangeAlready,
-	isOpen: isOpenAlready,
-  } = useDisclosure();
+  // ✅ Unified modal
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [modalType, setModalType] = useState<"success" | "already" | null>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 	e.preventDefault();
@@ -76,18 +66,20 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 		  data.message?.toLowerCase().includes("already submitted") ||
 		  data.message?.toLowerCase().includes("submitted this task")
 		) {
-		  onOpenAlready();
+		  setModalType("already");
+		  onOpen();
 		}
 
 		return;
 	  }
 
 	  // ✅ Success case
-	  toast.success(data.message || "Task submitted successfully!");
-	  onOpenSuccess();
+	  toast.success(data.message || "task submitted successfully!");
+	  setModalType("success");
+	  onOpen();
 	} catch (error) {
-	  console.error("Error submitting task:", error);
-	  toast.error("Failed to submit task. Please try again later.");
+	  console.error("Error submitting advert:", error);
+	  toast.error("Failed to submit advert. Please try again later.");
 	} finally {
 	  setIsSubmitting(false);
 	}
@@ -103,7 +95,7 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 
   return (
 	<form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-	  <h3 className="font-medium">Provide Proof of  Task Completion</h3>
+	  <h3 className="font-medium">Provide Proof of task Completion</h3>
 
 	  <div className="max-sm:flex-wrap flex text-sm items-center gap-4">
 		<div className="min-w-28 h-28 bg-black/15 rounded border border-zinc-300 relative [&>*]:cursor-pointer overflow-hidden">
@@ -140,7 +132,7 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 		<div className="space-y-1">
 		  <p>
 			Please enter the username of the account you used to perform the
-			task, e.g. Instagram username.
+			advert, e.g. Instagram username.
 		  </p>
 		  <div className="flex items-center gap-4">
 			<input
@@ -164,57 +156,51 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 
 	  {isSubmitting && <Loading fixed />}
 
-	  {/* ✅ Success Modal */}
-	  <Modal size="md" onOpenChange={onOpenChangeSuccess} isOpen={isOpenSuccess}>
+	  {/* ✅ Unified Modal (Handles both Success & Already Submitted) */}
+	  <Modal size="md" onOpenChange={onOpenChange} isOpen={isOpen}>
 		<ModalContent>
 		  {() => (
-			<ModalBody className="space-y-1 text-center pb-8">
-			  <img src="/images/animated-checkmark.gif" alt="" />
-			  <h3 className="font-medium text-lg">
-				Task Submitted Successfully!
-			  </h3>
-			  <p className="text-sm">
-				Your task submission has been received and is pending review.
-				You'll be notified once it is verified.
-			  </p>
-			  <div className="flex items-center justify-center gap-4">
-				<Link
-				  to="/earn/tasks-history"
-				  className="p-2 rounded-xl text-sm transition-all bg-primary text-white active:scale-95"
-				>
-				  View Tasks History
-				</Link>
-				<Link
-				  to="/"
-				  className="p-2 rounded-xl text-sm transition-all border border-primary text-primary active:scale-95"
-				>
-				  Go to Dashboard
-				</Link>
-			  </div>
-			</ModalBody>
-		  )}
-		</ModalContent>
-	  </Modal>
+			<ModalBody className="space-y-2 text-center pb-8 pt-6">
+			  {modalType === "success" && (
+				<>
+				  <img
+					src="/images/animated-checkmark.gif"
+					alt="Success"
+					className="mx-auto w-20"
+				  />
+				  <h3 className="font-medium text-lg">
+					Task Submitted Successfully!
+				  </h3>
+				  <p className="text-sm">
+					Your task submission has been received and is pending review.
+					You'll be notified once it is verified.
+				  </p>
+				</>
+			  )}
 
-	  {/* ⚠️ Already Submitted Modal */}
-	  <Modal size="md" onOpenChange={onOpenChangeAlready} isOpen={isOpenAlready}>
-		<ModalContent>
-		  {() => (
-			<ModalBody className="space-y-1 text-center pb-8">
-			  <img src="/images/warning.gif" alt="warning" className="mx-auto w-24" />
-			  <h3 className="font-medium text-lg text-red-600">
-				Already Submitted!
-			  </h3>
-			  <p className="text-sm">
-				You have already submitted proof for this task. You cannot
-				submit it again.
-			  </p>
-			  <div className="flex items-center justify-center gap-4">
+			  {modalType === "already" && (
+				<>
+				  <img
+					src="/images/warning.gif"
+					alt="Already Submitted"
+					className="mx-auto w-20"
+				  />
+				  <h3 className="font-medium text-lg text-red-600">
+					Already Submitted!
+				  </h3>
+				  <p className="text-sm">
+					You have already submitted proof for this task. You cannot
+					submit it again.
+				  </p>
+				</>
+			  )}
+
+			  <div className="flex items-center justify-center gap-4 pt-2">
 				<Link
 				  to="/earn/tasks-history"
 				  className="p-2 rounded-xl text-sm transition-all bg-primary text-white active:scale-95"
 				>
-				  View Submissions
+				  {modalType === "success" ? "View Tasks History" : "View Submissions"}
 				</Link>
 				<Link
 				  to="/"
