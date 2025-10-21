@@ -37,7 +37,9 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-			     Authorization: getAuthorization(),
+				Accept: "application/json",
+				"X-Requested-With": "XMLHttpRequest",
+				Authorization: getAuthorization(),
 			},
 			body: JSON.stringify({
 				amount: Number(amount),
@@ -46,6 +48,18 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 				name: "Test User", // Replace with logged-in user's real name
 			}),
 		});
+
+		// Debug: if the backend redirects (302/301) fetch may follow the redirect
+		// and the final response URL could point to your frontend or another host.
+		console.log("withdraw response:", { status: res.status, url: res.url, redirected: res.redirected });
+
+		// If the response was redirected (common when server redirects unauthenticated requests to a login page)
+		if (res.redirected) {
+			const text = await res.text().catch(() => "");
+			console.error("Withdraw request was redirected. final url:", res.url, "body:", text);
+			alert("Server redirected the request. This usually means authentication failed or the API is misconfigured. Check server logs.");
+			return;
+		}
 
 		const data = await res.json();
 		if (data.status) {

@@ -1,8 +1,10 @@
+/* stylelint-disable at-rule-no-unknown */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
 
-@theme {
+:root {
 	--color-primary: #4b70f5;
 	--color-success: #009a49;
 	--color-danger: #ff5449;
@@ -11,7 +13,7 @@
 
 @font-face {
 	font-family: Outfit;
-	src: url("/fonts/outfit.ttf") format(truetype);
+	src: url("/fonts/outfit.ttf") format("truetype");
 	font-display: swap;
 }
 
