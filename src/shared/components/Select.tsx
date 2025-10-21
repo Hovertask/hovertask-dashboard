@@ -52,7 +52,7 @@ export default function CustomSelect(props: CustomSelectProps) {
             onChange?.(value); // always string
           }}
           className={cn(
-            "[&_button]:border-1 [&_button]:bg-200/50 [&_button]:border-zinc-300 [&_button]:rounded-lg",
+            "[_&button]:border-1 [&_button]:bg-zinc-200/50 [&_button]:border-zinc-300 [&_button]:rounded-lg",
             className,
           )}
         >
