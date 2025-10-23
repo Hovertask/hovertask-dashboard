@@ -5,77 +5,184 @@ import getAuthorization from "../../../utils/getAuthorization";
 import apiEndpointBaseURL from "../../../utils/apiEndpointBaseURL";
 
 export default function BalanceBoard({ balance }: { balance?: number }) {
-	const [showWithdraw, setShowWithdraw] = useState(false);
-	const [amount, setAmount] = useState<string>("");
-	const [loading, setLoading] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
+  const [amount, setAmount] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") setShowWithdraw(false);
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	}, []);
+  // New: bank/account fields
+  const [banks, setBanks] = useState<Array<{ name: string; code: string }>>([]);
+  const [selectedBankCode, setSelectedBankCode] = useState<string>("");
+  const [accountNumber, setAccountNumber] = useState<string>("");
+  const [accountName, setAccountName] = useState<string>(""); // user can edit
+  const [banksLoading, setBanksLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
-	const handleOpenWithdraw = (e: React.MouseEvent) => {
-		e.preventDefault(); // keep the Link in place but stop navigation
-		setShowWithdraw(true);
-	};
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowWithdraw(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
-	const handleContinue = async () => {
-	if (!amount || Number(amount) <= 0) {
-		return alert("Enter a valid amount");
-	}
+  // Fetch banks and user profile once when withdraw modal opens
+  useEffect(() => {
+    if (!showWithdraw) return;
+    let ignore = false;
 
-	if (Number(amount) < 5000) {
-		return alert("Minimum withdrawal is ₦5,000");
-	}
+    async function fetchBanks() {
+      setBanksLoading(true);
+      try {
+        const res = await fetch(`${apiEndpointBaseURL.replace(/\/$/, "")}/banks`, {
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) {
+          console.error("Failed to fetch banks", res.status);
+          setBanks([]);
+          return;
+        }
+        const data = await res.json();
+        if (data.status && Array.isArray(data.data)) {
+          if (!ignore) {
+            setBanks(data.data);
+          }
+        } else {
+          console.error("Unexpected banks response", data);
+        }
+      } catch (err) {
+        console.error("Error fetching banks", err);
+      } finally {
+        setBanksLoading(false);
+      }
+    }
 
-	setLoading(true);
-	try {
-		const res = await fetch(`${apiEndpointBaseURL}/withdraw`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				"X-Requested-With": "XMLHttpRequest",
-				Authorization: getAuthorization(),
-			},
-			body: JSON.stringify({
-				amount: Number(amount),
-				account_number: "0000111111", // Replace with user's actual account number from profile
-				bank_code: "044", // Replace with bank code (example: 044 = Access Bank)
-				account_name: "Test User", // Replace with logged-in user's real name
-			}),
-		});
+    async function fetchUser() {
+      try {
+        const res = await fetch(`${apiEndpointBaseURL.replace(/\/$/, "")}/v1/dashboard/user`, {
+          headers: { Authorization: getAuthorization(), Accept: "application/json" },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.user) {
+          setAccountName(data.user.name || "");
+        } else if (data.name) {
+          setAccountName(data.name);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user profile", err);
+      }
+    }
 
-		// Debug: if the backend redirects (302/301) fetch may follow the redirect
-		// and the final response URL could point to your frontend or another host.
-		console.log("withdraw response:", { status: res.status, url: res.url, redirected: res.redirected });
+    fetchBanks();
+    fetchUser();
 
-		// If the response was redirected (common when server redirects unauthenticated requests to a login page)
-		if (res.redirected) {
-			const text = await res.text().catch(() => "");
-			console.error("Withdraw request was redirected. final url:", res.url, "body:", text);
-			alert("Server redirected the request. This usually means authentication failed or the API is misconfigured. Check server logs.");
-			return;
-		}
+    return () => {
+      ignore = true;
+    };
+  }, [showWithdraw]);
 
-		const data = await res.json();
-		if (data.status) {
-			alert("Withdrawal initiated successfully!");
-			setShowWithdraw(false);
-			setAmount("");
-		} else {
-			alert("Failed: " + (data.message || "Something went wrong"));
-		}
-	} catch (error) {
-		console.error(error);
-		alert("Error connecting to server");
-	} finally {
-		setLoading(false);
-	}
-};
+  const handleOpenWithdraw = (e: React.MouseEvent) => {
+    e.preventDefault(); // keep the Link in place but stop navigation
+    setShowWithdraw(true);
+  };
+
+  // Helper: pick withdraw endpoint (supports apiEndpointBaseURL that may already include /v1)
+  const withdrawUrl = () => {
+    const base = apiEndpointBaseURL.replace(/\/$/, "");
+    if (base.endsWith("/v1")) return `${base}/withdraw`;
+    return `${base}/v1/withdraw`;
+  };
+
+  const handleVerifyAccount = async () => {
+    if (!selectedBankCode) return alert("Choose a bank first");
+    if (!/^[0-9]{9,12}$/.test(accountNumber)) return alert("Enter a valid account number");
+
+    setVerifying(true);
+    try {
+      const res = await fetch(`${apiEndpointBaseURL.replace(/\/$/, "")}/v1/resolve-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: getAuthorization(),
+        },
+        body: JSON.stringify({ bank_code: selectedBankCode, account_number: accountNumber }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.status) {
+        setAccountName(data.data.account_name || data.data?.account_name || accountName);
+        alert(`Account verified: ${data.data.account_name}`);
+      } else {
+        alert("Could not resolve account: " + (data.message || JSON.stringify(data)));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error resolving account");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleContinue = async () => {
+    if (!amount || Number(amount) <= 0) {
+      return alert("Enter a valid amount");
+    }
+
+    if (Number(amount) < 5000) {
+      return alert("Minimum withdrawal is ₦5,000");
+    }
+
+    if (!selectedBankCode) return alert("Please select a bank");
+    if (!/^[0-9]{9,12}$/.test(accountNumber)) return alert("Please enter a valid account number (digits only)");
+    if (!accountName || accountName.trim().length < 2) return alert("Please enter the account name");
+
+    setLoading(true);
+    try {
+      const res = await fetch(withdrawUrl(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          Authorization: getAuthorization(),
+        },
+        body: JSON.stringify({
+          amount: Number(amount),
+          account_number: accountNumber,
+          bank_code: selectedBankCode,
+          account_name: accountName,
+        }),
+      });
+
+      console.log("withdraw response:", { status: res.status, url: res.url, redirected: res.redirected });
+
+      if (res.redirected) {
+        const text = await res.text().catch(() => "");
+        console.error("Withdraw request was redirected. final url:", res.url, "body:", text);
+        alert("Server redirected the request. This usually means authentication failed or the API is misconfigured. Check server logs.");
+        return;
+      }
+
+      const data = await res.json().catch(() => ({ status: false, message: "Invalid JSON response" }));
+      if (data.status || data.message === "Withdrawal initiated successfully!") {
+        alert("Withdrawal initiated successfully!");
+        setShowWithdraw(false);
+        setAmount("");
+        setAccountNumber("");
+        setAccountName("");
+        setSelectedBankCode("");
+      } else {
+        const message = data.message || data.error || JSON.stringify(data);
+        alert("Failed: " + message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error connecting to server");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 	return (
@@ -183,7 +290,58 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
 							{/* blue rounded input area */}
 							<div className="mt-4 bg-gradient-to-b from-[#EEF2FF] to-[#DCE6FF] p-6 rounded-2xl">
-								<p className="text-gray-600 mb-4">Please input the amount you wish to withdraw from your wallet.</p>
+                <p className="text-gray-600 mb-4">Please input the amount you wish to withdraw from your wallet.</p>
+
+                {/* Bank selection & account resolution */}
+                <div className="space-y-3 mb-3">
+                  <label className="text-sm">Choose bank</label>
+                  {banksLoading ? (
+                    <p className="text-sm text-gray-500">Loading banks...</p>
+                  ) : (
+                    <select
+                      value={selectedBankCode}
+                      onChange={(e) => setSelectedBankCode(e.target.value)}
+                      className="w-full rounded-lg p-2 border border-zinc-300 bg-white"
+                    >
+                      <option value="">-- Select bank --</option>
+                      {banks.map((b) => (
+                        <option key={b.code} value={b.code}>
+                          {b.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      placeholder="Account number"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      className="rounded-lg p-2 border border-zinc-300 flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyAccount}
+                      disabled={verifying || banksLoading}
+                      className="px-4 py-2 rounded-lg bg-primary text-white disabled:opacity-50"
+                    >
+                      {verifying ? "Verifying..." : "Verify account"}
+                    </button>
+                  </div>
+
+                  {accountName && (
+                    <div className="mt-2">
+                      <label className="text-sm">Account name</label>
+                      <input
+                        type="text"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
+                        className="w-full rounded-lg p-2 border border-zinc-300 mt-1"
+                      />
+                    </div>
+                  )}
+                </div>
 
 								<div className="flex items-center gap-4">
 									<div className="flex items-center bg-white rounded-full px-5 py-3 w-full border border-gray-300">
