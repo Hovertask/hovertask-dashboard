@@ -99,7 +99,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
     setVerifying(true);
     try {
-      const res = await fetch(`${apiEndpointBaseURL.replace(/\/$/, "")}/v1/resolve-account`, {
+      const res = await fetch(`${apiEndpointBaseURL}/resolve-account`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
