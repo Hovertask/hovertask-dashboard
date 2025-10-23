@@ -14,8 +14,19 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
   const [selectedBankCode, setSelectedBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState<string>("");
   const [accountName, setAccountName] = useState<string>(""); // user can edit
+  const [cardNumber, setCardNumber] = useState<string>("");
+  const [bankName, setBankName] = useState<string>("");
+
+  // Helper to mask card numbers for display (keeps last 4 digits)
+  const maskCard = (num: string) => {
+    const digits = String(num || "").replace(/\D/g, "");
+    if (digits.length <= 4) return digits;
+    const last4 = digits.slice(-4);
+    return `**** **** **** ${last4}`;
+  };
   const [banksLoading, setBanksLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [accountVerified, setAccountVerified] = useState<boolean>(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -64,7 +75,15 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
         if (!res.ok) return;
         const data = await res.json();
         if (data.user) {
-          setAccountName(data.user.name || "");
+          // Map common fields from the user payload if present.
+          // Prefer explicit account_name, then common name fields; fall back to fname + lname.
+          const fallbackName = [data.user.fname, data.user.lname].filter(Boolean).join(" ");
+          const resolvedName = data.user.account_name || data.user.name || data.user.full_name || fallbackName || "";
+          setAccountName(resolvedName);
+          if (data.user.account_number) setAccountNumber(String(data.user.account_number));
+          if (data.user.bank_code) setSelectedBankCode(String(data.user.bank_code));
+          if (data.user.bank_name) setBankName(String(data.user.bank_name));
+          if (data.user.card_number) setCardNumber(String(data.user.card_number));
         } else if (data.name) {
           setAccountName(data.name);
         }
@@ -112,6 +131,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
       const data = await res.json();
       if (res.ok && data.status) {
         setAccountName(data.data.account_name || data.data?.account_name || accountName);
+        setAccountVerified(true);
         alert(`Account verified: ${data.data.account_name}`);
       } else {
         alert("Could not resolve account: " + (data.message || JSON.stringify(data)));
@@ -266,7 +286,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 						<div className="space-y-4">
 							<div className="flex items-center gap-3">
 								<div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold">✓</div>
-								<span className="font-medium">2. Bank Details</span>
+								<span className="font-medium"> Bank Details</span>
 								<Link to="#" className="ml-auto text-indigo-600 hover:underline" onClick={(e)=>e.preventDefault()}>
 									Change
 								</Link>
@@ -282,10 +302,22 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 										</svg>
 									</span>
 								</div>
-								<div>
-									<div className="font-medium">MasterCard/Visa/Verve Card</div>
-									<div className="text-sm text-gray-600">FCMB | Alayande Nurudeen | 6576 3467 **** 0902</div>
-								</div>
+                                <div>
+                                  <div className="font-medium">{bankName || (banks.find(b=>b.code===selectedBankCode)?.name) || 'MasterCard/Visa/Verve Card'}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {bankName || (banks.find(b=>b.code===selectedBankCode)?.name) ? (
+                                      <>
+                                        {bankName || (banks.find(b=>b.code===selectedBankCode)?.name)}
+                                        {" | "}{accountName || 'Account holder'}
+                                        {cardNumber ? ` | ${maskCard(cardNumber)}` : ''}
+                                      </>
+                                    ) : (
+                                      <>
+                                        No bank set — <Link to="/profile" className="text-indigo-600 hover:underline">Add bank</Link>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
 							</div>
 
 							{/* blue rounded input area */}
@@ -300,7 +332,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
                   ) : (
                     <select
                       value={selectedBankCode}
-                      onChange={(e) => setSelectedBankCode(e.target.value)}
+                      onChange={(e) => { setSelectedBankCode(e.target.value); setAccountVerified(false); }}
                       className="w-full rounded-lg p-2 border border-zinc-300 bg-white"
                     >
                       <option value="">-- Select bank --</option>
@@ -317,7 +349,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
                       type="text"
                       placeholder="Account number"
                       value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value)}
+                      onChange={(e) => { setAccountNumber(e.target.value); setAccountVerified(false); }}
                       className="rounded-lg p-2 border border-zinc-300 flex-1"
                     />
                     <button
@@ -355,13 +387,23 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 										/>
 									</div>
 
-									<button
-										onClick={handleContinue}
-										disabled={loading}
-										className="px-6 py-3 rounded-full bg-blue-600 text-white min-w-[120px] disabled:opacity-50"
-									>
-										{loading ? "Processing..." : "Continue"}
-									</button>
+                  {accountVerified ? (
+                    <button
+                      onClick={handleContinue}
+                      disabled={loading}
+                      className="px-6 py-3 rounded-full bg-blue-600 text-white min-w-[120px] disabled:opacity-50"
+                    >
+                      {loading ? "Processing..." : "Continue"}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="px-6 py-3 rounded-full bg-gray-200 text-gray-600 min-w-[180px]"
+                    >
+                      Verify account to continue
+                    </button>
+                  )}
 								</div>
 
 								<p className="mt-3 text-sm text-gray-400">Please note that a transfer charge will be deducted from your account.</p>
