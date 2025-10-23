@@ -58,7 +58,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 
     async function fetchUser() {
       try {
-        const res = await fetch(`${apiEndpointBaseURL.replace(/\/$/, "")}/v1/dashboard/user`, {
+        const res = await fetch(`${apiEndpointBaseURL}/dashboard/user`, {
           headers: { Authorization: getAuthorization(), Accept: "application/json" },
         });
         if (!res.ok) return;
