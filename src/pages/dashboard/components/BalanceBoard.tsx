@@ -45,7 +45,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
 				amount: Number(amount),
 				account_number: "0000111111", // Replace with user's actual account number from profile
 				bank_code: "044", // Replace with bank code (example: 044 = Access Bank)
-				name: "Test User", // Replace with logged-in user's real name
+				account_name: "Test User", // Replace with logged-in user's real name
 			}),
 		});
 
