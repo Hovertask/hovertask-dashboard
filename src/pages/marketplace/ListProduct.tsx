@@ -343,9 +343,8 @@ function ListingForm() {
 				</div>
 
 				<div>
+					<label className="text-sm mb-1">Category</label>
 					<Select
-						label="Category"
-						labelPlacement="outside"
 						variant="bordered"
 						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full [&_button]:w-full [&_button]:justify-start [&_button]:px-4 [&_button]:gap-2 [&_button]:min-w-0 [&_div[data-slot='listboxWrapper']]:min-w-full"
 						placeholder="Select a category"
@@ -461,9 +460,8 @@ function ListingForm() {
 				</div>
 
 				<div className="pt-2">
+					<label className="text-sm mb-1">Payment method</label>
 					<Select
-						label="Payment method"
-						labelPlacement="outside"
 						variant="bordered"
 						placeholder="Select payment method"
 						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full [&_button]:w-full [&_button]:justify-start [&_button]:px-4 [&_button]:gap-2 [&_button]:min-w-0 [&_div[data-slot='listboxWrapper']]:min-w-full"
