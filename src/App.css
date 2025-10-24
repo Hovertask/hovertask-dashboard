@@ -119,8 +119,9 @@ div[data-slot="mainWrapper"] > button[data-slot="trigger"] {
 	padding-left: 0.75rem !important;
 	display: inline-flex !important;
 	align-items: center !important;
+	justify-content: flex-start !important;
 	gap: 0.5rem !important;
-	border-radius: 0.5rem !important; /* rounded-lg */
+	border-radius: 9999px !important; /* pill / rounded-full */
 	background: #ffffff !important;
 	border: 1px solid rgba(15, 23, 42, 0.06) !important; /* subtle border like inputs */
 	box-sizing: border-box !important;
@@ -136,6 +137,16 @@ div[data-slot="mainWrapper"] > button[data-slot="trigger"] [data-slot="selectorI
 /* Make sure the inner value wrapper doesn't overlap the icon */
 div[data-slot="mainWrapper"] > button[data-slot="trigger"] [data-slot="innerWrapper"] {
 	width: calc(100% - 3rem) !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	text-align: left !important;
+}
+
+/* Ensure the displayed value inside the trigger is left-aligned */
+div[data-slot="mainWrapper"] > button[data-slot="trigger"] [data-slot="value"] {
+	display: block !important;
+	text-align: left !important;
+	color: inherit !important;
 }
 
 /* Small tweak: list items should have comfortable vertical padding */
