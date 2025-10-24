@@ -347,7 +347,7 @@ function ListingForm() {
 						label="Category"
 						labelPlacement="outside"
 						variant="bordered"
-						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full"
+						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full [&_button]:w-full [&_button]:justify-start [&_button]:px-4 [&_button]:gap-2 [&_button]:min-w-0 [&_div[data-slot='listboxWrapper']]:min-w-full"
 						placeholder="Select a category"
 						{...register("category_id", {
 							required: "Select product category",
@@ -466,7 +466,7 @@ function ListingForm() {
 						labelPlacement="outside"
 						variant="bordered"
 						placeholder="Select payment method"
-						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full"
+						className="[&_button]:border-1 [&_button]:border-zinc-400 [&_button]:rounded-full [&_button]:w-full [&_button]:justify-start [&_button]:px-4 [&_button]:gap-2 [&_button]:min-w-0 [&_div[data-slot='listboxWrapper']]:min-w-full"
 						{...register("payment_method", {
 							required: "Select payment method",
 						})}
