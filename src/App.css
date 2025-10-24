@@ -128,7 +128,6 @@ div[data-slot="mainWrapper"] > button[data-slot="trigger"] {
 	gap: 0.5rem !important;
 	border-radius: 9999px !important; /* pill / rounded-full */
 	background: #ffffff !important;
-	border: 1px solid rgba(15, 23, 42, 0.06) !important; /* subtle border like inputs */
 	box-sizing: border-box !important;
 }
 
