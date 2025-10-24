@@ -97,6 +97,11 @@ div[data-slot="listbox"] {
 	box-shadow: 0 8px 24px rgba(2,6,23,0.08) !important;
 	z-index: 99999 !important;
 	overflow: auto !important;
+	max-height: 14rem !important; /* limit height so list becomes scrollable */
+	overflow-y: auto !important;
+	-webkit-overflow-scrolling: touch !important; /* smooth momentum scrolling on mobile */
+	scroll-behavior: smooth !important;
+	overscroll-behavior: contain !important;
 }
 
 /* keep the hidden-select container visually hidden but accessible for screen readers */
@@ -194,4 +199,17 @@ div[data-slot="listbox-wrapper"] {
 div[data-slot="listbox"] [role="option"] {
 	padding-top: 0.6rem !important;
 	padding-bottom: 0.6rem !important;
+}
+
+/* Ensure selected/active option has scroll margin so it won't be clipped when focused/selected */
+div[data-slot="listbox"] [role="option"][aria-selected="true"],
+div[data-slot="listbox"] [role="option"].is-active {
+	scroll-margin-block: 1.5rem !important;
+}
+
+/* Kebab-case fallback for listbox too */
+div[data-slot="listbox-wrapper"] div[data-slot="listbox"],
+div[data-slot="listbox-wrapper"] {
+	max-height: 14rem !important;
+	overflow-y: auto !important;
 }
