@@ -35,7 +35,7 @@ export default function CustomSelect(props: CustomSelectProps) {
             onChange?.(value); // always string
           }}
           className={cn(
-            "[&_div[data-slot='main-wrapper']]:border-1 [&_div[data-slot='main-wrapper']]:bg-zinc-200/50 [&_div[data-slot='main-wrapper']]:border-zinc-300 [&_div[data-slot='main-wrapper']]:rounded-lg",
+            "[&_div[data-slot='main-wrapper']]:border-1 [&_div[data-slot='main-wrapper']]:bg-zinc-200/50 [&_div[data-slot='main-wrapper']]:border-zinc-300 [&_div[data-slot='main-wrapper']]:rounded-lg [&_div[data-slot='listboxWrapper']]:min-w-full [&_div[data-slot='listbox']]:bg-white [&_div[data-slot='listbox']]:rounded-lg [&_div[data-slot='listbox']]:shadow-md",
             className,
           )}
         >
@@ -44,7 +44,7 @@ export default function CustomSelect(props: CustomSelectProps) {
           ))}
         </Autocomplete>
       ) : (
-        <Select
+          <Select
           labelPlacement="outside"
           {...rest}
           onSelectionChange={(keys) => {
@@ -52,7 +52,7 @@ export default function CustomSelect(props: CustomSelectProps) {
             onChange?.(value); // always string
           }}
           className={cn(
-            "[_&button]:border-1 [&_button]:bg-zinc-200/50 [&_button]:border-zinc-300 [&_button]:rounded-lg",
+            "[&_button]:border-1 [&_button]:bg-zinc-200/50 [&_button]:border-zinc-300 [&_button]:rounded-lg [&_div[data-slot='listboxWrapper']]:min-w-full [&_div[data-slot='listbox']]:bg-white [&_div[data-slot='listbox']]:rounded-lg [&_div[data-slot='listbox']]:shadow-md",
             className,
           )}
         >

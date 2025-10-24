@@ -313,7 +313,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
                                       </>
                                     ) : (
                                       <>
-                                        No bank set — <Link to="/profile" className="text-indigo-600 hover:underline">Add bank</Link>
+                                        No bank set — <Link to="/update-bank-details" className="text-indigo-600 hover:underline">Add bank</Link>
                                       </>
                                     )}
                                   </div>

@@ -83,3 +83,28 @@ section[role="dialog"].bg-content1,
 	border-radius: 0.75rem !important; /* match rounded-large */
 	box-shadow: 0 8px 24px rgba(16,24,40,0.12) !important;
 }
+
+/* Fallback styles for Heroui/Autocomplete/Select dropdown panels (listbox)
+	 Ensures the dropdown has a visible white background, rounded corners and
+	 shadow even if Tailwind utility classes are absent or purged in production. */
+div[data-slot="listboxWrapper"] {
+	min-width: 100% !important; /* prefer full width of trigger */
+}
+
+div[data-slot="listbox"] {
+	background: #ffffff !important;
+	border-radius: 0.5rem !important;
+	box-shadow: 0 8px 24px rgba(2,6,23,0.08) !important;
+	z-index: 99999 !important;
+	overflow: auto !important;
+}
+
+/* keep the hidden-select container visually hidden but accessible for screen readers */
+[data-testid="hidden-select-container"] {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	overflow: hidden !important;
+	clip: rect(0 0 0 0) !important;
+	clip-path: inset(50%) !important;
+}
