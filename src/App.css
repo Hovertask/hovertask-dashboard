@@ -149,6 +149,58 @@ div[data-slot="mainWrapper"] > button[data-slot="trigger"] [data-slot="value"] {
 	color: inherit !important;
 }
 
+/* Ensure Select/Autocomplete labels sit above the trigger and don't overlap the placeholder
+   (some builds render the label absolutely positioned; force a normal flow label here) */
+div[data-slot="mainWrapper"] > label,
+div[data-slot="main-wrapper"] > label {
+	display: block !important;
+	position: static !important;
+	margin-bottom: 0.35rem !important;
+	font-size: 0.875rem !important; /* text-sm */
+	color: inherit !important;
+}
+
+/* Also support kebab-case data-slot attribute variants used by some builds */
+div[data-slot="main-wrapper"] > button[data-slot="trigger"] {
+	height: 44px !important;
+	min-height: 44px !important;
+	padding-right: 3rem !important;
+	padding-left: 0.75rem !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: flex-start !important;
+	gap: 0.5rem !important;
+	border-radius: 9999px !important;
+	background: #ffffff !important;
+	border: 1px solid rgba(15, 23, 42, 0.06) !important;
+	box-sizing: border-box !important;
+}
+
+div[data-slot="main-wrapper"] > button[data-slot="trigger"] [data-slot="selectorIcon"] {
+	right: 0.75rem !important;
+	left: auto !important;
+	transform: none !important;
+}
+
+div[data-slot="main-wrapper"] > button[data-slot="trigger"] [data-slot="innerWrapper"] {
+	width: calc(100% - 3rem) !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	text-align: left !important;
+}
+
+div[data-slot="main-wrapper"] > button[data-slot="trigger"] [data-slot="value"] {
+	display: block !important;
+	text-align: left !important;
+	color: inherit !important;
+}
+
+/* listbox wrapper kebab-case fallback */
+div[data-slot="listbox-wrapper"],
+div[data-slot="listbox-wrapper"] {
+	min-width: 100% !important;
+}
+
 /* Small tweak: list items should have comfortable vertical padding */
 div[data-slot="listbox"] [role="option"] {
 	padding-top: 0.6rem !important;
