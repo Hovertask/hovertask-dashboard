@@ -149,7 +149,7 @@ export default function BalanceBoard({ balance }: { balance?: number }) {
       return alert("Enter a valid amount");
     }
 
-    if (Number(amount) < 5000) {
+    if (Number(amount) < 100) {
       return alert("Minimum withdrawal is ₦5,000");
     }
 
