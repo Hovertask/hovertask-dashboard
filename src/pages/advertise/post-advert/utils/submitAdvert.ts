@@ -39,7 +39,7 @@ export default async function submitAdvert(
     }
 
     // ✅ Success case
-    if (responseData.status === "pending") {
+    if (responseData.data.status === "pending") {
       toast.warning("Advert created but payment is pending.");
       // Pass advert info up so modal can display payment button
       if (setPendingAdvert && responseData.data) {
