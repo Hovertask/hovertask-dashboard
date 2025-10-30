@@ -38,14 +38,19 @@ export default async function submitAdvert(
       );
     }
 
-    // ✅ Success case
-    if (responseData.data.status === "pending") {
+    // ✅ Handle both "advert" or "task" response types
+    const advert = responseData.data?.advert;
+    const task = responseData.data?.task;
+    const item = task || advert; // whichever exists
+
+    if (item?.status === "pending") {
       toast.warning("Advert created but payment is pending.");
+
       // Pass advert info up so modal can display payment button
-      if (setPendingAdvert && responseData.data) {
+      if (setPendingAdvert) {
         setPendingAdvert({
-          id: responseData.data.id,
-          user_id: responseData.data.user_id,
+          id: item.id,
+          user_id: item.user_id,
         });
       }
     } else {
