@@ -12,7 +12,10 @@ export default function AdvertSummaryModal(props: {
   modalProps: ReturnType<typeof useDisclosure>;
   successModalProps: ReturnType<typeof useDisclosure>;
   getFormValue: () => FieldValues;
-  setError: UseFormSetError<any>; // 👈 add setError
+  setError: UseFormSetError<any>;
+  setPendingAdvert: React.Dispatch<
+    React.SetStateAction<{ id: number; user_id: number } | null>
+  >;
 }) {
   const {
     platform,
@@ -27,7 +30,12 @@ export default function AdvertSummaryModal(props: {
 
   async function initAdvertSubmission() {
     props.modalProps.onClose();
-    await submitAdvert(props.successModalProps, props.setError); // 👈 pass setError
+
+    await submitAdvert(
+      props.successModalProps,
+      props.setError,
+      props.setPendingAdvert // ✅ pass pending setter
+    );
   }
 
   return (
@@ -85,10 +93,3 @@ export default function AdvertSummaryModal(props: {
     </Modal>
   );
 }
-
-
-
-
-
-
-

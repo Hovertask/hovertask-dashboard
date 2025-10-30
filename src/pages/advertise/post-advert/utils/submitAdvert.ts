@@ -6,7 +6,10 @@ import type { UseFormSetError } from "react-hook-form";
 
 export default async function submitAdvert(
   successModalProps: ReturnType<typeof useDisclosure>,
-  setError: UseFormSetError<any>
+  setError: UseFormSetError<any>,
+  setPendingAdvert?: React.Dispatch<
+    React.SetStateAction<{ id: number; user_id: number } | null>
+  >
 ) {
   try {
     const form = document.getElementById("advert-form") as HTMLFormElement;
@@ -21,7 +24,6 @@ export default async function submitAdvert(
 
     if (!response.ok) {
       if (responseData.error) {
-        // Laravel validation errors → push into react-hook-form
         Object.keys(responseData.error).forEach((field) => {
           setError(field as any, {
             type: "server",
@@ -36,7 +38,20 @@ export default async function submitAdvert(
       );
     }
 
-    toast.success("Your advert has been placed successfully");
+    // ✅ Success case
+    if (responseData.status === "pending") {
+      toast.warning("Advert created but payment is pending.");
+      // Pass advert info up so modal can display payment button
+      if (setPendingAdvert && responseData.data) {
+        setPendingAdvert({
+          id: responseData.data.id,
+          user_id: responseData.data.user_id,
+        });
+      }
+    } else {
+      toast.success("Your advert has been placed successfully");
+    }
+
     successModalProps.onOpen();
     form.reset();
   } catch {
