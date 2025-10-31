@@ -56,6 +56,7 @@ export default function FundWalletPage() {
 							handleFundWallet({
 								email: authUser.email,
 								amount: Number(amount),
+								type: "deposit",
 							}),
 						)}
 					>

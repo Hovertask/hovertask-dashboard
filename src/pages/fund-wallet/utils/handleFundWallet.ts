@@ -4,6 +4,7 @@ import initiateFundWalletTransaction from "../../../shared/utils/initiateWalletT
 export default function handleFundWallet(info: {
   email: string;
   amount: number;
+  type: string;
 }) {
   toast.promise(
     (): Promise<string> =>
