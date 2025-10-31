@@ -8,7 +8,7 @@ export default async function submitAdvert(
   successModalProps: ReturnType<typeof useDisclosure>,
   setError: UseFormSetError<any>,
   setPendingAdvert?: React.Dispatch<
-    React.SetStateAction<{ id: number; user_id: number } | null>
+    React.SetStateAction<{ id: number; user_id: number; type: string } | null>
   >
 ) {
   try {
@@ -51,6 +51,7 @@ export default async function submitAdvert(
         setPendingAdvert({
           id: item.id,
           user_id: item.user_id,
+          type: task ? "task" : "advert",
         });
       }
     } else {

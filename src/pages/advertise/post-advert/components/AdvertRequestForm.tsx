@@ -90,7 +90,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   const formRef = useRef<HTMLFormElement>(null);
   const successModalProps = useDisclosure();
   const modalProps = useDisclosure();
-  const [pendingAdvert, setPendingAdvert] = useState<{ id: number; user_id: number } | null>(null);
+  const [pendingAdvert, setPendingAdvert] = useState<{ id: number; user_id: number; type: string } | null>(null);
 
 
   // ✅ check if this is an engagement-type advert from the URL

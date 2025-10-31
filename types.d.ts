@@ -27,6 +27,7 @@ export interface Task {
 	id: number;
 	user_id: number;
 	title: string;
+	type:string
 	social_media_url: string | null;
 	description: string;
 	platforms: string;
@@ -176,6 +177,7 @@ export interface Transaction {
 export interface Advert {
 	id: number;
 	user_id: number;
+	type:string;
 
 	title: string | null;
 	description: string | null;

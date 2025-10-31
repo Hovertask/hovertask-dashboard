@@ -12,7 +12,7 @@ import { useState } from "react";
 
 interface AdvertUploadSuccessModalProps
 	extends ReturnType<typeof useDisclosure> {
-	pendingAdvert?: { id: number; user_id: number } | null;
+	pendingAdvert?: { id: number; user_id: number; type: string } | null;
 }
 
 export default function AdvertUploadSuccessModal({
@@ -26,7 +26,7 @@ export default function AdvertUploadSuccessModal({
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`${apiEndpointBaseURL}/payment/initiate`,
+				`${apiEndpointBaseURL}/wallet/initialize-payment`,
 				{
 					method: "POST",
 					headers: {
@@ -36,6 +36,7 @@ export default function AdvertUploadSuccessModal({
 					body: JSON.stringify({
 						user_id: pendingAdvert.user_id,
 						advert_id: pendingAdvert.id,
+						type: pendingAdvert.type,
 					}),
 				}
 			);

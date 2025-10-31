@@ -22,6 +22,7 @@ export default function PaymentOptionCard(props: {
 					initiateFundWalletTransaction({
 						email: authUser.email,
 						amount: 1000,
+						type: "membership",
 					})
 						.then((response) => {
 							const paymentData = response.data || response;

@@ -4,6 +4,7 @@ import getAuthorization from "../../utils/getAuthorization";
 export default async function initiateFundWalletTransaction(info: {
 	email: string;
 	amount: number;
+	type: string;
 }) {
 	const response = await fetch(
 		`${apiEndpointBaseURL}/wallet/initialize-payment`,

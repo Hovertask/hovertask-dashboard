@@ -14,7 +14,7 @@ export default function AdvertSummaryModal(props: {
   getFormValue: () => FieldValues;
   setError: UseFormSetError<any>;
   setPendingAdvert: React.Dispatch<
-    React.SetStateAction<{ id: number; user_id: number } | null>
+    React.SetStateAction<{ id: number; user_id: number; type: string } | null>
   >;
 }) {
   const {
