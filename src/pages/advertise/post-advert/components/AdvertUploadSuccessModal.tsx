@@ -49,9 +49,12 @@ export default function AdvertUploadSuccessModal({
 				return;
 			}
 
+			
+           const authorizationUrl = data?.data?.data?.authorization_url;
+
 			toast.success("Redirecting to payment...");
-			if (data.data?.authorization_url) {
-				window.location.href = data.data.authorization_url;
+			if (authorizationUrl) {
+				window.location.href = authorizationUrl;
 			}
 		} catch (error) {
 			toast.error("Something went wrong. Please try again.");
