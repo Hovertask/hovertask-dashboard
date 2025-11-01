@@ -50,8 +50,8 @@ export default function AdvertUploadSuccessModal({
 			}
 
 			toast.success("Redirecting to payment...");
-			if (data?.payment_url) {
-				window.location.href = data.payment_url;
+			if (data?.authorization_url) {
+				window.location.href = data.authorization_url;
 			}
 		} catch (error) {
 			toast.error("Something went wrong. Please try again.");
