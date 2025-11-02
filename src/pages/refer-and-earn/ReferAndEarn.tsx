@@ -31,7 +31,7 @@ export default function ReferAndEarnPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [count, setCount] = useState<number>(0);
   const [pending, setPending] = useState<number>(0);
-  const [paid, setCompleted] = useState<number>(0);
+  const [completed, setCompleted] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [referred, setReferred] = useState<ReferredItem[]>([]);
 
@@ -66,8 +66,8 @@ export default function ReferAndEarnPage() {
 
         setCount(d.count ?? 0);
         setPending(Number(d.pending ?? 0));
-        setCompleted(Number(d.paid ?? 0));
-        setTotal(Number(d.total ?? (Number(d.pending ?? 0) + Number(d.paid ?? 0))));
+        setCompleted(Number(d.completed ?? 0));
+        setTotal(Number(d.total ?? (Number(d.pending ?? 0) + Number(d.completed ?? 0))));
         setReferred(Array.isArray(d.referrals) ? d.referrals : []);
       } catch (err: any) {
         console.error("referrals fetch error", err);
@@ -152,7 +152,7 @@ export default function ReferAndEarnPage() {
             </div>
 
             <div className="flex flex-col gap-1 bg-green-50 border border-zinc-400 w-fit rounded-lg px-4 py-1.5">
-              <span className="font-medium text-emerald-700">₦{loading ? "..." : Number(paid).toLocaleString()}</span>
+              <span className="font-medium text-emerald-700">₦{loading ? "..." : Number(completed).toLocaleString()}</span>
               <small>Completed Earnings</small>
             </div>
 
