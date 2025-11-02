@@ -103,7 +103,7 @@ function TaskPerformance({ task }: { task: any }) {
 								: "text-yellow-600"
 						}`}
 					>
-						{task.admin_approval_status.toUpperCase()}
+						{task.status.toUpperCase()}
 					</span>
 					<p className="text-[10px] text-gray-400">
 						{new Date(task.created_at).toLocaleString()}
