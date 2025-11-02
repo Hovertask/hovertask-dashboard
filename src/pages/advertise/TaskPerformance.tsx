@@ -98,7 +98,7 @@ function TaskPerformance({ task }: { task: any }) {
 				<div className="text-right">
 					<span
 						className={`text-xs font-medium ${
-							task.admin_approval_status === "approved"
+							task.status === "approved"
 								? "text-green-600"
 								: "text-yellow-600"
 						}`}
