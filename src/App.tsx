@@ -147,11 +147,11 @@ export default function App() {
 								element={<AdvertTaskPerformancePage />}
 							/>
 							<Route
-								path="advertise/advert-tasks-history"
+								path="advertise/engagement-tasks-history"
 								element={<EngagementTasksHistoryPage />}
 							/>
 							<Route
-								path="advertise/advert-task-performance/:id"
+								path="advertise/engagement-task-performance/:id"
 								element={<EngagementTaskPerformancePage />}
 							/>
 							{/* Add Me Up */}
