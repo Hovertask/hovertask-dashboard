@@ -189,7 +189,7 @@ function TaskPerformance({
           { label: "Pending", value: task.stats.pending || 0, key: "pending" },
           { label: "Accepted", value: task.stats.accepted || 0, key: "accepted" },
           { label: "Rejected", value: task.stats.rejected || 0, key: "rejected" },
-          { label: "Completion Rate", value: task.stat.completion_percentage || 0, key: "rate" },
+          { label: "Completion Rate", value: task.stats.completion_percentage || 0, key: "rate" },
         ].map((stat) => (
           <div
             key={stat.key}
