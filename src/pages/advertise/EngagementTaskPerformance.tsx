@@ -64,7 +64,7 @@ function TaskPerformance({
   setTask: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [filter, setFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
-  const [selectedProof, setSelectedProof] = useState<string | null>(null);
+  const [selectedProof, setSelectedProof] = useState<{screenshot: string; link?: string} | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ id: number; status: string } | null>(null);
 
   const handleStatusUpdate = async (participantId: number, newStatus: string) => {
@@ -229,7 +229,7 @@ function TaskPerformance({
                     {p.name} <span className="text-gray-500">{p.handle}</span>
                   </p>
                   <button
-                    onClick={() => setSelectedProof(p.screenshot_path)}
+                    onClick={() => setSelectedProof({ screenshot: p.screenshot_path, link: p.proof_link })}
                     className="text-xs text-blue-600 underline"
                   >
                     View Proof
@@ -309,22 +309,37 @@ function TaskPerformance({
 
       {/* Proof Modal */}
       {selectedProof && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-lg w-full p-4 relative">
-            <button
-              onClick={() => setSelectedProof(null)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-            >
-              <X size={18} />
-            </button>
-            <img
-              src={selectedProof}
-              alt="Proof Screenshot"
-              className="w-full rounded-lg object-contain"
-            />
-          </div>
-        </div>
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl max-w-lg w-full p-4 relative">
+      <button
+        onClick={() => setSelectedProof(null)}
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+      >
+        <X size={18} />
+      </button>
+
+      <img
+        src={selectedProof.screenshot}
+        alt="Proof Screenshot"
+        className="w-full rounded-lg object-contain"
+      />
+
+      {selectedProof.link && (
+        <p className="mt-3 text-center">
+          <a
+            href={selectedProof.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline text-sm"
+          >
+            View Proof Link
+          </a>
+        </p>
       )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
