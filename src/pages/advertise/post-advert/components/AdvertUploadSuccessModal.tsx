@@ -93,7 +93,7 @@ export default function AdvertUploadSuccessModal({
 							</button>
 						) : (
 							<Link
-								to="/advertise/tasks-history"
+								to="/advertise/advert-tasks-history"
 								className="text-sm p-2 rounded-2xl bg-primary text-white"
 								type="button"
 							>

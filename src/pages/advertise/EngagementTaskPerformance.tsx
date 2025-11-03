@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router";
 import { Toaster, toast } from "react-hot-toast";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 
-export default function TaskPerformancePage() {
+export default function EngagementTaskPerformancePage() {
   const { id } = useParams();
   const [task, setTask] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,7 @@ export default function TaskPerformancePage() {
   useEffect(() => {
     async function fetchTask() {
       try {
-        const res = await fetch(`${apiEndpointBaseURL}/advertise/show/${id}`, {
+        const res = await fetch(`${apiEndpointBaseURL}/show-task-perfrmance/${id}`, {
           headers: {
             authorization: `Bearer ${localStorage.getItem("auth_token")}`,
             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function TaskPerformance({
 
   const handleStatusUpdate = async (participantId: number, newStatus: string) => {
     try {
-      const res = await fetch(`${apiEndpointBaseURL}/participants/${participantId}/status`, {
+      const res = await fetch(`${apiEndpointBaseURL}/engagement/participants/${participantId}/status`, {
         method: "PATCH",
         headers: {
           authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -148,7 +148,7 @@ function TaskPerformance({
             per engagement.
           </p>
           <p className="text-xs text-gray-600">
-            Amount Paid:{" "}
+            Budget:{" "}
             <span className="font-medium">₦{amountPaid.toFixed(2)}</span> &nbsp; | &nbsp; Your
             Link:{" "}
             <a
@@ -160,13 +160,18 @@ function TaskPerformance({
               {task.link}
             </a>
           </p>
-		  <p className="text-xs text-gray-600 mb-1">
-            BudgetSpent:{" "}
+          <p className="text-xs text-gray-600 mb-1">
+            Budget Spent:{" "}
             <span className="text-green-600 font-medium">
               ₦{BudgetSpent.toFixed(2)}
             </span>{" "}
-            per engagement.
+            of{" "}
+            <span className="font-medium">
+              ₦{Number(amountPaid || 0).toLocaleString()}
+            </span>
+            
           </p>
+          
         </div>
         <div className="text-right">
           <span

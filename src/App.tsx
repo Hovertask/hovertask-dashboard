@@ -14,8 +14,10 @@ import Profile from "./pages/add-me-up/Profile";
 import AdvertisePage from "./pages/advertise/advertise/Advertise";
 import EngagementTasks from "./pages/advertise/engagement-tasks/EngagementTasks";
 import PostAdvertPage from "./pages/advertise/post-advert/PostAdvert";
-import TaskPerformancePage from "./pages/advertise/TaskPerformance";
-import TasksHistoryPage from "./pages/advertise/TasksHistory";
+import AdvertTaskPerformancePage from "./pages/advertise/AdvertTaskPerformance";
+import AdvertTasksHistoryPage from "./pages/advertise/AdvertTasksHistory";
+import EngagementTaskPerformancePage from "./pages/advertise/EngagementTaskPerformance";
+import EngagementTasksHistoryPage from "./pages/advertise/EngagementTaskHistory";
 import MembershipPage from "./pages/become-a-member/BecomeAMember";
 import PaymentCallbackPage from "./pages/PaymentCallback";
 import VerifyEmailPage from "./pages/VerifyEmail";
@@ -137,12 +139,20 @@ export default function App() {
 								element={<EngagementTasks />}
 							/>
 							<Route
-								path="advertise/tasks-history"
-								element={<TasksHistoryPage />}
+								path="advertise/advert-tasks-history"
+								element={<AdvertTasksHistoryPage />}
 							/>
 							<Route
-								path="advertise/task-performance/:id"
-								element={<TaskPerformancePage />}
+								path="advertise/advert-task-performance/:id"
+								element={<AdvertTaskPerformancePage />}
+							/>
+							<Route
+								path="advertise/advert-tasks-history"
+								element={<EngagementTasksHistoryPage />}
+							/>
+							<Route
+								path="advertise/advert-task-performance/:id"
+								element={<EngagementTaskPerformancePage />}
 							/>
 							{/* Add Me Up */}
 							<Route path="add-me-up" element={<AddMeUp />} />

@@ -6,7 +6,7 @@ import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import EmptyMapErr from "../../shared/components/EmptyMapErr";
 import cn from "../../utils/cn";
 
-export default function TasksHistoryPage() {
+export default function AdvertTasksHistoryPage() {
 	const [tasks, setTasks] = useState<any[]>();
 	const [category, setCategory] = useState("pending");
 	const [categoryTasks, setCategoryTasks] = useState<any[]>();
@@ -37,7 +37,7 @@ export default function TasksHistoryPage() {
 	useEffect(() => {
 		if (tasks) {
 			setCategoryTasks(
-				tasks.filter((task) => task.admin_approval_status === category),
+				tasks.filter((task) => task.status === category),
 			);
 		}
 	}, [tasks, category]);
@@ -73,7 +73,7 @@ export default function TasksHistoryPage() {
 						<span>
 							{
 								tasks?.filter(
-									(task) => task.admin_approval_status === "pending",
+									(task) => task.status === "pending",
 								).length
 							}
 						</span>
@@ -93,7 +93,7 @@ export default function TasksHistoryPage() {
 						<span>
 							{
 								tasks?.filter(
-									(task) => task.admin_approval_status === "in_review",
+									(task) => task.status === "in_review",
 								).length
 							}
 						</span>{" "}
@@ -112,7 +112,7 @@ export default function TasksHistoryPage() {
 					>
 						<span>
 							{
-								tasks?.filter((task) => task.admin_approval_status === "failed")
+								tasks?.filter((task) => task.status === "failed")
 									.length
 							}
 						</span>{" "}
@@ -120,19 +120,19 @@ export default function TasksHistoryPage() {
 					</button>
 					<button
 						type="button"
-						onClick={() => setCategory("approved")}
+						onClick={() => setCategory("success")}
 						className={cn(
 							"px-4 py-1 rounded-lg flex flex-col gap-y-1 flex-1 border border-gray-300 text-gray-700 font-medium text-sm text-left",
 							{
 								"bg-primary/10 text-primary border border-gray-300":
-									category === "approved",
+									category === "success",
 							},
 						)}
 					>
 						<span>
 							{
 								tasks?.filter(
-									(task) => task.admin_approval_status === "approved",
+									(task) => task.status === "success",
 								).length
 							}
 						</span>{" "}
@@ -151,7 +151,7 @@ export default function TasksHistoryPage() {
 					>
 						<span>
 							{
-								tasks?.filter((task) => task.admin_approval_status === "failed")
+								tasks?.filter((task) => task.status === "failed")
 									.length
 							}
 						</span>{" "}
@@ -206,8 +206,8 @@ function TaskCard(props: any) {
 							per post engagement.
 						</p>
 						<p className="text-xs text-gray-600 mt-1">
-							Amount Paid:{" "}
-							<span className="font-medium text-gray-800">₦{props.amount_paid ?? "0"}</span>
+							Budget {" "}
+							<span className="font-medium text-gray-800">₦{props.estimated_cost ?? "0"}</span>
 						</p>
 						{props.link && (
 							<p className="text-xs text-gray-600 mt-1">
@@ -235,10 +235,10 @@ function TaskCard(props: any) {
 
 			<div className="flex justify-end">
 				<Link
-					to={`/advertise/task-performance/${props.id}`}
+					to={`/advertise/advert-task-performance/${props.id}`}
 					className="mt-2 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700"
 				>
-					Track Your Task Performance
+					Track Your Advert Performance
 				</Link>
 			</div>
 		</div>
