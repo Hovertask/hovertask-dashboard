@@ -229,7 +229,7 @@ function TaskPerformance({
                     {p.name} <span className="text-gray-500">{p.handle}</span>
                   </p>
                   <button
-                    onClick={() => setSelectedProof(p.proof_link)}
+                    onClick={() => setSelectedProof(p.screenshot_path)}
                     className="text-xs text-blue-600 underline"
                   >
                     View Proof
