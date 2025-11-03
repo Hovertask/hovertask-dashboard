@@ -69,7 +69,7 @@ function TaskPerformance({
 
   const handleStatusUpdate = async (participantId: number, newStatus: string) => {
     try {
-      const res = await fetch(`${apiEndpointBaseURL}/participant/${participantId}`, {
+      const res = await fetch(`${apiEndpointBaseURL}/participants/${participantId}/status`, {
         method: "PATCH",
         headers: {
           authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -88,6 +88,7 @@ function TaskPerformance({
             p.id === participantId ? { ...p, status: newStatus } : p
           );
 
+          // safely convert numeric values
           const updatedStats = { ...prev.stats };
           if (newStatus === "accepted") {
             updatedStats.accepted += 1;
@@ -97,11 +98,12 @@ function TaskPerformance({
             if (updatedStats.pending > 0) updatedStats.pending -= 1;
           }
 
-          const payout = prev.amount_paid / (prev.stats.total_participants || 1);
+          const amountPaid = Number(prev.amount_paid) || 0;
+          const totalParticipants = Number(prev.stats.total_participants) || 1;
+          const payout = Number(prev.payment_per_task || amountPaid / totalParticipants);
+
           const newBudgetSpent =
-            newStatus === "accepted"
-              ? prev.amount_paid + payout
-              : prev.amount_paid;
+            newStatus === "accepted" ? amountPaid + payout : amountPaid;
 
           return {
             ...prev,
@@ -131,6 +133,10 @@ function TaskPerformance({
       ? Math.round((task.stats.accepted / task.stats.total_participants) * 100)
       : 0;
 
+  const amountPaid = Number(task.amount_paid) || 0;
+  const totalParticipants = Number(task.stats.total_participants) || 1;
+  const payoutPer = Number(task.payment_per_task || amountPaid / totalParticipants);
+
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-6 bg-white rounded-xl shadow">
       {/* Header */}
@@ -140,13 +146,14 @@ function TaskPerformance({
           <p className="text-xs text-gray-600 mb-1">
             Earnings:{" "}
             <span className="text-green-600 font-medium">
-              ₦{(task.amount_paid / (task.stats.total_participants || 1)).toFixed(2)}
+              ₦{payoutPer.toFixed(2)}
             </span>{" "}
             per engagement.
           </p>
           <p className="text-xs text-gray-600">
-            Amount Paid: <span className="font-medium">₦{task.amount_paid.toFixed(2)}</span> &nbsp; |
-            &nbsp; Your Link:{" "}
+            Amount Paid:{" "}
+            <span className="font-medium">₦{amountPaid.toFixed(2)}</span> &nbsp; | &nbsp; Your
+            Link:{" "}
             <a
               href={task.link}
               className="text-blue-500 underline"
@@ -163,7 +170,7 @@ function TaskPerformance({
               task.status === "approved" ? "text-green-600" : "text-yellow-600"
             }`}
           >
-            {task.status.toUpperCase()}
+            {task.status?.toUpperCase()}
           </span>
           <p className="text-[10px] text-gray-400">
             {new Date(task.created_at).toLocaleString()}
@@ -176,13 +183,9 @@ function TaskPerformance({
         {[
           { label: "All", value: task.stats.total_participants, key: "all" },
           { label: "Pending", value: task.stats.pending || 0, key: "pending" },
-          { label: "Accepted", value: task.stats.accepted, key: "accepted" },
+          { label: "Accepted", value: task.stats.accepted || 0, key: "accepted" },
           { label: "Rejected", value: task.stats.rejected || 0, key: "rejected" },
-          {
-            label: "Completion Rate",
-            value: `${completionRate}%`,
-            key: "rate",
-          },
+          { label: "Completion Rate", value: `${completionRate}%`, key: "rate" },
         ].map((stat) => (
           <div
             key={stat.key}
