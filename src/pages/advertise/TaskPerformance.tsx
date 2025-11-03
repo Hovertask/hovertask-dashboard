@@ -99,17 +99,17 @@ function TaskPerformance({
           }
 
           const amountPaid = Number(prev.amount_paid) || 0;
-          const totalParticipants = Number(prev.stats.total_participants) || 1;
-          const payout = Number(prev.payment_per_task || amountPaid / totalParticipants);
+          //const totalParticipants = Number(prev.stats.total_participants) || 1;
+          const payout = Number(prev.payment_per_task );
 
           const newBudgetSpent =
-            newStatus === "accepted" ? amountPaid + payout : amountPaid;
+            newStatus === "accepted" ? amountPaid - payout : amountPaid;
 
           return {
             ...prev,
             participants: updatedParticipants,
             stats: updatedStats,
-            amount_paid: newBudgetSpent,
+           BudgetSpent: newBudgetSpent,
           };
         });
       } else {
@@ -128,14 +128,11 @@ function TaskPerformance({
       ? task.participants
       : task.participants.filter((p: any) => p.status === filter);
 
-  const completionRate =
-    task.stats.total_participants > 0
-      ? Math.round((task.stats.accepted / task.stats.total_participants) * 100)
-      : 0;
-
+ 
   const amountPaid = Number(task.amount_paid) || 0;
-  const totalParticipants = Number(task.stats.total_participants) || 1;
-  const payoutPer = Number(task.payment_per_task || amountPaid / totalParticipants);
+  const BudgetSpent = Number(task.BudgetSpent) || 0;
+
+  const payoutPer = Number(task.payment_per_task );
 
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-6 bg-white rounded-xl shadow">
@@ -163,11 +160,18 @@ function TaskPerformance({
               {task.link}
             </a>
           </p>
+		  <p className="text-xs text-gray-600 mb-1">
+            BudgetSpent:{" "}
+            <span className="text-green-600 font-medium">
+              ₦{BudgetSpent.toFixed(2)}
+            </span>{" "}
+            per engagement.
+          </p>
         </div>
         <div className="text-right">
           <span
             className={`text-xs font-medium ${
-              task.status === "approved" ? "text-green-600" : "text-yellow-600"
+              task.status === "success" ? "text-green-600" : "text-yellow-600"
             }`}
           >
             {task.status?.toUpperCase()}
@@ -185,7 +189,7 @@ function TaskPerformance({
           { label: "Pending", value: task.stats.pending || 0, key: "pending" },
           { label: "Accepted", value: task.stats.accepted || 0, key: "accepted" },
           { label: "Rejected", value: task.stats.rejected || 0, key: "rejected" },
-          { label: "Completion Rate", value: `${completionRate}%`, key: "rate" },
+          { label: "Completion Rate", value: task.stat.completion_percentage || 0, key: "rate" },
         ].map((stat) => (
           <div
             key={stat.key}
