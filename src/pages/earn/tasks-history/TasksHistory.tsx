@@ -24,7 +24,7 @@ function PageHeader() {
 }
 
 export default function TasksHistoryPage() {
-	const [category, setCategory] = useState("approved");
+	const [category, setCategory] = useState("accepted");
 	const { tasks, stats, reload, loading } = useAuthUserTasks(category);
 
 	return (
@@ -40,7 +40,7 @@ export default function TasksHistoryPage() {
 						<div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
 							<p className="text-sm text-gray-700">Total Earnings</p>
 							<h2 className="text-2xl font-semibold text-green-700">
-								₦{stats?.earnings?.toLocaleString() ?? "0.00"}
+								₦{stats?.total_earnings?.toLocaleString() ?? "0.00"}
 							</h2>
 						</div>
 

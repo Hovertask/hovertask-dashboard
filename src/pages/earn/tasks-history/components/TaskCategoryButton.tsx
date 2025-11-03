@@ -4,9 +4,9 @@ import cn from "../../../../utils/cn";
 // ✅ Define consistent categories with backend statuses
 export const TASK_CATEGORIES = [
 	{ key: "pending", label: "Pending" },
-	{ key: "approved", label: "Approved" },
+	{ key: "accepted", label: "Accepted" },
 	{ key: "rejected", label: "Rejected" },
-	{ key: "total", label: "All Tasks" },
+	{ key: "total_tasks", label: "All Tasks" },
 ];
 
 export default function CategoryButton({
