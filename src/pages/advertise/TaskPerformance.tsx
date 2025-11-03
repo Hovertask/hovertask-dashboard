@@ -130,7 +130,7 @@ function TaskPerformance({
 
  
   const amountPaid = Number(task.amount_paid) || 0;
-  const BudgetSpent = Number(task.BudgetSpent) || 0;
+  const BudgetSpent = Number(task.stats.BudgetSpent) || 0;
 
   const payoutPer = Number(task.payment_per_task );
 
