@@ -12,7 +12,7 @@ export default function EngagementTaskPerformancePage() {
   useEffect(() => {
     async function fetchTask() {
       try {
-        const res = await fetch(`${apiEndpointBaseURL}/show-task-perfrmance/${id}`, {
+        const res = await fetch(`${apiEndpointBaseURL}tasks/show-task-perfrmance/${id}`, {
           headers: {
             authorization: `Bearer ${localStorage.getItem("auth_token")}`,
             "Content-Type": "application/json",
