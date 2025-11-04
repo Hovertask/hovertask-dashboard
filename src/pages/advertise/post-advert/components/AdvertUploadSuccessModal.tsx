@@ -49,8 +49,7 @@ export default function AdvertUploadSuccessModal({
 				return;
 			}
 
-			
-           const authorizationUrl = data?.data?.data?.authorization_url;
+			const authorizationUrl = data?.data?.data?.authorization_url;
 
 			toast.success("Redirecting to payment...");
 			if (authorizationUrl) {
@@ -60,6 +59,20 @@ export default function AdvertUploadSuccessModal({
 			toast.error("Something went wrong. Please try again.");
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	// ✅ Determine the redirect path based on advert type
+	const getHistoryLink = () => {
+		switch (pendingAdvert?.type) {
+			case "engagement":
+				return "/advertise/engagement-tasks-history";
+			case "survey":
+				return "/advertise/survey-history";
+			case "clicks":
+				return "/advertise/click-history";
+			default:
+				return "/advertise/advert-tasks-history";
 		}
 	};
 
@@ -93,7 +106,7 @@ export default function AdvertUploadSuccessModal({
 							</button>
 						) : (
 							<Link
-								to="/advertise/advert-tasks-history"
+								to={getHistoryLink()}
 								className="text-sm p-2 rounded-2xl bg-primary text-white"
 								type="button"
 							>
