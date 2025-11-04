@@ -8,7 +8,7 @@ import cn from "../../utils/cn";
 
 export default function AdvertTasksHistoryPage() {
 	const [tasks, setTasks] = useState<any[]>();
-	const [category, setCategory] = useState("pending");
+	const [category, setCategory] = useState("success");
 	const [categoryTasks, setCategoryTasks] = useState<any[]>();
 
 	const getAuthUSerTasks = useCallback(async () => {
