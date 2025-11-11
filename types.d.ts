@@ -134,7 +134,7 @@ export interface MenuDropdownProps {
 	label: string;
 	icon: React.ReactNode;
 	comingSoon?: boolean;
-	basePath: string;
+	basePath?: string;
 	options: {
 		label: string;
 		icon: React.ReactNode;

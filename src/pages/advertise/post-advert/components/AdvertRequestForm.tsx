@@ -633,33 +633,41 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         )}
 
         {/* Media Upload */}
-        {!isEngagementTask && config && (
-          <div>
-            <Label
-              title="Choose Your Advert Media Upload Option"
-              description="Upload media for your advert."
-            />
-            <div className="flex gap-6 items-center">
-              <div className="flex flex-col gap-2">
-                <label
-                  className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
-                  htmlFor="images"
-                >
-                  Upload video advert
-                </label>
-                <label
-                  className="text-sm px-2 py-1 rounded-lg bg-primary/10 border border-primary text-primary"
-                  htmlFor="images"
-                >
-                  Upload image advert
-                </label>
-              </div>
-              <div className="max-w-[250px]">
-                <ImageInput id="images" maxLength={3} required />
-              </div>
-            </div>
-          </div>
-        )}
+{!isEngagementTask && config && (
+  <div>
+    <Label
+      title="Choose Your Advert Media Upload Option"
+      description="Upload media for your advert."
+    />
+
+    <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+      {/* Upload buttons */}
+      <div className="flex flex-col gap-2">
+        <label
+          className="text-sm px-3 py-1.5 rounded-lg bg-primary/10 border border-primary text-primary cursor-pointer"
+          htmlFor="media"
+        >
+          Upload Video Advert
+        </label>
+        <label
+          className="text-sm px-3 py-1.5 rounded-lg bg-primary/10 border border-primary text-primary cursor-pointer"
+          htmlFor="media"
+        >
+          Upload Image Advert
+        </label>
+        <p className="text-xs text-gray-500 mt-1">
+          Max file size: 10MB (image or video)
+        </p>
+      </div>
+
+      {/* Input field */}
+      <div className="max-w-[250px]">
+        <ImageInput id="media" maxLength={3} required />
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* Payment */}
         <SetPaymentMethod

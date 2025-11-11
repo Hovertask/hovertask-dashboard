@@ -25,7 +25,7 @@ import type { AuthUserDTO, CartProduct, MenuDropdownProps } from "../../types";
 import useActiveLink from "../hooks/useActiveLink";
 import cn from "../utils/cn";
 import menu from "../utils/menu";
-import ComingSoonModal from "./ComingSoonModal";
+import ComingSoonModal from "../shared/components/ComingSoonModal";
 
 export default function Header() {
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);

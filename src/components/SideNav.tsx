@@ -6,7 +6,7 @@ import type { MenuDropdownProps } from "../../types";
 import useActiveLink from "../hooks/useActiveLink";
 import cn from "../utils/cn";
 import menu from "../utils/menu";
-import ComingSoonModal from "../components/ComingSoonModal"; // 👈 make sure the path is correct
+import ComingSoonModal from "../shared/components/ComingSoonModal"; // 👈 make sure the path is correct
 
 export default function SideNav() {
 	const activeLink = useActiveLink();
@@ -108,7 +108,7 @@ function MenuOptionDropdown(props: MenuDropdownProps) {
 				})}
 			>
 				<Link
-					to={props.basePath}
+					to={props.basePath ?? "#"}
 					className={cn("flex items-center gap-2 px-3 py-1.5 w-fit")}
 				>
 					{props.icon} {props.label}
