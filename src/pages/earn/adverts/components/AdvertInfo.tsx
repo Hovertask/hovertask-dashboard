@@ -3,133 +3,150 @@ import useAdvert from "../../../../hooks/useAdvert";
 import { toast } from "sonner";
 import cn from "../../../../utils/cn";
 import { CircularProgress } from "@heroui/react";
-import { AlarmClock, Copy } from "lucide-react";
+import {Copy } from "lucide-react";
 import Loading from "../../../../shared/components/Loading";
 import ProofOfAdvertCompletionForm from "./components/ProofOfAdvertCompletionForm";
 import copy from "./utils/copy";
 
 export default function AdvertInfoPage() {
-	const { id } = useParams();
-	const advert = useAdvert(id!);
-	const navigate = useNavigate();
+  const { id } = useParams();
+  const advert = useAdvert(id!);
+  const navigate = useNavigate();
 
-	if (advert === undefined) {
-		toast.error(
-			"Sorry, We couldn't find the advert you were looking for. You can explore other available adverts.",
-		);
-		navigate("/earn/adverts");
-		return null;
-	}
+  if (advert === undefined) {
+    toast.error(
+      "Sorry, We couldn't find the advert you were looking for. You can explore other available adverts."
+    );
+    navigate("/earn/adverts");
+    return null;
+  }
 
-	if (advert === null) return <Loading fixed />;
+  if (advert === null) return <Loading fixed />;
 
-	return (
-		<div className="mobile:grid grid-cols-[1fr_200px] gap-4 min-h-full">
-			<div className="p-4 space-y-8">
-				<div className="space-y-4">
-					<div>
-						<h1 className="text-xl">
-							<span className="font-medium">
-								{advert.title}
-								{advert.category !== "telegram" && " - "}
-							</span>
-							<span>
-								{advert.category !== "telegram" && "1000 Followers Required"}
-							</span>
-							{new Date().getTime() - new Date(advert.created_at).getTime() >
-								24 * 60 * 60 * 1000 && (
-								<span className="text-xs text-orange-500"> (New Advert)</span>
-							)}
-						</h1>
-						<p className="text-sm">
-							<span className="font-medium">Platforms:</span> {advert.platforms}
-						</p>
-					</div>
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 min-h-full p-4">
+      {/* ------------------ LEFT SIDE: Instruction / Task Details ------------------ */}
+      <div className="space-y-8">
+        {/* Advert Header */}
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold">{advert.title}</h1>
+          <p className="text-sm text-gray-600">
+            Platforms: <strong>{advert.platforms}</strong>
+          </p>
+          <p className="text-xs text-gray-500">
+            Posted {new Date().getTime() - new Date(advert.created_at).getTime() >
+              24 * 60 * 60 * 1000 ? "over 24h ago" : "recently"}
+          </p>
+        </div>
 
-					<div className="max-sm:flex-wrap flex justify-between items-center text-xs max-w-md">
-						<span
-							className={cn("p-1 px-2 rounded-full", {
-								"bg-success/20 text-success": advert.completed === "Available",
-								"bg-danger/20 text-danger": advert.completed !== "Available",
-							})}
-						>
-							{advert.completed}
-						</span>
-						<span className="flex items-center gap-2">
-							<CircularProgress
-								color={
-									advert.completion_percentage > 69
-										? "success"
-										: advert.completion_percentage > 44
-											? "warning"
-											: "danger"
-								}
-								formatOptions={{ style: "percent" }}
-								showValueLabel
-								size="sm"
-								value={advert.completion_percentage}
-							/>{" "}
-							{advert.task_count_remaining} of {advert.task_count_total} remaining
-						</span>
-						<span className="flex items-center gap-2">
-							{new Date(
-								Date.now() - new Date(advert.created_at).getTime(),
-							).getHours()}{" "}
-							Hours <AlarmClock size={14} />
-						</span>
-						<span className="text-base font-semibold text-primary">
-							₦{advert.payment_per_task.toLocaleString()}
-						</span>
-					</div>
-				</div>
+        {/* Step-by-step Instructions */}
+        <div className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-zinc-200">
+          <h2 className="text-lg font-medium text-primary mb-2">Instructions</h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
+            <li>Check the platforms listed above for your task.</li>
+            <li>Follow the instructions provided in the description below.</li>
+            <li>
+              Access the link to the post and interact as required (like, comment,
+              share, subscribe, etc.).
+            </li>
+            <li>Submit proof of completion using the form below.</li>
+            <li>Monitor your task completion and reward in the summary panel.</li>
+          </ol>
 
-				<div className="space-y-4">
-					<div className="flex justify-between">
-						<h2 className="text-lg font-medium text-primary">Advert Details</h2>
-						<button
-							type="button"
-							className="px-4 py-2 text-sm bg-primary text-white active:scale-95 transition-transform rounded-xl"
-						>
-							Cancel Advert
-						</button>
-					</div>
+          {/* Advert Description */}
+          <div className="mt-4">
+            <h3 className="font-medium text-gray-800 mb-1">Advert Details</h3>
+            <div className="whitespace-pre-line text-sm text-gray-700">{advert.description}</div>
 
-					<div className="text-xs space-y-2">
-						<p>
-							<span className="font-medium">Platforms:</span> {advert.platforms}
-						</p>
-						<p>
-							<span className="font-medium">Post:</span> {advert.title}
-						</p>
-						<p className="font-medium">Advert Instructions</p>
-						<div className="whitespace-pre-line">{advert.description}</div>
-						<p className="font-medium">Reward</p>
-						<p>
-							Earn ₦{advert.payment_per_task.toLocaleString()} per advert.{" "}
-						</p>
-						{advert.social_media_url && (
-							<p>
-								<span className="font-medium">Advert link:</span>{" "}
-								<span className="text-primary bg-primary/20 inline-block px-2 py-1 rounded-full">
-									{advert.social_media_url}
-								</span>
-								<button
-									type="button"
-									onClick={() => copy(advert.social_media_url || "")}
-								>
-									<Copy size={14} />
-								</button>
-							</p>
-						)}
-					</div>
-				</div>
+            {/* Advert Link */}
+            {advert.social_media_url && (
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-primary bg-primary/20 px-2 py-1 rounded-full">
+                  {advert.social_media_url}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copy(advert.social_media_url || "")}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <Copy size={16} />
+                </button>
+              </div>
+            )}
+          </div>
 
-				{advert?.id && <ProofOfAdvertCompletionForm advertId={advert.id} />}
+          {/* Completion Form */}
+          {advert?.id && <ProofOfAdvertCompletionForm advertId={advert.id} />}
+        </div>
+      </div>
 
-				<div>
-					<img src="/images/Group 1000004391.png" alt="" />
-				</div>
-			</div>
-		</div>
-	);
+      {/* ------------------ RIGHT SIDE: Summary & Progress ------------------ */}
+      <div className="space-y-6 sticky top-4">
+        {/* Status Card */}
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-zinc-200 space-y-3">
+          <h2 className="text-lg font-medium text-primary flex items-center gap-2">
+            Summary
+          </h2>
+
+          {/* Completion Badge */}
+          <span
+            className={cn(
+              "p-1 px-3 rounded-full text-sm",
+              advert.completed === "Available"
+                ? "bg-success/20 text-success"
+                : "bg-danger/20 text-danger"
+            )}
+          >
+            {advert.completed}
+          </span>
+
+          {/* Progress Bar */}
+          <div className="flex justify-between items-center gap-2 text-sm">
+            <CircularProgress
+              color={
+                advert.completion_percentage > 69
+                  ? "success"
+                  : advert.completion_percentage > 44
+                  ? "warning"
+                  : "danger"
+              }
+              formatOptions={{ style: "percent" }}
+              showValueLabel
+              size="sm"
+              value={advert.completion_percentage}
+            />
+            <span>
+              {advert.task_count_remaining} of {advert.task_count_total} remaining
+            </span>
+          </div>
+
+          {/* Time & Reward */}
+          <div className="flex justify-between items-center text-sm">
+            <span>
+              {Math.floor(
+                (Date.now() - new Date(advert.created_at).getTime()) / 1000 / 3600
+              )}{" "}
+              Hours since posted
+            </span>
+            <span className="font-semibold text-primary">
+              ₦{advert.payment_per_task.toLocaleString()} per task
+            </span>
+          </div>
+
+          {/* Cancel Button */}
+          <button
+            type="button"
+            className="w-full mt-2 px-4 py-2 text-sm bg-danger/10 text-danger rounded-xl hover:bg-danger/20 transition"
+          >
+            Cancel Advert
+          </button>
+        </div>
+
+        {/* Decorative Image */}
+        <div>
+          <img src="/images/Group 1000004391.png" alt="" />
+        </div>
+      </div>
+    </div>
+  );
 }

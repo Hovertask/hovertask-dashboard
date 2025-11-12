@@ -125,6 +125,7 @@ export default function MediaInput(
           onChange={handleChange}
           type="file"
           accept="image/*,video/*"
+          name={fileType === "video" ? "video_path" : "file_path"} //  dynamic name
           className="opacity-0"
           {...rest}
           multiple={maxLength ? maxLength > 1 : false}

@@ -30,12 +30,12 @@ export default [
 				icon: <List size={13} />,
 			},
 			{
-				path: "earn/adverts",
+				path: "/earn/adverts",
 				label: "Post Adverts To Earn ",
 				icon: <List size={13} />,
 			},
 			{
-				path: "earn/resell",
+				path: "/earn/resell",
 				label: "Earn by Reselling ",
 				icon: <List size={13} />,
 			},
