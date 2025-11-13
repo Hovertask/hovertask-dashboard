@@ -179,9 +179,13 @@ export interface Advert {
 	user_id: number;
 	type:string;
 
-	title: string | null;
+	title?: string;
 	description: string | null;
 	social_media_url: string | null;
+	media_type: "image" | "video" | null;
+	file_path: string | null;
+	video_path: string | null;
+	
 
 	// Platform(s) where the advert runs — e.g. Facebook, Instagram
 	platforms: string | null;

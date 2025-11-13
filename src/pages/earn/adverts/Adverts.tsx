@@ -14,6 +14,7 @@ export default function Adverts() {
 		(state: any) => state.auth.value.is_account_linked,
 	);
 
+
 	return (
 		<>
 			<div className="mobile:grid mobile:max-w-[724px] gap-4 min-h-full">

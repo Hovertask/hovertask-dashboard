@@ -20,18 +20,18 @@ export default [
 		icon: <LayoutDashboard size={13} />,
 	},
 	{
-		path: "/earn",
+		basePath: "/earn",
 		label: "Earn",
 		icon: <Wallet size={13} />,
 		options: [
 			{
-				path: "/earn/tasks",
-				label: " Complete Tasks To Earn",
+				path: "/earn/adverts",
+				label: "Post Adverts To Earn ",
 				icon: <List size={13} />,
 			},
 			{
-				path: "/earn/adverts",
-				label: "Post Adverts To Earn ",
+				path: "/earn/tasks",
+				label: " Complete Tasks To Earn",
 				icon: <List size={13} />,
 			},
 			{
@@ -42,7 +42,7 @@ export default [
 		],	
 	},
 	{
-		path: "/advertise",
+		basePath: "/advertise",
 		label: "Advertise",
 		icon: <CheckCircle size={13} />,
 		options: [
