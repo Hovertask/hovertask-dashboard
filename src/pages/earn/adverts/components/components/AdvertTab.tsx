@@ -2,7 +2,7 @@ import { useState } from "react";
 import advertsCategories from "../utils/advertsCategories";
 import cn from "../../../../../utils/cn";
 import { Link } from "react-router";
-import AvailableJobs from "../Availablejobs";
+import AvailableJobs from "./../Availablejobs";
 
 export default function TasksTabs() {
     const [currentCategory, setCurrentCategory] =

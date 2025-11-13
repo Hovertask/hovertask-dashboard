@@ -2,7 +2,7 @@ import { Check, Hexagon, Megaphone } from "lucide-react";
 import { Link } from "react-router";
 import LinkAccountsModal from "../components/LinkAccountsModal";
 import Banner from "./components/Banner";
-import AvailableJobs from "./components/AvailableJobs";
+import AdvertTAb from "./components/components/AdvertTab";
 import { useSelector } from "react-redux";
 
 export default function Adverts() {
@@ -85,7 +85,7 @@ export default function Adverts() {
 						</ul>
 					</div>
 
-					<AvailableJobs />
+					<AdvertTAb />
 				</div>
 			</div>
 
