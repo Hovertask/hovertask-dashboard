@@ -114,7 +114,7 @@ export default [
 	},
     {
 	    path: "/fund-wallet",
-		label: "Marketplace",
+		label: "Wallet",
 		icon: <Wallet size={13} />,
     },
 	{

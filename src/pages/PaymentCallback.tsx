@@ -31,7 +31,7 @@ export default function PaymentCallback() {
       if (result && result.success) {
         toast.success("Payment verified!");
 
-        const category = result.payment_category;
+        const category = result.data.data.metadata.payment_category;
 
         // Assign modal based on payment category
         if (category === "membership") setModalType("membership");
