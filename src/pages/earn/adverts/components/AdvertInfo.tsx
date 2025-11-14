@@ -23,8 +23,7 @@ export default function AdvertInfoPage() {
 
   if (advert === null) return <Loading fixed />;
 
-  // Determine the actual media URL to use
-  const mediaUrl = advert.media_type === "video" ? advert.file_path : advert.video_path;
+  const mediaList = advert.advertise_images || [];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 min-h-full p-4">
@@ -41,50 +40,54 @@ export default function AdvertInfoPage() {
           </p>
         </div>
 
-        {/* Media Display */}
-        {mediaUrl ? (
+        {/* Media Display - Scrollable Gallery */}
+        {mediaList.length > 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-4 flex flex-col gap-4">
-            {advert.media_type === "video" ? (
-              <video
-                src={advert.video_path || ""}
-                controls
-                className="rounded-xl w-full max-h-[400px]"
-              />
-            ) : (
-              <img
-                src={advert.file_path || ""}
-                alt="Advert Media"
-                className="rounded-xl w-full max-h-[400px] object-cover"
-              />
-            )}
-
-            {/* Download & Share Buttons */}
-            <div className="flex flex-wrap gap-2">
-              <a
-                href={mediaUrl}
-                download
-                className="px-4 py-2 rounded-xl bg-primary text-white text-sm hover:bg-primary/90 transition"
-              >
-                Download Media
-              </a>
-              <button
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700 transition"
-                onClick={() => {
-                  if (mediaUrl && navigator.share) {
-                    navigator
-                      .share({
-                        title: advert.title,
-                        url: mediaUrl,
-                      })
-                      .catch((err) => console.error(err));
-                  } else {
-                    toast.error("Sharing not supported on this browser");
-                  }
-                }}
-              >
-                Share to Social Media
-              </button>
+            <div className="flex overflow-x-auto gap-4 py-2">
+              {mediaList.map((media) => {
+                const mediaUrl = media.media_type === "video" ? media.video_path ?? "" : media.file_path ?? "";
+                return (
+                  <div key={media.id} className="flex-shrink-0 w-64">
+                    {media.media_type === "video" ? (
+                      <video
+                        src={media.video_path || ""}
+                        controls
+                        className="rounded-xl w-full max-h-[200px]"
+                      />
+                    ) : (
+                      <img
+                        src={media.file_path || ""}
+                        alt="Advert Media"
+                        className="rounded-xl w-full max-h-[200px] object-cover"
+                      />
+                    )}
+                    <a
+                      href={mediaUrl}
+                      download
+                      className="block mt-2 px-3 py-1 text-sm rounded-xl bg-primary text-white text-center hover:bg-primary/90 transition"
+                    >
+                      Download
+                    </a>
+                  </div>
+                );
+              })}
             </div>
+
+            <button
+              className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700 transition"
+              onClick={() => {
+                if (mediaList.length && navigator.share) {
+                  navigator.share({
+                    title: advert.title,
+                    url: mediaList[0].media_type === "video" ? mediaList[0].video_path ?? "" : mediaList[0].file_path ?? "",
+                  }).catch((err) => console.error(err));
+                } else {
+                  toast.error("Sharing not supported on this browser");
+                }
+              }}
+            >
+              Share to Social Media
+            </button>
           </div>
         ) : (
           <div className="text-center text-gray-400">No media available</div>

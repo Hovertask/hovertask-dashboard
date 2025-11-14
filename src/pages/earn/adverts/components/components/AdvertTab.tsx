@@ -6,7 +6,7 @@ import AvailableJobs from "../AvailableJobs";
 
 export default function TasksTabs() {
     const [currentCategory, setCurrentCategory] =
-        useState<(typeof advertsCategories)[number]["key"]>("social_media");
+        useState<(typeof advertsCategories)[number]["key"]>("whatsapp");
 
     return (
         <div className="space-y-6">

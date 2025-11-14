@@ -39,6 +39,12 @@ export default [
 				label: "Earn by Reselling ",
 				icon: <List size={13} />,
 			},
+            {
+				path: "earn/tasks-history",
+				label: "Completed Tasks History ",
+				icon: <List size={13} />,
+			},
+
 		],	
 	},
 	{
@@ -91,11 +97,26 @@ export default [
     label: "Get more subscribers on social media",
     icon: <SiTiktok size={13} />,
   },
+  {
+				path: "/advertise/advert-tasks-history",
+				label: "Advert Task History ",
+				icon: <List size={13} />,
+ },
+ {
+				path: "/advertise/engagement-tasks-history",
+				label: "Engagement Task History",
+				icon: <List size={13} />,
+},
 
   
 ],
 
 	},
+    {
+	    path: "/fund-wallet",
+		label: "Marketplace",
+		icon: <Wallet size={13} />,
+    },
 	{
 		basePath: "/marketplace",
 		label: "Marketplace",
@@ -126,16 +147,11 @@ export default [
 		icon: <UserPlus size={13} />,
 		options: [
 			{
-				path: "/advertise/engagement-tasks",
+				path: "/advertise/post-advert?type=engagement&engagementType=Get Real People to Follow you",
 				label: "Buy Followers",
 				icon: <UserPlus size={13} />,
 			},
-			{
-				path: "/add-me-up",
-				label: "Add Me Up",
-				comingSoon: true,
-				icon: <UserPlus size={13} />,
-			},
+			
 		],
 	},
 	{

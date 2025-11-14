@@ -81,7 +81,8 @@ export default function AdvertisePage() {
   return (
     <div className="mobile:grid grid-cols-[1fr_214px] gap-4 min-h-full">
       <div className="bg-white shadow-md px-4 py-8 space-y-16 overflow-hidden min-h-full">
-        <Hero />
+        <Hero authUser={authUser} />
+
 
         {/* Features */}
         <div className="space-y-6">
@@ -244,7 +245,7 @@ export default function AdvertisePage() {
   );
 }
 
-function Hero() {
+function Hero({ authUser }: { authUser: AuthUserDTO }) {
   return (
     <div className="bg-gradient-to-r from-white via-primary/30 to-white p-4 rounded-2xl">
       <div className="flex gap-6 max-mobile:gap-4">
@@ -272,7 +273,8 @@ function Hero() {
         />
       </div>
 
-      <AdvertiseIntroModal />
+      {/*  Only show modal if advert fee is NOT paid */}
+      {!authUser.has_paid_advert_fee && <AdvertiseIntroModal />}
     </div>
   );
 }

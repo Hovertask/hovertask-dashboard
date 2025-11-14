@@ -139,12 +139,12 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
 
         <div className="space-y-1">
           <p>
-            Please enter the username of the account you used to perform the
-            advert, e.g. Instagram username.
+            Please enter the social media_account url  of the account you used to perform the
+            advert, e.g. Instagram .
           </p>
           <div className="flex items-center gap-4">
             <input
-              placeholder="Enter your username"
+              placeholder="Enter your social media account Url of the promoted advert post " 
               className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
               type="text"
               value={social_media_url}

@@ -175,52 +175,59 @@ export interface Transaction {
 
 
 export interface Advert {
-	id: number;
-	user_id: number;
-	type:string;
+  id: number;
+  user_id: number;
+  type: string;
 
-	title?: string;
-	description: string | null;
-	social_media_url: string | null;
-	media_type: "image" | "video" | null;
-	file_path: string | null;
-	video_path: string | null;
-	
+  title?: string;
+  description: string | null;
+  social_media_url: string | null;
 
-	// Platform(s) where the advert runs — e.g. Facebook, Instagram
-	platforms: string | null;
+  // Updated: array of media objects
+  advertise_images: {
+    id: number;
+    advertise_id: number;
+    file_path?: string;       // image file URL
+    video_path?: string | null; // video file URL (if media is video)
+    media_type: "image" | "video";
+    created_at: string;
+    updated_at: string;
+  }[];
 
-	// Filters or targeting options
-	gender: string | null;
-	religion: string | null;
-	location: string | null;
-	category:
-	| "social_media"
-	| "video_marketing"
-	| "micro_influence"
-	| "promotion"
-	| "telegram";
+  // Platform(s) where the advert runs — e.g. Facebook, Instagram
+  platforms: string | null;
 
-	// Engagement counts and progress
-	no_of_status_post: number | null; // Total number of expected posts
-	task_count_total: number; // Mirror of no_of_status_post
-	task_count_remaining: number; // Remaining number of users that can engage
+  // Filters or targeting options
+  gender: string | null;
+  religion: string | null;
+  location: string | null;
+  category:
+    | "social_media"
+    | "video_marketing"
+    | "micro_influence"
+    | "promotion"
+    | "telegram";
 
-	// Payment-related
-	payment_method: string | null;
-	payment_per_task: number;
-	estimated_cost: number | null;
-	number_of_participants: number | null;
+  // Engagement counts and progress
+  no_of_status_post: number | null; // Total number of expected posts
+  task_count_total: number; // Mirror of no_of_status_post
+  task_count_remaining: number; // Remaining number of users that can engage
 
-	// Timeline and progress
-	deadline: string | null;
-	priority: "low" | "medium" | "high";
-	completed: "Available" | "Not Available";
+  // Payment-related
+  payment_method: string | null;
+  payment_per_task: number;
+  estimated_cost: number | null;
+  number_of_participants: number | null;
 
-	// System & metadata
-	admin_approval_status: "pending" | "approved" | "completed" | "in-progress";
-	completion_percentage: number;
-	posted_status: "new" | "old";
-	created_at: string;
-	updated_at: string;
+  // Timeline and progress
+  deadline: string | null;
+  priority: "low" | "medium" | "high";
+  completed: "Available" | "Not Available";
+
+  // System & metadata
+  admin_approval_status: "pending" | "approved" | "completed" | "in-progress";
+  completion_percentage: number;
+  posted_status: "new" | "old";
+  created_at: string;
+  updated_at: string;
 }

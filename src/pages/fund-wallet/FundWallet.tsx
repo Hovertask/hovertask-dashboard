@@ -5,12 +5,16 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import type { AuthUserDTO } from "../../../types";
 import handleFundWallet from "./utils/handleFundWallet";
+import WithdrawModal from "../dashboard/components/WithdrawModal"; // import the modal
 
 export default function FundWalletPage() {
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
 		(state) => state.auth.value,
 	);
+
 	const [amount, setAmount] = useState("");
+	const [showWithdrawModal, setShowWithdrawModal] = useState(false); // state for modal
+
 	const {
 		handleSubmit,
 		formState: { isSubmitting },
@@ -19,6 +23,7 @@ export default function FundWalletPage() {
 	return (
 		<div className="mobile:grid grid-cols-[1fr_182px] gap-4 min-h-full">
 			<div className="px-4 py-6 space-y-6 bg-white">
+				{/* Header */}
 				<div className="flex gap-4">
 					<Link to="/" className="mt-1">
 						<ArrowLeft />
@@ -33,6 +38,7 @@ export default function FundWalletPage() {
 					</div>
 				</div>
 
+				{/* Wallet balance card */}
 				<div className="bg-white shadow flex items-center justify-between gap-4 p-6 rounded-2xl max-w-[522px] w-fit">
 					<span>Wallet Balance</span>
 					<span className="font-medium text-[30.59px]">
@@ -40,13 +46,14 @@ export default function FundWalletPage() {
 					</span>
 					<button
 						type="button"
-						onClick={() => null}
+						onClick={() => setShowWithdrawModal(true)} // open modal on click
 						className="border border-primary text-primary px-4 py-2.5 rounded-full flex items-center gap-2 hover:bg-primary/20 transition-colors font-medium"
 					>
 						<Wallet size={16} /> Withdraw
 					</button>
 				</div>
 
+				{/* Fund Wallet form */}
 				<div className="p-4 rounded-3xl bg-primary/20 font-light space-y-3">
 					<p>Please input the amount you wish to add to your wallet</p>
 
@@ -82,6 +89,13 @@ export default function FundWalletPage() {
 					</form>
 				</div>
 			</div>
+
+			{/* Withdraw Modal */}
+			<WithdrawModal
+				show={showWithdrawModal}
+				onClose={() => setShowWithdrawModal(false)}
+				balance={authUser.balance} // pass the wallet balance
+			/>
 		</div>
 	);
 }

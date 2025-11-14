@@ -13,6 +13,8 @@ export default function Adverts() {
 	const isAccountLinked = useSelector(
 		(state: any) => state.auth.value.is_account_linked,
 	);
+    
+	const ENABLE_ACCOUNT_LINKING_UI = false;
 
 
 	return (
@@ -52,7 +54,8 @@ export default function Adverts() {
 						</div>
 					)}
 
-					{!isAccountLinked && (
+	
+					{ENABLE_ACCOUNT_LINKING_UI && !isAccountLinked && (
 						<div className="p-6 shadow bg-white rounded-3xl space-y-5 text-center">
 							<h3 className="text-2xl">Link Your Social Media Accounts</h3>
 							<p className="text-xs font-light text-secondary max-w-[494px] mx-auto">

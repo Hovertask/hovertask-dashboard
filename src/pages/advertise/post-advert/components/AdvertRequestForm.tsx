@@ -45,8 +45,8 @@ const platformConfig: Record<
   }
 > = {
   whatsapp: {
-    illustrativeTitle: "Promote Brands on Your WhatsApp Status",
-    inputLabel: "Select Number of WhatsApp Status to Post",
+    illustrativeTitle: "Promote Brands on Your WhatsApp ",
+    inputLabel: "Select Number of WhatsApp  Post",
     inputDescription:
       "Earn by posting sponsored content on your WhatsApp status. Choose how many posts you want to share.",
     registerKey: "no_of_status_post",
@@ -237,10 +237,11 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
   // ✅ Normalize helper for consistent string comparison
   const normalize = (s: unknown): string =>
     String(s ?? "")
+      .trim()
       .toLowerCase()
-      .replace(/\s+/g, "")
-      .replace(/[^a-z0-9]/g, "");
+      .replace(/[^a-z0-9]/gi, "");
 
+      
   // ✅ Force all socialMedia items to match { key, label, value } shape
   type Option = { key: string; label: string; value: string };
 
