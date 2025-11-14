@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
+import ReferTask from "../../shared/components/ReferTaskCard";
 import AvailableTasks from "../../shared/components/AvailableTasks";
 import AvailableJobs from "../earn/adverts/components/AvailableJobs";
 import AdBanner from "./components/AdBanner";
@@ -25,6 +26,7 @@ export default function Dashboard() {
 					/>
 					<BalanceBoard balance={authUser.balance} />
 					<WelcomeMessage {...authUser} />
+					<ReferTask  />
 					<AvailableJobs mode="preview" />
 					<AvailableTasks mode="preview" />
 					<Carousel>

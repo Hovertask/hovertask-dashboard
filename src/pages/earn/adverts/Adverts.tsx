@@ -92,7 +92,8 @@ export default function Adverts() {
 				</div>
 			</div>
 
-			<LinkAccountsModal />
+			{/* Render modal only if ENABLE_ACCOUNT_LINKING_UI is true */}
+			{ENABLE_ACCOUNT_LINKING_UI && <LinkAccountsModal />}
 		</>
 	);
 }
