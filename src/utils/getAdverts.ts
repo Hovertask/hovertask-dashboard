@@ -3,7 +3,7 @@ import apiEndpointBaseURL from "./apiEndpointBaseURL";
 import getAuthorization from "./getAuthorization";
 
 export default async function getAdverts() {
-	const response = await fetch(`${apiEndpointBaseURL}/adverts/show-all-advert`, {
+	const response = await fetch(`${apiEndpointBaseURL}/advertise/show-all-advert`, {
 		headers: {
 			authorization: getAuthorization(),
 		},
