@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
 import AvailableTasks from "../../shared/components/AvailableTasks";
+import AvailableJobs from "../earn/adverts/components/AvailableJobs";
 import AdBanner from "./components/AdBanner";
 import BalanceBoard from "./components/BalanceBoard";
 import BecomeMemberModal from "./components/BecomeAMemberModal";
@@ -24,6 +25,7 @@ export default function Dashboard() {
 					/>
 					<BalanceBoard balance={authUser.balance} />
 					<WelcomeMessage {...authUser} />
+					<AvailableJobs mode="preview" />
 					<AvailableTasks mode="preview" />
 					<Carousel>
 						<img src="/images/Group 1000004390.png" alt="" />
