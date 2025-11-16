@@ -31,20 +31,20 @@ export default function MembershipSuccessModal({
                 Click the button below to generate your next task and begin
                 earning. <br /> The more tasks you complete, the more you earn.
               </p>
+
+              {/* Warning-style box */}
+              <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 text-left rounded-md max-w-md mx-auto">
+                <strong>Important:</strong> You need to create your first task
+                to unlock and use other features on the site.
+              </div>
+
               <div className="flex justify-center gap-4">
                 <Link
-                  to="/earn/tasks/1"
+                  to="/advertise/post-advert"
                   onClick={closeHandler}
                   className="px-4 py-2 bg-green-600 text-white rounded"
                 >
-                  Perform Task
-                </Link>
-                <Link
-                  to="/"
-                  onClick={closeHandler}
-                  className="px-4 py-2 bg-gray-300 rounded"
-                >
-                  Go to Dashboard
+                  Create Task
                 </Link>
               </div>
             </div>

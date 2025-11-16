@@ -55,8 +55,25 @@ import TransactionsHistoryPage from "./pages/TransactionsHistory";
 import UpdateBankDetailsPage from "./pages/UpdateBankDetails";
 import UpdateLocationPage from "./pages/UpdateLocation";
 import store from "./redux/store";
+import updateUserApi from "./utils/updateUserApi";
+import { listenForUserUpdates } from "./utils/realtimeUserListener";
+import { useState, useEffect } from "react";
+
 
 export default function App() {
+	const [user, setUser] = useState<any>(null);
+
+// 1️⃣ Load logged-in user once
+useEffect(() => {
+    updateUserApi().then(setUser);
+}, []);
+
+// 2️⃣ Start listening for realtime updates
+useEffect(() => {
+    if (!user?.id) return;
+    listenForUserUpdates(user.id);
+}, [user?.id]);
+
 	return (
 		<HeroUIProvider>
 			<Toaster richColors position="top-center" />
