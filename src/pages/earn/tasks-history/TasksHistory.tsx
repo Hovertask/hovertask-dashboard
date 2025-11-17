@@ -49,6 +49,7 @@ export default function TasksHistoryPage() {
 							category={category}
 							setCategory={setCategory}
 							stats={stats}
+							loading={loading}
 						/>
 
 						<hr className="border-dashed" />
