@@ -231,3 +231,9 @@ export interface Advert {
   created_at: string;
   updated_at: string;
 }
+
+declare global {
+  interface Window {
+    Pusher: typeof Pusher;
+  }
+}
