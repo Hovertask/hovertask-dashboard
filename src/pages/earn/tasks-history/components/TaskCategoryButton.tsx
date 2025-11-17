@@ -1,7 +1,7 @@
 import type useAuthUserTasks from "../../../../hooks/useAuthUserTasks";
 import cn from "../../../../utils/cn";
 
-// ✅ Define consistent categories with backend statuses
+// consistent categories
 export const TASK_CATEGORIES = [
 	{ key: "pending", label: "Pending" },
 	{ key: "accepted", label: "Accepted" },
@@ -14,14 +14,20 @@ export default function CategoryButton({
 	currentCategory,
 	setCategory,
 	stats,
+	loading,
 }: {
 	category: (typeof TASK_CATEGORIES)[number];
 	setCategory: React.Dispatch<React.SetStateAction<string>>;
 	currentCategory: string;
 	stats: ReturnType<typeof useAuthUserTasks>["stats"];
+	loading: boolean;
 }) {
-	// ✅ Pull count directly from backend stats
-	const count = stats?.[category.key] ?? 0;
+	// 🚀 Fix: Don't show 0 until stats actually load
+	const statsNotReady = !stats || Object.keys(stats).length === 0;
+
+	const count = statsNotReady || loading
+		? "…" // Loading state
+		: stats?.[category.key] ?? 0;
 
 	return (
 		<button
