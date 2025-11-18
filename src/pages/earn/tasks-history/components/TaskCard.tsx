@@ -16,10 +16,11 @@ export default function TaskCard(
 			<div className="flex items-center justify-between gap-4">
 				<img
 					src={
-						PLATFORMS_IMG_MAP[
-							props.platforms as keyof typeof PLATFORMS_IMG_MAP
-						] || "/images/default.png"
-					}
+  PLATFORMS_IMG_MAP[
+    props.platforms.toLowerCase() as keyof typeof PLATFORMS_IMG_MAP
+  ] || "/images/default.png"
+}
+
 					alt={props.platforms}
 					className="w-8 h-8 mt-1"
 				/>

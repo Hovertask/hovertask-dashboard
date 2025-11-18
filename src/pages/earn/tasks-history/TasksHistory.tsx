@@ -24,7 +24,7 @@ function PageHeader() {
 }
 
 export default function TasksHistoryPage() {
-	const [category, setCategory] = useState("accepted");
+	const [category, setCategory] = useState("pending");
 	const { tasks, stats, reload, loading } = useAuthUserTasks(category);
 
 	return (

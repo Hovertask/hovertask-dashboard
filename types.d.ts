@@ -166,11 +166,15 @@ export interface ContactSectionProps
 }
 
 export interface Transaction {
+	id: number;
 	description: string;
 	amount: number;
 	status: "successful" | "failed" | "pending";
 	type: "debit" | "credit";
 	date: string;
+	payment_source?: string;
+	reference?: string;
+	category?: string;
 }
 
 

@@ -26,7 +26,7 @@ export default function SingleProductPage() {
   const { product, seller, loading, error } = useProductWithSeller(id!);
   const dispatch = useDispatch();
   const cartProduct = useCartItem(id!);
-
+  const ENABLE_CART_UI = false;
   // ✅ Use product images if available
   const images =
     product?.product_images && product.product_images.length > 0
@@ -283,12 +283,13 @@ export default function SingleProductPage() {
 
 
 
-                {/* Cart / Contact */}
+               
                 <div className="flex flex-wrap gap-2 mt-2">
                   <button className="flex-1 px-3 py-2 bg-primary rounded-lg text-white text-xs sm:text-sm">
                     Contact Seller
                   </button>
-                  {cartProduct ? (
+                 {ENABLE_CART_UI && (
+                  cartProduct ? ( 
                     <button
                       onClick={() => (dispatch(removeProduct(id)), toast.success("Removed from cart!"))}
                       className="flex-1 px-3 py-2 border-primary border rounded-lg text-xs sm:text-sm text-primary"
@@ -302,7 +303,7 @@ export default function SingleProductPage() {
                     >
                       Add to Cart
                     </button>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>

@@ -1,9 +1,16 @@
 import { ArrowLeft, Share2 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import UserProfileCard from "../shared/components/UserProfileCard";
+import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
+import getAuthorization from "../utils/getAuthorization";
 
 export default function SingleTransactionPage() {
+	const { id } = useParams(); // Get transaction ID from URL
+	const [transaction, setTransaction] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+
 	async function share() {
 		try {
 			await window.navigator?.share({
@@ -13,6 +20,50 @@ export default function SingleTransactionPage() {
 		} catch (error) {
 			toast.error("Failed to share");
 		}
+	}
+
+	useEffect(() => {
+		const fetchTransaction = async () => {
+			try {
+				
+				const res = await fetch(`${apiEndpointBaseURL}/transactions/${id}`,
+					{
+						headers: { authorization: getAuthorization() },
+					},
+				);
+
+				const data = await res.json();
+
+				if (res.ok) {
+					setTransaction(data.data);
+				} else {
+					toast.error(data.message || "Transaction not found");
+				}
+			} catch (error) {
+				console.error(error);
+				toast.error("Failed to fetch transaction");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchTransaction();
+	}, [id]);
+
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<p>Loading transaction...</p>
+			</div>
+		);
+	}
+
+	if (!transaction) {
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<p className="text-danger">Transaction not found</p>
+			</div>
+		);
 	}
 
 	return (
@@ -26,7 +77,7 @@ export default function SingleTransactionPage() {
 					<div className="space-y-2">
 						<h1 className="text-xl font-medium">Detailed Transaction View</h1>
 						<p className="text-sm text-zinc-500">
-							Track yur payments and earnings with detailed records
+							Track your payments and earnings with detailed records
 						</p>
 					</div>
 				</div>
@@ -37,35 +88,62 @@ export default function SingleTransactionPage() {
 					<ul className="list-disc list-inside">
 						<li>
 							<span className="text-zinc-500">Transaction ID: </span>
-							<span className="font-medium">{crypto.randomUUID()}</span>
+							<span className="font-medium">{transaction.id}</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Type: </span>
-							<span className="font-medium">Credit</span>
+							<span className="font-medium capitalize">
+								{transaction.type}
+							</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Amount: </span>
-							<span className="font-medium">₦7,500</span>
+							<span className="font-medium">
+								₦{Number(transaction.amount).toLocaleString()}
+							</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Date: </span>
-							<span className="font-medium">April 19, 2025. 10:00AM</span>
+							<span className="font-medium">
+								{new Date(transaction.date).toLocaleString()}
+							</span>
 						</li>
+
 						<li>
-							<span className="text-zinc-500">Product/Service Purchased: </span>
-							<span className="font-medium">Bluetooth Airpods</span>
+							<span className="text-zinc-500">Description: </span>
+							<span className="font-medium">{transaction.description}</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Payment Method: </span>
-							<span className="font-medium">Bank Transfer</span>
+							<span className="font-medium">
+								{transaction.payment_method || "N/A"}
+							</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Quantity Purchased: </span>
-							<span className="font-medium">3 Units</span>
+							<span className="font-medium">
+								{transaction.quantity || 1}
+							</span>
 						</li>
+
 						<li>
 							<span className="text-zinc-500">Status: </span>
-							<span className="font-medium text-success">Successful</span>
+							<span
+								className={
+									transaction.status === "successful"
+										? "font-medium text-success"
+										: transaction.status === "failed"
+											? "font-medium text-danger"
+											: "font-medium text-warning"
+								}
+							>
+								{transaction.status}
+							</span>
 						</li>
 					</ul>
 
@@ -90,6 +168,7 @@ export default function SingleTransactionPage() {
 						Download
 					</button>
 				</div>
+
 				<p className="text-center text-primary">
 					<Link to="/support" className="underline text-sm">
 						Contact Support

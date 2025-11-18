@@ -1,93 +1,61 @@
 import { Select, SelectItem } from "@heroui/react";
 import { ArrowLeft, Filter } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import type { Transaction } from "../../types";
 import UserProfileCard from "../shared/components/UserProfileCard";
 import useTransactions from "../hooks/useTransactions";
+import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
+import getAuthorization from "../utils/getAuthorization";
 import cn from "../utils/cn";
 
 export default function TransactionsHistoryPage() {
 	const userBalance = useSelector<any, number>(
 		(state: any) => state.auth.value.balance,
 	);
+
 	const [transactionsFilter, setTransactionsFilter] = useState<
 		"all" | "debit" | "credit" | "failed" | "successful" | "pending"
 	>("all");
 	const filters = ["all", "debit", "credit", "failed", "successful", "pending"];
-	const transactions: Transaction[] = [
-		{
-			description: "Grocery shopping at Walmart",
-			amount: 82.45,
-			status: "successful",
-			type: "debit",
-			date: "2025-04-19T14:35:00Z",
-		},
-		{
-			description: "Salary for April",
-			amount: 3500,
-			status: "successful",
-			type: "credit",
-			date: "2025-04-01T09:00:00Z",
-		},
-		{
-			description: "Netflix subscription",
-			amount: 15.99,
-			status: "successful",
-			type: "debit",
-			date: "2025-04-10T05:45:00Z",
-		},
-		{
-			description: "Refund from Amazon",
-			amount: 120.5,
-			status: "successful",
-			type: "credit",
-			date: "2025-04-17T17:20:00Z",
-		},
-		{
-			description: "Payment to freelancer",
-			amount: 600,
-			status: "pending",
-			type: "debit",
-			date: "2025-04-20T11:30:00Z",
-		},
-		{
-			description: "Electricity bill",
-			amount: 95.0,
-			status: "successful",
-			type: "debit",
-			date: "2025-04-15T08:00:00Z",
-		},
-		{
-			description: "Failed bank transfer",
-			amount: 250,
-			status: "failed",
-			type: "debit",
-			date: "2025-04-12T19:50:00Z",
-		},
-		{
-			description: "Cashback reward",
-			amount: 25.0,
-			status: "successful",
-			type: "credit",
-			date: "2025-04-05T13:22:00Z",
-		},
-		{
-			description: "Spotify Premium",
-			amount: 9.99,
-			status: "successful",
-			type: "debit",
-			date: "2025-04-06T06:30:00Z",
-		},
-		{
-			description: "Interest payment",
-			amount: 18.75,
-			status: "successful",
-			type: "credit",
-			date: "2025-04-18T00:00:00Z",
-		},
-	];
+
+	// <- replaced static array with state that will be populated from backend
+	const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+	useEffect(() => {
+		const fetchTransactions = async () => {
+			try {
+				
+				const res = await fetch(`${apiEndpointBaseURL}/transactions`, {
+					method: "GET",
+					headers: { authorization: getAuthorization() },
+				});
+
+
+				// handle non-JSON or error responses gracefully
+				let payload: any = null;
+				try {
+					payload = await res.json();
+				} catch (err) {
+					console.error("Failed to parse transactions response as JSON", err);
+				}
+
+				// Accept either { data: [...] } or [...]
+				const items: Transaction[] = (payload && payload.data) ? payload.data : Array.isArray(payload) ? payload : [];
+
+				// Ensure fallback to empty array if something went wrong
+				setTransactions(items);
+			} catch (err) {
+				console.error("Error fetching transactions:", err);
+				setTransactions([]);
+			}
+		};
+
+		fetchTransactions();
+	}, []);
+
+	// keep everything else identical — uses your hook for grouping/summary
 	const {
 		totalSpent,
 		credit,
@@ -212,8 +180,9 @@ function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
 						)
 						.map((transaction, i) => (
 							<tr
-								onClick={() => navigate(`/transactions-history/${i + 1}`)}
+								onClick={() => navigate(`/transactions-history/${transaction.id}`)}
 								className="cursor-pointer odd:bg-zinc-50 hover:bg-primary/10 transition-colors"
+								key={`${transaction.id ?? i}-${transaction.date}`}
 							>
 								<td className="px-2 py-4">{i + 1}</td>
 								<td className="px-2 py-4">{transaction.description}</td>

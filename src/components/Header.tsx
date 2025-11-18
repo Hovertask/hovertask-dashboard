@@ -45,6 +45,7 @@ export default function Header() {
 		"Buy Followers",
 	];
 	const activeLink = useActiveLink();
+	const ENABLE_CART_UI = false;
 
 	return (
 		<header className="bg-gradient-to-b from-[#4B70F559] to-[#9D9D9D1A] p-4">
@@ -71,6 +72,7 @@ export default function Header() {
 						<div>
 							<Moon size={18} />
 						</div>
+						{ENABLE_CART_UI && (
 						<Link
 							className="inline-flex gap-1 items-center px-2 py-1 bg-white rounded-2xl relative"
 							to="/marketplace/cart"
@@ -82,7 +84,7 @@ export default function Header() {
 									{cartItemsLength}
 								</span>
 							) : null}
-						</Link>
+						</Link>)}
 						<div className="flex gap-1 items-center px-2 py-1 bg-white rounded-2xl">
 							<img
 								src="/images/nigerian-flag.png"
