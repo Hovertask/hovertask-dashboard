@@ -564,7 +564,7 @@ function ListingForm() {
 
 			<div className="text-sm space-y-4">
 				<div className="space-y-2">
-					<label htmlFor="phone_number">Phone Number</label>
+					<label htmlFor="phone_number">Whatsapp Number</label>
 					<div className="flex gap-2 border p-2 rounded-full border-zinc-400">
 						<img src="/images/streamline_discount-percent-coupon.png" alt="" />
 						<input

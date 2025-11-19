@@ -33,6 +33,35 @@ export default function SingleProductPage() {
       ? product.product_images.map((i) => i.file_path)
       : demoImages;
 
+// Ensure full image URLs
+const fullImages = images;
+
+// Use seller.whatsapp or seller.phone
+const whatsappNumber = seller?.phone;
+
+// Build WhatsApp message
+const finalPrice = product?.discount
+  ? Number(product?.price - (product?.price * product?.discount) / 100)
+  : product?.price || 0;
+
+const whatsappMessage = `
+Hello ${seller?.fname}, I’m interested in this product:
+
+🛍 Product: ${product?.name}
+💰 Price: ₦${finalPrice.toLocaleString()}
+
+Here is the product image:
+${fullImages[0]}
+
+Please tell me more about it.
+`;
+
+// Final WhatsApp link
+const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+  whatsappMessage
+)}`;
+
+
   // Reseller modal state
   const [resellerModalOpen, setResellerModalOpen] = useState(false);
   const [resellerData, setResellerData] = useState<any>(null);
@@ -285,9 +314,14 @@ export default function SingleProductPage() {
 
                
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <button className="flex-1 px-3 py-2 bg-primary rounded-lg text-white text-xs sm:text-sm">
-                    Contact Seller
-                  </button>
+                  <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-3 py-3 bg-green-600 rounded-lg text-white text-sm text-center active:scale-95"
+                  >
+                Contact Seller on WhatsApp
+              </a>
                  {ENABLE_CART_UI && (
                   cartProduct ? ( 
                     <button

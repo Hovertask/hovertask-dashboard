@@ -171,7 +171,7 @@ export interface Transaction {
 	amount: number;
 	status: "successful" | "failed" | "pending";
 	type: "debit" | "credit";
-	date: string;
+	created_at: string;
 	payment_source?: string;
 	reference?: string;
 	category?: string;

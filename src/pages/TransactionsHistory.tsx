@@ -176,13 +176,13 @@ function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
 				<tbody>
 					{transactions
 						.sort(
-							(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+							(a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
 						)
 						.map((transaction, i) => (
 							<tr
 								onClick={() => navigate(`/transactions-history/${transaction.id}`)}
 								className="cursor-pointer odd:bg-zinc-50 hover:bg-primary/10 transition-colors"
-								key={`${transaction.id ?? i}-${transaction.date}`}
+								key={`${transaction.id ?? i}-${transaction.created_at}`}
 							>
 								<td className="px-2 py-4">{i + 1}</td>
 								<td className="px-2 py-4">{transaction.description}</td>
@@ -199,7 +199,7 @@ function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
 									{transaction.status}
 								</td>
 								<td className="px-2 py-4">
-									{new Date(transaction.date).toDateString()}
+									{new Date(transaction.created_at).toDateString()}
 								</td>
 								<td className="px-2 py-4 capitalize">{transaction.type}</td>
 							</tr>
