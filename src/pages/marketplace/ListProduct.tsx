@@ -592,7 +592,7 @@ function ListingForm() {
 					<div className="flex gap-2 border p-2 rounded-full border-zinc-400">
 						<img src="/images/streamline_discount-percent-coupon.png" alt="" />
 						<input
-							{...register("phone_number", {
+							{...register("email", {
 								pattern: {
 									value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 									message: "Enter valid email address",
