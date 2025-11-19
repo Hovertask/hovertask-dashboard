@@ -33,16 +33,31 @@ export default function SingleProductPage() {
       ? product.product_images.map((i) => i.file_path)
       : demoImages;
 
-// Ensure full image URLs
-const fullImages = images;
 
 // Use seller.whatsapp or seller.phone
-const whatsappNumber = seller?.phone;
+const normalizePhone = (num?: string) => {
+  if (!num) return "";
+
+  // remove spaces, dashes, plus sign
+  num = num.replace(/\D/g, "");
+
+  // If starts with 0 → convert to Nigeria format
+  if (num.startsWith("0")) {
+    return `234${num.substring(1)}`;
+  }
+
+  return num;
+};
+
+const whatsappNumber = normalizePhone(seller?.phone);
+
 
 // Build WhatsApp message
 const finalPrice = product?.discount
   ? Number(product?.price - (product?.price * product?.discount) / 100)
   : product?.price || 0;
+
+const productPageUrl = `${window.location.origin}/marketplace/p/${product?.id}`;
 
 const whatsappMessage = `
 Hello ${seller?.fname}, I’m interested in this product:
@@ -50,8 +65,8 @@ Hello ${seller?.fname}, I’m interested in this product:
 🛍 Product: ${product?.name}
 💰 Price: ₦${finalPrice.toLocaleString()}
 
-Here is the product image:
-${fullImages[0]}
+Product details:
+${productPageUrl}
 
 Please tell me more about it.
 `;
