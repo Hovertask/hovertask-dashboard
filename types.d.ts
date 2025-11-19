@@ -75,7 +75,7 @@ interface Product {
 	meet_up_preference?: string | null;
 	delivery_fee?: number | null;
 	estimated_delivery_date?: string | null;
-	phone_number?: string | null;
+	phone_number?: string;
 	email?: string | null;
 	social_media_link?: string | null;
 	brand: string | null;

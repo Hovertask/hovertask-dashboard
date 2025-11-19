@@ -49,7 +49,7 @@ const normalizePhone = (num?: string) => {
   return num;
 };
 
-const whatsappNumber = normalizePhone(seller?.phone);
+const whatsappNumber = normalizePhone(product?.phone_number);
 
 
 // Build WhatsApp message
