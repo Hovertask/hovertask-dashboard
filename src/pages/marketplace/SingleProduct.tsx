@@ -34,48 +34,43 @@ export default function SingleProductPage() {
       : demoImages;
 
 
-// Use seller.whatsapp or seller.phone
-const normalizePhone = (num?: string) => {
-  if (!num) return "";
 
-  // remove spaces, dashes, plus sign
-  num = num.replace(/\D/g, "");
+  const [loadingContact, setLoadingContact] = useState(false);
 
-  // If starts with 0 → convert to Nigeria format
-  if (num.startsWith("0")) {
-    return `234${num.substring(1)}`;
+const resellerCodeFromURL = new URLSearchParams(window.location.search).get("reseller");
+
+const handleContactSeller = async () => {
+  try {
+    setLoadingContact(true);
+
+    const response = await fetch(
+      `${apiEndpointBaseURL}/track-conversion/${product?.id}?reseller=${resellerCodeFromURL}`,
+      {
+        method: "GET",
+        credentials: "include",
+         headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthorization(),
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (data?.whatsapp_url) {
+      window.location.href = data.whatsapp_url;
+    } else {
+      console.error("WhatsApp link missing");
+    }
+  } catch (error) {
+    console.error("Conversion tracking failed", error);
+  } finally {
+    setLoadingContact(false);
   }
-
-  return num;
 };
 
-const whatsappNumber = normalizePhone(product?.phone_number);
 
-
-// Build WhatsApp message
-const finalPrice = product?.discount
-  ? Number(product?.price - (product?.price * product?.discount) / 100)
-  : product?.price || 0;
-
-const productPageUrl = `${window.location.origin}/marketplace/p/${product?.id}`;
-
-const whatsappMessage = `
-Hello ${seller?.fname}, I’m interested in this product:
-
-🛍 Product: ${product?.name}
-💰 Price: ₦${finalPrice.toLocaleString()}
-
-Product details:
-${productPageUrl}
-
-Please tell me more about it.
-`;
-
-// Final WhatsApp link
-const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-  whatsappMessage
-)}`;
-
+      
 
   // Reseller modal state
   const [resellerModalOpen, setResellerModalOpen] = useState(false);
@@ -329,14 +324,42 @@ const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
 
                
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full px-3 py-3 bg-green-600 rounded-lg text-white text-sm text-center active:scale-95"
-                  >
-                Contact Seller on WhatsApp
-              </a>
+                 <button
+  onClick={handleContactSeller}
+  disabled={loadingContact}
+  className={`block w-full px-3 py-3 bg-green-600 rounded-lg text-white text-sm text-center active:scale-95 ${
+    loadingContact ? "opacity-70 cursor-not-allowed" : ""
+  }`}
+>
+  {loadingContact ? (
+    <span className="flex items-center justify-center gap-2">
+      <svg
+        className="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4l3-3-3-3v4a12 12 0 00-12 12h4z"
+        ></path>
+      </svg>
+      Contacting Seller...
+    </span>
+  ) : (
+    "Contact Seller on WhatsApp"
+  )}
+</button>
+
                  {ENABLE_CART_UI && (
                   cartProduct ? ( 
                     <button
