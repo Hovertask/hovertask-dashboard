@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Heart, ShoppingBag, StarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type { ProductCardProps } from "../../../types";
 import cn from "../../utils/cn";
 import getPercentageValue from "../../utils/getPercentageValue";
+import Loading from "./Loading";
 
 export default function ProductCard(props: ProductCardProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const [isProcessing, setIsProcessing] = useState(false);
+	const navigate = useNavigate();
 
 	const images =
 		props.product_images && props.product_images.length > 0
@@ -106,10 +109,29 @@ export default function ProductCard(props: ProductCardProps) {
 					</div>
 				</div>
 				<div className="flex items-center justify-between gap-2">
-					<button
-						type="button"
-						onClick={() => {
-							if (props.onButtonClickAction) props.onButtonClickAction();
+				    <Link
+						to={props.linkOverrideURL ?? `/marketplace/p/${props.id}`}
+						onClick={async (e) => {
+							if (isProcessing) return;
+							// Always prevent default so we can decide programmatically whether to navigate
+							e.preventDefault();
+									let cancel = false;
+									if (props.onButtonClickAction) {
+										try {
+											setIsProcessing(true);
+											const res = props.onButtonClickAction();
+											const value = res instanceof Promise ? await res : res;
+											// if handler returns true -> cancel navigation
+											if (value === true) cancel = true;
+										} catch (err) {
+											console.error("onButtonClickAction error:", err);
+										} finally {
+											setIsProcessing(false);
+										}
+									}
+							if (!cancel) {
+								navigate(props.linkOverrideURL ?? `/marketplace/p/${props.id}`);
+							}
 						}}
 						className={cn(
 							"flex gap-1 justify-center items-center rounded-full h-[27.75px] text-[9.64px] flex-1",
@@ -119,9 +141,18 @@ export default function ProductCard(props: ProductCardProps) {
 							},
 						)}
 					>
-						<ShoppingBag size={12} />
-						{props.buttonText ?? "Buy Product"}
-					</button>
+								{isProcessing ? (
+									<>
+										<Loading />
+										<span className="sr-only">Loading</span>
+									</>
+								) : (
+									<>
+										<ShoppingBag size={12} />
+										{props.buttonText ?? "View Product"}
+									</>
+								)}
+					</Link>
 					<Link
 						to={props.linkOverrideURL ?? `/marketplace/p/${props.id}`}
 						className={cn(

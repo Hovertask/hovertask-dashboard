@@ -20,8 +20,9 @@ import Loading from "../../shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import { MessageSquare, PhoneCall } from "lucide-react";
 
-const isAdvertiseTask =
-    new URLSearchParams(window.location.search).get("type") === "advertise";
+const isResellType =
+    new URLSearchParams(window.location.search).get("type") === "resell";
+
 const islistProdut =new URLSearchParams(window.location.search).get("type") === "list-product";
 
 export default function ListProductPage() {
@@ -35,16 +36,16 @@ export default function ListProductPage() {
 						<ArrowLeft />
 					</Link>
 
-					{ islistProdut && (
+					{ isResellType && (
 					<div className="space-y-2">
-						<h1 className="text-xl font-medium">List a New Product</h1>
+						<h1 className="text-xl font-medium">List a Product  for resell</h1>
 						<p className="text-sm text-zinc-500">
-							Add a new product or service to the marketplace. Include details,
-							set your price, and upload images to attract buyers
+							Add a new product or service for resell task to get more convertion
+							
 						</p>
 					</div>
 					)}
-					{isAdvertiseTask && (
+					{islistProdut && (
                     
 					<div className="space-y-2">
 						<h1 className="text-xl font-medium">List a New Product</h1>
@@ -138,6 +139,7 @@ function ListingForm() {
 	const [images, setImages] = useState<{ file_path: string }[]>([]);
 	const imageInputRef = useRef<HTMLInputElement>(null);
 	const modalProps = useDisclosure();
+	const budgetInfoModal = useDisclosure();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const {
 		register,
@@ -459,6 +461,48 @@ function ListingForm() {
 					)}
 				</div>
 
+				{isResellType && (
+  <div className="space-y-2">
+    <label htmlFor="resell_budget" className="flex items-center gap-2">
+      <span>Budget Amount for Reselling (₦)</span>
+
+      {/* Info / Explanation Button */}
+      <button
+        type="button"
+        onClick={budgetInfoModal.onOpen}
+        className="text-primary underline text-xs"
+      >
+        What is this?
+      </button>
+    </label>
+
+    <div className="flex gap-2 border p-2 rounded-full border-zinc-400">
+      <span className="font-medium text-base">₦</span>
+      <input
+        {...register("resell_budget", {
+          required: "Budget amount is required for resell products",
+          min: { value: 1, message: "Budget must be greater than 0" },
+          pattern: {
+            value: /^\d+$/,
+            message: "Enter a valid number",
+          },
+        })}
+        type="number"
+        min={1}
+        placeholder="e.g. 100,000"
+        className="outline-none placeholder:text-xs flex-1"
+      />
+    </div>
+
+    {errors["resell_budget"] && (
+      <small className="text-danger">
+        {errors["resell_budget"].message as string}
+      </small>
+    )}
+  </div>
+)}
+
+
 				<div className="pt-2">
 					<label className="text-sm mb-1">Payment method</label>
 					<Select
@@ -650,6 +694,40 @@ function ListingForm() {
 				</button>
 			</div>
 
+            {/* Budget Explanation Modal */}
+<Modal isOpen={budgetInfoModal.isOpen} onOpenChange={budgetInfoModal.onOpenChange}>
+  <ModalContent>
+    <ModalBody className="text-center p-6 space-y-4">
+
+      <h3 className="text-lg font-semibold">What is the Resell Budget Amount?</h3>
+
+      <p className="text-sm text-zinc-600 leading-normal">
+        The <b>resell budget amount</b> is the total money you set aside to 
+        <b>pay commissions to resellers</b> for each successful conversion.
+      </p>
+
+      <p className="text-sm text-zinc-600 leading-normal">
+        Each time a reseller successfully brings a buyer who completes a conversion, 
+        the <b>commission amount</b> you set (e.g., ₦500) will be 
+        <b>deducted from your product’s budget balance</b>.
+      </p>
+
+      <p className="text-sm text-zinc-600">
+        <b>Example:</b><br />
+        If the reseller commission is <b>₦500</b> and a reseller brings a conversion, 
+        then <b>₦500 will be deducted</b> from your product’s budget balance.
+      </p>
+
+      <button
+        className="px-4 py-2 bg-primary text-white rounded-lg"
+        onClick={budgetInfoModal.onClose}
+      >
+        Got it
+      </button>
+
+    </ModalBody>
+  </ModalContent>
+</Modal>
 
 
 			{/* preview modal */}
@@ -660,6 +738,7 @@ function ListingForm() {
 				product_images={images}
 				submitForm={submitForm}
 				setIsSubmitting={setIsSubmitting}
+				resell_budget={getValues().resell_budget}
 			/>
 
 			{isSubmitting && <Loading fixed />}
@@ -681,6 +760,7 @@ function ListingPreviewModal(
 		submitForm(): Promise<any>;
 		getValues(): any;
 		setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+		resell_budget?: any;
 	},
 ) {
 	const successModalProps = useDisclosure();

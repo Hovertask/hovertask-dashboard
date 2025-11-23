@@ -4,21 +4,22 @@ import MarketplaceSearchForm from "../../../shared/components/MarketplaceSearchF
 import { useState } from "react";
 import cn from "../../../utils/cn";
 import ProductCard from "../../../shared/components/ProductCard";
-import type { Product } from "../../../../types";
 import { useDisclosure } from "@heroui/react";
 import useProducts from "../../../hooks/useProducts";
 import Loading from "../../../shared/components/Loading";
 import EmptyMapErr from "../../../shared/components/EmptyMapErr";
 import useProductCategories from "../../../hooks/useProductCategories";
-import ProductInfoModal from "./components/ProductInfoModal";
+import ResellerLinkModal from "../../../shared/components/ResellerLinkModal";
+import generateResellerLink from "../../../utils/generateResellerLink";
+// import ProductInfoModal from "./components/ProductInfoModal";
 
 export default function ResellPage() {
 	const { categories, refresh } = useProductCategories();
 	const [currentCategory, setCurrentCategory] = useState<string>("all");
-	const [currentlyViewedProduct, setCurrentlyViewedProduct] =
-		useState<Product>();
+	// removed unused currentlyViewedProduct state (resellerData holds product now)
 	const { products, reload } = useProducts();
 	const modalProps = useDisclosure();
+	const [resellerData, setResellerData] = useState<any>(null);
 
 	return (
 		<div className="grid min-[1000px]:grid-cols-[1fr_200px] min-h-full gap-4">
@@ -92,10 +93,20 @@ export default function ResellPage() {
 										responsive
 										key={product.id}
 										{...product}
-										onButtonClickAction={() => {
-											setCurrentlyViewedProduct(product);
-											modalProps.onOpen();
-										}}
+										onButtonClickAction={async () => {
+												// prepare reseller data, open reseller modal and prevent navigation
+												try {
+													const res: any = await generateResellerLink(String(product.id));
+													// API shape may be { data: { reseller_url, code } }
+													const url = (res && res.data && (res.data.reseller_url || res.data.url)) || `${window.location.origin}/marketplace/p/${product.id}`;
+													setResellerData({ product, reseller_url: url });
+												} catch (err) {
+													console.error("Failed to generate reseller link", err);
+													setResellerData({ product, reseller_url: `${window.location.origin}/marketplace/p/${product.id}` });
+												}
+												modalProps.onOpen();
+												return true; // returning true cancels navigation
+											}}
 									/>
 								))}
 							</div>
@@ -137,7 +148,14 @@ export default function ResellPage() {
 				</div>
 			)}
 
-			<ProductInfoModal {...modalProps} product={currentlyViewedProduct} />
+						<ResellerLinkModal
+							open={modalProps.isOpen}
+							onClose={() => {
+								modalProps.onClose();
+								setResellerData(null);
+							}}
+							data={resellerData}
+						/>
 		</div>
 	);
 }
