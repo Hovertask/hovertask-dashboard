@@ -1,6 +1,6 @@
 import { ArrowLeft, Image, Tag } from "lucide-react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { AuthUserDTO, Product } from "../../../types";
 import { DragEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -20,13 +20,14 @@ import Loading from "../../shared/components/Loading";
 import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 import { MessageSquare, PhoneCall } from "lucide-react";
 
-const isResellType =
-    new URLSearchParams(window.location.search).get("type") === "resell";
-
-const islistProdut =new URLSearchParams(window.location.search).get("type") === "list-product";
 
 export default function ListProductPage() {
 	document.title = "List New Product - Hovertask Dashboard";
+
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
+	const isResellType = params.get("type") === "resell";
+	const isListProduct = params.get("type") === "list-product";
 
 	return (
 		<div className="mobile:grid grid-cols-[1fr_200px] min-h-full">
@@ -45,7 +46,7 @@ export default function ListProductPage() {
 						</p>
 					</div>
 					)}
-					{islistProdut && (
+					{isListProduct && (
                     
 					<div className="space-y-2">
 						<h1 className="text-xl font-medium">List a New Product</h1>
@@ -135,6 +136,10 @@ export default function ListProductPage() {
 
 function ListingForm() {
 	const userId = useSelector<any, string>((state: any) => state.auth.value.id);
+	// compute query params locally so this component reacts to URL changes
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
+	const isResellType = params.get("type") === "resell";
 	const [draggedOver, setDraggedOver] = useState(false);
 	const [images, setImages] = useState<{ file_path: string }[]>([]);
 	const imageInputRef = useRef<HTMLInputElement>(null);
