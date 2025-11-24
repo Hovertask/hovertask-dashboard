@@ -64,6 +64,20 @@ import { toast } from "sonner";
 export default function App() {
 	const [user, setUser] = useState<any>(null);
 
+// Request Notification permission early (so the browser can prompt once)
+useEffect(() => {
+	if ("Notification" in window) {
+		try {
+			console.log("Notification permission at mount:", Notification.permission);
+			if (Notification.permission === 'default') {
+				Notification.requestPermission().then((p) => console.log('Notification permission result:', p));
+			}
+		} catch (e) {
+			console.warn('Notification API not available or blocked', e);
+		}
+	}
+}, []);
+
 // 1️⃣ Load logged-in user once
 useEffect(() => {
     updateUserApi().then(setUser);
@@ -75,6 +89,8 @@ useEffect(() => {
 
 	// register listener and get cleanup function
 	const cleanup = listenForUserUpdates(user.id, (ev) => {
+		console.log('Realtime event received:', ev);
+		console.log('Notification.permission before notify:', "Notification" in window ? Notification.permission : 'not-supported');
 		try {
 			const payload = ev.payload || {};
 			// show a lightweight toast so users see it in-app
