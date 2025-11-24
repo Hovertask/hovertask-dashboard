@@ -29,35 +29,38 @@ export default function RootLayout() {
 	}, [dispatch, user]);
 
 	useEffect(() => {
-	if (!user) return;
+		if (!user) return;
 
-	const allowedPaths = [
-		"/VerifyEmail",
-		"/become-a-member",
-		"/choose-online-payment-method",
-		"/payment/callback",
-		"/advertise", // allow advertise page itself
-		"/advertise/engagement-tasks-history",
-		"/advertise/advert-tasks-history",
-		"/advertise/task-performance/:id",
-		"/advertise/post-advert",
-		"/advertise/engagement-tasks",
-		
-	];
+		const pathname = location.pathname;
 
-	if (!user.email_verified_at && !allowedPaths.includes(location.pathname)) {
-		navigate("/VerifyEmail", { replace: true });
-	} else if (!user.is_member && !allowedPaths.includes(location.pathname)) {
-		navigate("/become-a-member", { replace: true });
-	} else if (
-		user.advertise_count === 0 &&
-		user.task_count === 0 &&
-		!allowedPaths.includes(location.pathname)
-	) {
-		// if user has not created any advert or task
-		navigate("/advertise", { replace: true });
-	}
-}, [user, navigate, location]);
+		// Step 1: Email verification must be completed first.
+		// If not verified, only allow the verification and payment callback flows.
+		if (!user.email_verified_at) {
+			const allowed = ["/VerifyEmail", "/payment/callback", "/choose-online-payment-method"];
+			if (!allowed.includes(pathname)) {
+				navigate("/VerifyEmail", { replace: true });
+			}
+			return;
+		}
+
+		// Step 2: After email verified, require membership before other areas.
+		if (!user.is_member) {
+			const allowed = ["/become-a-member", "/choose-online-payment-method", "/payment/callback"];
+			if (!allowed.includes(pathname)) {
+				navigate("/become-a-member", { replace: true });
+			}
+			return;
+		}
+
+		// Step 3: After membership, encourage creating adverts/tasks by routing to /advertise
+		if (user.advertise_count === 0 && user.task_count === 0) {
+			// allow any advertise sub-paths
+			if (!pathname.startsWith("/advertise")) {
+				navigate("/advertise", { replace: true });
+			}
+			return;
+		}
+	}, [user, navigate, location]);
 
 
 	return (

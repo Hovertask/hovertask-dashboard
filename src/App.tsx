@@ -58,6 +58,7 @@ import store from "./redux/store";
 import updateUserApi from "./utils/updateUserApi";
 import { listenForUserUpdates } from "./utils/realtimeUserListener";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 
 export default function App() {
@@ -70,8 +71,51 @@ useEffect(() => {
 
 // 2️⃣ Start listening for realtime updates
 useEffect(() => {
-    if (!user?.id) return;
-    listenForUserUpdates(user.id);
+	if (!user?.id) return;
+
+	// register listener and get cleanup function
+	const cleanup = listenForUserUpdates(user.id, (ev) => {
+		try {
+			const payload = ev.payload || {};
+			// show a lightweight toast so users see it in-app
+			const title = payload.title || (ev.type === 'wallet-updated' ? 'Wallet updated' : 'New notification');
+			const body = payload.body || payload.message || '';
+
+			toast(`${title}${body ? ` — ${body}` : ''}`);
+
+			// Browser notification
+			if ("Notification" in window) {
+				if (Notification.permission === 'granted') {
+					const notif = new Notification(title, { body, icon: payload.icon || '/images/logo192.png' });
+					notif.onclick = () => {
+						window.focus();
+						// navigate to notifications page or payload.url
+						const url = payload.url || '/notifications';
+						window.location.href = url;
+						notif.close();
+					};
+				} else if (Notification.permission !== 'denied') {
+					Notification.requestPermission().then((permission) => {
+						if (permission === 'granted') {
+							const notif = new Notification(title, { body, icon: payload.icon || '/images/logo192.png' });
+							notif.onclick = () => {
+								window.focus();
+								const url = payload.url || '/notifications';
+								window.location.href = url;
+								notif.close();
+							};
+						}
+					});
+				}
+			}
+		} catch (e) {
+			console.error('Error handling realtime event', e);
+		}
+	});
+
+	return () => {
+		if (typeof cleanup === 'function') cleanup();
+	};
 }, [user?.id]);
 
 	return (
