@@ -84,56 +84,55 @@ useEffect(() => {
 }, []);
 
 // 2️⃣ Start listening for realtime updates
+// in App component useEffect that starts realtime listening
+
 useEffect(() => {
-	if (!user?.id) return;
+  if (!user?.id) {
+    console.info("Realtime listener not started — user not yet loaded");
+    return;
+  }
 
-	// register listener and get cleanup function
-	const cleanup = listenForUserUpdates(user.id, (ev) => {
-		console.log('Realtime event received:', ev);
-		console.log('Notification.permission before notify:', "Notification" in window ? Notification.permission : 'not-supported');
-		try {
-			const payload = ev.payload || {};
-			// show a lightweight toast so users see it in-app
-			const title = payload.title || (ev.type === 'wallet-updated' ? 'Wallet updated' : 'New notification');
-			const body = payload.body || payload.message || '';
+  console.info("Starting realtime listener for user:", user.id);
 
-			toast(`${title}${body ? ` — ${body}` : ''}`);
+  const cleanup = listenForUserUpdates(user.id, (ev) => {
+    console.log("Realtime event received (callback):", ev);
 
-			// Browser notification
-			if ("Notification" in window) {
-				if (Notification.permission === 'granted') {
-					const notif = new Notification(title, { body, icon: payload.icon || '/images/logo192.png' });
-					notif.onclick = () => {
-						window.focus();
-						// navigate to notifications page or payload.url
-						const url = payload.url || '/notifications';
-						window.location.href = url;
-						notif.close();
-					};
-				} else if (Notification.permission !== 'denied') {
-					Notification.requestPermission().then((permission) => {
-						if (permission === 'granted') {
-							const notif = new Notification(title, { body, icon: payload.icon || '/images/logo192.png' });
-							notif.onclick = () => {
-								window.focus();
-								const url = payload.url || '/notifications';
-								window.location.href = url;
-								notif.close();
-							};
-						}
-					});
-				}
-			}
-		} catch (e) {
-			console.error('Error handling realtime event', e);
-		}
-	});
+    try {
+      const payload = ev.payload || {};
+      const title =
+        payload.title || (ev.type === "wallet-updated" ? "Wallet updated" : "New notification");
+      const body = payload.body || payload.message || "";
 
-	return () => {
-		if (typeof cleanup === 'function') cleanup();
-	};
+      toast(`${title}${body ? ` — ${body}` : ""}`);
+      console.info("Displayed toast for realtime event", { title, body });
+
+      // Browser notification
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          const notif = new Notification(title, {
+            body,
+            icon: payload.icon || "/images/logo192.png",
+          });
+          notif.onclick = () => {
+            window.focus();
+            const url = payload.url || "/notifications";
+            window.location.href = url;
+            notif.close();
+          };
+        }
+      }
+    } catch (e) {
+      console.error("Error handling realtime event in App:", e);
+      // optionally POST this error to your API remote logger
+      // fetch("/api/client-logs", { method: "POST", body: JSON.stringify({message: e.message, stack: e.stack}) })
+    }
+  });
+
+  return () => {
+    if (typeof cleanup === "function") cleanup();
+    console.info("Realtime listener cleaned up for user:", user.id);
+  };
 }, [user?.id]);
-
 	return (
 		<HeroUIProvider>
 			<Toaster richColors position="top-center" />
