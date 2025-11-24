@@ -30,6 +30,7 @@ const WS_SCHEME =
   import.meta.env.VITE_PUSHER_SCHEME ||
   (location.protocol === "https:" ? "https" : "http");
 const FORCE_TLS = WS_SCHEME === "https";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export const echo = new Echo({
   broadcaster: "reverb",
@@ -40,6 +41,7 @@ export const echo = new Echo({
   wsPath: WS_PATH,
   forceTLS: FORCE_TLS,
   enabledTransports: ["ws", "wss"],
+  authEndpoint: `${API_BASE}/broadcasting/auth`,
   auth: {
     headers: token
       ? {
