@@ -93,6 +93,7 @@ export default function ResellPage() {
 										responsive
 										key={product.id}
 										{...product}
+										buttonText="Generate Reseller Link"
 										onButtonClickAction={async () => {
 												// prepare reseller data, open reseller modal and prevent navigation
 												try {
