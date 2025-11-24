@@ -241,3 +241,11 @@ declare global {
     Pusher: typeof Pusher;
   }
 }
+
+declare module 'reverb-client';
+export interface ReverbNotificationPayload {
+  title?: string;
+  body?: string;
+  icon?: string;
+  url?: string;
+}
