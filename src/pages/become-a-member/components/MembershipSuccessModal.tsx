@@ -40,7 +40,7 @@ export default function MembershipSuccessModal({
 
               <div className="flex justify-center gap-4">
                 <Link
-                  to="/advertise/post-advert"
+                  to="/advertise"
                   onClick={closeHandler}
                   className="px-4 py-2 bg-green-600 text-white rounded"
                 >
