@@ -1,4 +1,5 @@
 export default [
+	{ key: "all", label: "All locations" },
 	{ key: "abia", label: "Abia" },
 	{ key: "adamawa", label: "Adamawa" },
 	{ key: "akwa_ibom", label: "Akwa Ibom" },
@@ -36,4 +37,5 @@ export default [
 	{ key: "yobe", label: "Yobe" },
 	{ key: "zamfara", label: "Zamfara" },
 	{ key: "fct", label: "FCT" },
+
 ];

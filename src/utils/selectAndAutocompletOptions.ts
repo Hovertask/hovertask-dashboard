@@ -21,7 +21,7 @@ export const religions = [
 export const socialMedia = [
 	{ key: "whatsapp", label: "WhatsApp" },
 	{ key: "facebook", label: "Facebook" },
-	{ key: "x", label: "X(twitter)" },
+	{ key: "x", label: "X" },
 	{ key: "tiktok", label: "TikTok" },
 	{ key: "instagram", label: "Instagram" },
 ];
