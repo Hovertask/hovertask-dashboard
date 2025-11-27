@@ -570,8 +570,11 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
                       required: "Enter your post link",
                       pattern: urlValidation,
                     })}
-                    errorMessage={errors.url?.message as string}
+                    errorMessage={errors.social_media_url?.message as string}
+                    
                   />
+                     
+                  
                 )}
         
                 {/* Task type */}
