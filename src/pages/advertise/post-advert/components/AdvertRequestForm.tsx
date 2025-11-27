@@ -779,7 +779,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
         />
 
         {/* Modals (unchanged) */}
-        
+        {isValid && (
           <AdvertSummaryModal
             modalProps={modalProps}
             getFormValue={getValues}
@@ -787,7 +787,7 @@ export default function AdvertRequestForm({ platform }: AdvertRequestFormProps) 
             setError={setError}
             setPendingAdvert={setPendingAdvert}
           />
-        
+        )}
         <AdvertUploadSuccessModal
           {...successModalProps}
           pendingAdvert={pendingAdvert}
