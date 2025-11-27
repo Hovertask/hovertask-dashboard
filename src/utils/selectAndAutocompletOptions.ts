@@ -24,4 +24,7 @@ export const socialMedia = [
 	{ key: "x", label: "X" },
 	{ key: "tiktok", label: "TikTok" },
 	{ key: "instagram", label: "Instagram" },
+	{ key: "linkedin", label: "LinkedIn" },
+	{ key: "youtube", label: "YouTube" },
+	
 ];
