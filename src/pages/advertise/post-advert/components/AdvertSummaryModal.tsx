@@ -32,21 +32,26 @@ export default function AdvertSummaryModal(props: {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function initAdvertSubmission() {
-    // close summary modal immediately
-    props.modalProps.onClose();
-
     try {
+      // set loading state
+      setIsSubmitting(true);
+
       await submitAdvert(
         props.successModalProps,
         props.setError,
-        props.setPendingAdvert, // ✅ pass pending setter
+        props.setPendingAdvert,
         (state) => {
+          // optional: update loading state if submitAdvert provides status updates
           if (state === "start" || state === "pending") setIsSubmitting(true);
           else setIsSubmitting(false);
         }
       );
+
+      // close the summary modal after successful submission
+      props.modalProps.onClose();
+    } catch (err) {
+      console.error("Advert submission failed:", err);
     } finally {
-      // reset loading state unless submitAdvert redirected the page
       setIsSubmitting(false);
     }
   }
@@ -97,13 +102,33 @@ export default function AdvertSummaryModal(props: {
               type="button"
               onClick={initAdvertSubmission}
               disabled={isSubmitting}
-              className={`bg-primary p-2 w-fit rounded-xl text-white flex items-center gap-2 ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:brightness-95"}`}
+              className={`bg-primary p-2 w-fit rounded-xl text-white flex items-center gap-2 ${
+                isSubmitting
+                  ? "opacity-70 cursor-not-allowed"
+                  : "hover:brightness-95"
+              }`}
             >
               {isSubmitting ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  <svg
+                    className="w-4 h-4 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
                   </svg>
                   <span>Activating...</span>
                 </>
@@ -117,24 +142,3 @@ export default function AdvertSummaryModal(props: {
     </Modal>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
