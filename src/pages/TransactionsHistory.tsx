@@ -62,33 +62,33 @@ export default function TransactionsHistoryPage() {
 	} = useTransactions(transactions);
 
 	return (
-		<div className="grid mobile:grid-cols-[1fr_220px] gap-4 min-h-full">
-			<div className="px-4 py-8 space-y-6 flex flex-col min-h-full">
-				{/* Page Header */}
-				<div className="flex gap-4 flex-1 items-start">
+		<div className="grid mobile:grid-cols-[1fr_250px] gap-4 min-h-full px-3 sm:px-4">
+			<div className="py-6 space-y-6 flex flex-col min-h-full">
+				{/* Header */}
+				<div className="flex gap-3 items-start">
 					<Link to="/">
-						<ArrowLeft />
+						<ArrowLeft size={20} />
 					</Link>
 
-					<div className="space-y-1">
+					<div>
 						<h1 className="text-xl font-semibold">Transactions History</h1>
 						<p className="text-sm text-zinc-500">
-							Track your payments and earnings with detailed records
+							Track all your payments and earnings
 						</p>
 					</div>
 				</div>
 
-				{/* Main Container */}
-				<div className="bg-white shadow-md rounded-2xl flex-1 p-4 space-y-10 overflow-hidden">
-					{/* Filter */}
-					<div className="flex items-center justify-center gap-3 max-sm:flex-wrap">
-						<span className="text-center whitespace-nowrap">Transactions List:</span>
+				{/* Main Card */}
+				<div className="bg-white shadow-md rounded-2xl p-4 space-y-10 flex-1 overflow-hidden">
+					{/* Select Filter */}
+					<div className="flex items-center justify-center gap-3 flex-wrap">
+						<span className="whitespace-nowrap text-sm">Transactions List:</span>
 
-						<span className="w-full max-w-48">
+						<div className="w-full max-w-56">
 							<Select
 								placeholder="Filter"
 								startContent={<Filter size={16} />}
-								className="[&_button]:border-b [&_button]:bg-transparent [&_button]:border-zinc-400 [&_button]:rounded-full"
+								className="[&_button]:border-b [&_button]:bg-transparent [&_button]:rounded-full"
 								onSelectionChange={(key) =>
 									setTransactionsFilter(
 										key.currentKey! as typeof transactionsFilter
@@ -103,57 +103,82 @@ export default function TransactionsHistoryPage() {
 									</SelectItem>
 								))}
 							</Select>
-						</span>
+						</div>
 					</div>
 
 					{/* Summary Cards */}
-					<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pb-4 border-b border-zinc-300">
-						<div className="flex items-center border p-3 rounded-xl gap-2">
-							<small>Total Earnings:</small>
-							<span className="font-semibold truncate">
-								₦{totalEarned.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
+					<div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-4 border-b border-zinc-300">
+						<div className="flex items-center border p-3 rounded-xl gap-2 flex-col sm:flex-row text-center sm:text-left">
+							<small>Total Earnings</small>
+							<span className="font-semibold">
+								₦{totalEarned.toLocaleString("en-NG")}
 							</span>
 						</div>
 
-						<div className="flex items-center border p-3 rounded-xl gap-2">
-							<small>Total Spent:</small>
-							<span className="font-semibold truncate">
-								₦{totalSpent.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
+						<div className="flex items-center border p-3 rounded-xl gap-2 flex-col sm:flex-row text-center sm:text-left">
+							<small>Total Spent</small>
+							<span className="font-semibold">
+								₦{totalSpent.toLocaleString("en-NG")}
 							</span>
 						</div>
 
-						<div className="flex items-center border p-3 rounded-xl gap-2">
-							<small>Balance:</small>
-							<span className="font-semibold truncate">
+						<div className="flex items-center border p-3 rounded-xl gap-2 flex-col sm:flex-row text-center sm:text-left col-span-2 sm:col-span-1">
+							<small>Balance</small>
+							<span className="font-semibold">
 								₦{userBalance.toLocaleString()}
 							</span>
 						</div>
 					</div>
 
-					{/* Tables */}
-					{transactionsFilter === "all" && (
-						<TransactionsTable transactions={transactions} />
-					)}
-					{transactionsFilter === "debit" && (
-						<TransactionsTable transactions={debit} />
-					)}
-					{transactionsFilter === "credit" && (
-						<TransactionsTable transactions={credit} />
-					)}
-					{transactionsFilter === "failed" && (
-						<TransactionsTable transactions={failed} />
-					)}
-					{transactionsFilter === "pending" && (
-						<TransactionsTable transactions={pending} />
-					)}
-					{transactionsFilter === "successful" && (
-						<TransactionsTable transactions={successful} />
-					)}
+					{/* Table */}
+					<ResponsiveTransactionsList
+						transactions={
+							transactionsFilter === "all"
+								? transactions
+								: transactionsFilter === "credit"
+								? credit
+								: transactionsFilter === "debit"
+								? debit
+								: transactionsFilter === "failed"
+								? failed
+								: transactionsFilter === "pending"
+								? pending
+								: successful
+						}
+					/>
 				</div>
 			</div>
 
+			{/* Profile Card (hidden on small screens) */}
 			<div className="hidden mobile:block">
 				<UserProfileCard />
+			</div>
+		</div>
+	);
+}
+
+/* ---------------------------------------------
+   RESPONSIVE TABLE + MOBILE CARD VIEW
+----------------------------------------------*/
+
+function ResponsiveTransactionsList({ transactions }: { transactions: Transaction[] }) {
+	const sorted = [...transactions].sort(
+		(a, b) =>
+			new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+	);
+
+	return (
+		<div className="w-full">
+			{/* Desktop Table */}
+			<div className="hidden md:block overflow-x-auto rounded-xl">
+				<TransactionsTable transactions={sorted} />
+			</div>
+
+			{/* Mobile Cards */}
+			<div className="md:hidden space-y-3">
+				{sorted.map((t, i) => (
+					<TransactionCard key={i} transaction={t} index={i} />
+				))}
 			</div>
 		</div>
 	);
@@ -163,66 +188,95 @@ function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
 	const navigate = useNavigate();
 
 	return (
-		<div className="w-full overflow-x-auto scrollbar-thin scrollbar-track-zinc-100 scrollbar-thumb-zinc-400 rounded-xl">
-			<table className="min-w-full table-auto text-sm">
-				<thead>
-					<tr className="bg-zinc-200 text-left">
-						<th className="p-2 whitespace-nowrap w-12">No.</th>
-						<th className="p-2 whitespace-nowrap min-w-48">Description</th>
-						<th className="p-2 whitespace-nowrap min-w-32">Amount</th>
-						<th className="p-2 whitespace-nowrap min-w-28">Status</th>
-						<th className="p-2 whitespace-nowrap min-w-40">Date</th>
-						<th className="p-2 whitespace-nowrap min-w-28">Type</th>
+		<table className="min-w-full table-auto text-sm">
+			<thead>
+				<tr className="bg-zinc-200 text-left">
+					<th className="p-2 w-12">No.</th>
+					<th className="p-2 min-w-48">Description</th>
+					<th className="p-2 min-w-32">Amount</th>
+					<th className="p-2 min-w-28">Status</th>
+					<th className="p-2 min-w-40">Date</th>
+					<th className="p-2 min-w-28">Type</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{transactions.map((transaction, i) => (
+					<tr
+						onClick={() => navigate(`/transactions-history/${transaction.id}`)}
+						key={transaction.id}
+						className="cursor-pointer odd:bg-zinc-50 hover:bg-primary/10 transition-colors"
+					>
+						<td className="p-2">{i + 1}</td>
+						<td className="p-2 truncate">{transaction.description}</td>
+						<td className="p-2 font-medium truncate">
+							₦{transaction.amount.toLocaleString()}
+						</td>
+						<td
+							className={cn("p-2 capitalize", {
+								"text-warning": transaction.status === "pending",
+								"text-success": transaction.status === "successful",
+								"text-danger": transaction.status === "failed",
+							})}
+						>
+							{transaction.status}
+						</td>
+						<td className="p-2 whitespace-nowrap">
+							{new Date(transaction.created_at).toDateString()}
+						</td>
+						<td className="p-2 capitalize">{transaction.type}</td>
 					</tr>
-				</thead>
+				))}
+			</tbody>
+		</table>
+	);
+}
 
-				<tbody>
-					{transactions
-						.sort(
-							(a, b) =>
-								new Date(b.created_at).getTime() -
-								new Date(a.created_at).getTime()
-						)
-						.map((transaction, i) => (
-							<tr
-								onClick={() => navigate(`/transactions-history/${transaction.id}`)}
-								key={`${transaction.id ?? i}-${transaction.created_at}`}
-								className="cursor-pointer odd:bg-zinc-50 hover:bg-primary/10 transition-colors"
-							>
-								<td className="px-2 py-3 text-xs sm:text-sm">{i + 1}</td>
+/* ---------------------------------------------
+   MOBILE CARD COMPONENT
+----------------------------------------------*/
 
-								<td className="px-2 py-3 truncate max-w-[200px]">
-									{transaction.description}
-								</td>
+function TransactionCard({ transaction, index }: { transaction: Transaction; index: number }) {
+	const navigate = useNavigate();
+	return (
+		<div
+			onClick={() => navigate(`/transactions-history/${transaction.id}`)}
+			className="p-4 bg-zinc-100 rounded-xl border shadow-sm active:scale-[0.99] transition"
+		>
+			<div className="flex justify-between mb-2">
+				<span className="text-xs text-zinc-500">#{index + 1}</span>
+				<span
+					className={cn("capitalize text-xs font-medium", {
+						"text-warning": transaction.status === "pending",
+						"text-success": transaction.status === "successful",
+						"text-danger": transaction.status === "failed",
+					})}
+				>
+					{transaction.status}
+				</span>
+			</div>
 
-								<td className="px-2 py-3 font-medium truncate max-w-[150px] whitespace-nowrap">
-									₦{transaction.amount.toLocaleString()}
-								</td>
+			<div className="font-semibold truncate">{transaction.description}</div>
 
-								<td
-									className={cn(
-										"px-2 py-3 capitalize whitespace-nowrap",
-										{
-											"text-warning": transaction.status === "pending",
-											"text-success": transaction.status === "successful",
-											"text-danger": transaction.status === "failed",
-										}
-									)}
-								>
-									{transaction.status}
-								</td>
+			<div className="mt-2 text-sm">
+				<div className="flex justify-between py-1">
+					<span className="text-zinc-600">Amount</span>
+					<span className="font-medium">₦{transaction.amount.toLocaleString()}</span>
+				</div>
 
-								<td className="px-2 py-3 whitespace-nowrap truncate max-w-[180px]">
-									{new Date(transaction.created_at).toDateString()}
-								</td>
+				<div className="flex justify-between py-1">
+					<span className="text-zinc-600">Type</span>
+					<span className="capitalize">{transaction.type}</span>
+				</div>
 
-								<td className="px-2 py-3 capitalize whitespace-nowrap">
-									{transaction.type}
-								</td>
-							</tr>
-						))}
-				</tbody>
-			</table>
+				<div className="flex justify-between py-1">
+					<span className="text-zinc-600">Date</span>
+					<span className="truncate text-right">
+						{new Date(transaction.created_at).toDateString()}
+					</span>
+				</div>
+			</div>
 		</div>
 	);
 }
+// ------------------ End of TransactionsHistoryPage ------------------

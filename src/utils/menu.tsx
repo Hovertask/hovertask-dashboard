@@ -40,7 +40,7 @@ export default [
 				icon: <List size={13} />,
 			},
             {
-				path: "earn/tasks-history",
+				path: "/earn/tasks-history",
 				label: "Completed Tasks History ",
 				icon: <List size={13} />,
 			},
