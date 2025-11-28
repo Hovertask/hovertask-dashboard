@@ -79,7 +79,7 @@ export default function TransactionsHistoryPage() {
 				</div>
 
 				{/* Main Card */}
-				<div className="bg-white shadow-md rounded-2xl p-4 space-y-10 flex-1 overflow-hidden">
+				<div className="bg-white shadow-md rounded-2xl p-4 space-y-10 flex-1 overflow-auto min-w-0">
 					{/* Select Filter */}
 					<div className="flex items-center justify-center gap-3 flex-wrap">
 						<span className="whitespace-nowrap text-sm">Transactions List:</span>
