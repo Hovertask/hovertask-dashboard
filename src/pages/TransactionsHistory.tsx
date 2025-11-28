@@ -62,7 +62,7 @@ export default function TransactionsHistoryPage() {
 	} = useTransactions(transactions);
 
 	return (
-		<div className="grid mobile:grid-cols-[1fr_250px] gap-4 min-h-full px-3 sm:px-4">
+		<div className="grid lg:grid-cols-[1fr_250px] gap-4 min-h-full px-3 sm:px-4">
 			<div className="py-6 space-y-6 flex flex-col min-h-full">
 				{/* Header */}
 				<div className="flex gap-3 items-start">
@@ -150,7 +150,7 @@ export default function TransactionsHistoryPage() {
 			</div>
 
 			{/* Profile Card (hidden on small screens) */}
-			<div className="hidden mobile:block">
+			<div className="hidden lg:block">
 				<UserProfileCard />
 			</div>
 		</div>
