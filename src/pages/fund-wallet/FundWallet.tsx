@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import type { AuthUserDTO } from "../../../types";
 import handleFundWallet from "./utils/handleFundWallet";
-import WithdrawModal from "../dashboard/components/WithdrawModal"; // import the modal
+import WithdrawModal from "../dashboard/components/WithdrawModal";
 
 export default function FundWalletPage() {
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
@@ -13,7 +13,7 @@ export default function FundWalletPage() {
 	);
 
 	const [amount, setAmount] = useState("");
-	const [showWithdrawModal, setShowWithdrawModal] = useState(false); // state for modal
+	const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
 	const {
 		handleSubmit,
@@ -21,44 +21,85 @@ export default function FundWalletPage() {
 	} = useForm({ mode: "all" });
 
 	return (
-		<div className="mobile:grid grid-cols-[1fr_182px] gap-4 min-h-full">
-			<div className="px-4 py-6 space-y-6 bg-white">
+		<div
+			className="
+				min-h-full 
+				grid 
+				grid-cols-1 
+				gap-6 
+				md:grid-cols-[1fr_220px] 
+				md:gap-10 
+				bg-gray-50 
+				p-4
+			"
+		>
+			{/* Left Column */}
+			<div className="space-y-6 bg-white p-4 md:p-6 rounded-xl shadow-sm">
+
 				{/* Header */}
-				<div className="flex gap-4">
+				<div className="flex gap-4 items-start">
 					<Link to="/" className="mt-1">
-						<ArrowLeft />
+						<ArrowLeft className="w-6 h-6" />
 					</Link>
 
 					<div className="space-y-1">
-						<h1 className="text-2xl">Fund Your Wallet</h1>
-						<p className="text-xl font-light text-black/75">
-							Easily add funds to your wallet to shop, pay, or resell
-							effortlessly
+						<h1 className="text-xl sm:text-2xl font-semibold">Fund Your Wallet</h1>
+						<p className="text-sm sm:text-lg font-light text-black/75">
+							Easily add funds to your wallet to shop, pay, or resell effortlessly
 						</p>
 					</div>
 				</div>
 
-				{/* Wallet balance card */}
-				<div className="bg-white shadow flex items-center justify-between gap-4 p-6 rounded-2xl max-w-[522px] w-fit">
-					<span>Wallet Balance</span>
-					<span className="font-medium text-[30.59px]">
+				{/* Wallet Balance Card */}
+				<div
+					className="
+						bg-white 
+						shadow 
+						flex 
+						flex-col 
+						sm:flex-row 
+						items-start 
+						sm:items-center 
+						justify-between 
+						gap-4 
+						p-5 
+						rounded-2xl
+					"
+				>
+					<span className="text-base sm:text-lg font-medium">Wallet Balance</span>
+
+					<span className="font-semibold text-3xl sm:text-[30px]">
 						₦{authUser.balance.toLocaleString()}
 					</span>
+
 					<button
 						type="button"
-						onClick={() => setShowWithdrawModal(true)} // open modal on click
-						className="border border-primary text-primary px-4 py-2.5 rounded-full flex items-center gap-2 hover:bg-primary/20 transition-colors font-medium"
+						onClick={() => setShowWithdrawModal(true)}
+						className="
+							border border-primary 
+							text-primary 
+							px-4 py-2.5 
+							rounded-full 
+							flex items-center gap-2 
+							hover:bg-primary/20 
+							transition-colors 
+							font-medium 
+							w-full 
+							sm:w-auto
+						"
 					>
 						<Wallet size={16} /> Withdraw
 					</button>
 				</div>
 
-				{/* Fund Wallet form */}
+				{/* Fund Wallet Form */}
 				<div className="p-4 rounded-3xl bg-primary/20 font-light space-y-3">
-					<p>Please input the amount you wish to add to your wallet</p>
+					<p className="text-sm sm:text-base">
+						Please input the amount you wish to add to your wallet
+					</p>
 
 					<form
-						className="flex items-center gap-2.5"
+						className="flex flex-col sm:flex-row items-center gap-3"
 						onSubmit={handleSubmit(() =>
 							handleFundWallet({
 								email: authUser.email,
@@ -67,11 +108,21 @@ export default function FundWalletPage() {
 							}),
 						)}
 					>
-						<div className="flex flex-1 gap-4 items-center bg-white py-2 px-4 rounded-full border border-[#989898] max-w-[399px]">
-							<span className="text-xl font-medium text-zinc-500">₦</span>
+						{/* Input */}
+						<div
+							className="
+								flex items-center 
+								w-full 
+								bg-white 
+								py-2.5 px-4 
+								rounded-full 
+								border border-[#989898]
+							"
+						>
+							<span className="text-lg font-medium text-zinc-500">₦</span>
 							<input
 								type="number"
-								className="flex-1 outline-none"
+								className="flex-1 outline-none ml-2 text-base"
 								placeholder="Enter amount"
 								required
 								min={1000}
@@ -79,10 +130,23 @@ export default function FundWalletPage() {
 								onChange={(e) => setAmount(e.target.value)}
 							/>
 						</div>
+
+						{/* Submit Button */}
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							className="bg-primary p-2 rounded-xl text-white font-medium transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transition-none"
+							className="
+								bg-primary 
+								w-full sm:w-auto 
+								px-6 py-3 
+								rounded-xl 
+								text-white 
+								font-medium 
+								transition-transform 
+								active:scale-95 
+								disabled:opacity-50 
+								disabled:cursor-not-allowed
+							"
 						>
 							Fund Wallet
 						</button>
@@ -90,11 +154,15 @@ export default function FundWalletPage() {
 				</div>
 			</div>
 
-			{/* Withdraw Modal */}
+			{/* Right Column (desktop only) */}
+			<div className="hidden md:block">
+				{/* Your extra sidebar or ads can go here */}
+			</div>
+
 			<WithdrawModal
 				show={showWithdrawModal}
 				onClose={() => setShowWithdrawModal(false)}
-				balance={authUser.balance} // pass the wallet balance
+				balance={authUser.balance}
 			/>
 		</div>
 	);

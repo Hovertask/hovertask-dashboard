@@ -10,11 +10,14 @@ export default function useTransactions(transactions: Transaction[]) {
 		totalSpent = 0;
 
 	for (let transaction of transactions) {
+		// ensure amount is a number 
+		const amount = Number(transaction.amount) || 0;
+
 		if (transaction.type === "credit") {
-			totalEarned += transaction.amount;
+			totalEarned += amount;
 			credit.push(transaction);
 		} else {
-			totalSpent += transaction.amount;
+			totalSpent += amount;
 			debit.push(transaction);
 		}
 

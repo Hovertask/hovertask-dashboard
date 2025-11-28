@@ -76,63 +76,59 @@ export default function ListProductPage() {
     (state: any) => state.auth.value
   );
 
-  return (
-    <div className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border">
-      {/* Left: Profile + Info */}
-      <div className="flex items-center gap-4">
-        <img
-          src={authUser.avatar || "/images/default-user.png"}
-          width={48}
-          height={48}
-          className="rounded-full bg-zinc-200"
-          alt={authUser.fname}
-        />
+ return (
+  <div className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white rounded-2xl shadow-sm border gap-4 md:gap-0">
+    {/* Left: Profile + Info */}
+    <div className="flex items-start md:items-center gap-3 md:gap-4 w-full md:w-auto">
+      <img
+        src={authUser.avatar || "/images/default-user.png"}
+        width={48}
+        height={48}
+        className="rounded-full bg-zinc-200 flex-shrink-0"
+        alt={authUser.fname}
+      />
 
-        <div className="space-y-1">
-          <p className="font-medium text-sm">
-            {authUser.fname} {authUser.lname}
-          </p>
-          <p className="text-xs text-zinc-500">@{authUser.username}</p>
+      <div className="flex-1 space-y-1 min-w-0">
+        <p className="font-medium text-sm truncate">
+          {authUser.fname} {authUser.lname}
+        </p>
+        <p className="text-xs text-zinc-500 truncate">@{authUser.username}</p>
 
-          {/* Online status */}
-          <div className="flex items-center gap-2 text-xs text-zinc-600">
-            <span className="flex items-center gap-1">
-              <img src="/images/nigerian-flag.png" width={16} alt="flag" />
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                Online
-              </span>
+        {/* Online status */}
+        <div className="flex items-center gap-2 text-xs text-zinc-600 flex-wrap">
+          <span className="flex items-center gap-1 truncate">
+            <img src="/images/nigerian-flag.png" width={16} alt="flag" />
+            <span className="flex items-center gap-1 truncate">
+              <span className="h-2 w-2 rounded-full bg-green-500"></span>
+              Online
             </span>
-          </div>
+          </span>
+        </div>
 
-          {/* Badges */}
-          <div className="flex items-center gap-2 text-xs mt-1">
-            <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
-              Verified ID
-            </span>
-            <span className="flex items-center gap-1">
-              ⭐ <span className="font-medium">4.8</span>
-            </span>
-            <button className="px-3 py-0.5 rounded-full bg-blue-500 text-white text-xs">
-              Follow
-            </button>
-          </div>
+        {/* Badges */}
+        <div className="flex items-center gap-2 text-xs mt-1 flex-wrap">
+          <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium truncate">
+            Verified ID
+          </span>
+          <span className="flex items-center gap-1 truncate">
+            ⭐ <span className="font-medium">4.8</span>
+          </span>
         </div>
       </div>
-
-      {/* Right: Action Buttons */}
-      <div className="flex items-center gap-2">
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-full">
-          <PhoneCall size={16} /> Contact Seller
-        </button>
-        <button className="flex items-center gap-2 px-4 py-2 border border-blue-400 text-blue-500 text-sm rounded-full">
-          <MessageSquare size={16} /> Start Chat
-        </button>
-      </div>
     </div>
-  );
-}
 
+    {/* Right: Action Buttons */}
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+      <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-full w-full sm:w-auto">
+        <PhoneCall size={16} /> Contact Seller
+      </button>
+      <button className="flex items-center justify-center gap-2 px-4 py-2 border border-blue-400 text-blue-500 text-sm rounded-full w-full sm:w-auto">
+        <MessageSquare size={16} /> Start Chat
+      </button>
+    </div>
+  </div>
+);
+}
 
 function ListingForm() {
 	const userId = useSelector<any, string>((state: any) => state.auth.value.id);

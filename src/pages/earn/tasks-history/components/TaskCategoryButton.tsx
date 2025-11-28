@@ -1,3 +1,4 @@
+// TaskCategoryButton.tsx
 import type useAuthUserTasks from "../../../../hooks/useAuthUserTasks";
 import cn from "../../../../utils/cn";
 
@@ -22,27 +23,34 @@ export default function CategoryButton({
 	stats: ReturnType<typeof useAuthUserTasks>["stats"];
 	loading: boolean;
 }) {
-	// 🚀 Fix: Don't show 0 until stats actually load
+	// Don't show 0 until stats actually load
 	const statsNotReady = !stats || Object.keys(stats).length === 0;
-
-	const count = statsNotReady || loading
-		? "…" // Loading state
-		: stats?.[category.key] ?? 0;
+	const count = statsNotReady || loading ? "…" : stats?.[category.key] ?? 0;
 
 	return (
 		<button
 			type="button"
 			onClick={() => setCategory(category.key)}
 			className={cn(
-				"px-4 py-1 rounded-lg flex flex-col gap-y-1 flex-1 border border-gray-300 text-gray-700 font-medium text-sm text-left transition-all",
+				"flex-1 min-w-[70px] max-w-full px-4 py-2 rounded-lg flex flex-col items-start justify-center border border-gray-300 text-gray-700 font-medium text-sm transition-all",
 				{
 					"bg-primary/10 text-primary border-primary":
 						currentCategory === category.key,
 				},
 			)}
 		>
-			<span className="text-lg font-semibold">{count}</span>
-			{category.label}
+			{/* Count */}
+			<span
+				className="text-lg font-semibold truncate w-full"
+				title={String(count)}
+			>
+				{count}
+			</span>
+
+			{/* Label */}
+			<span className="truncate w-full" title={category.label}>
+				{category.label}
+			</span>
 		</button>
 	);
 }
