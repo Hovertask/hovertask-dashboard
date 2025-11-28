@@ -62,8 +62,9 @@ export default function TransactionsHistoryPage() {
 	} = useTransactions(transactions);
 
 	return (
-		<div className="grid lg:grid-cols-[1fr_250px] gap-4 min-h-full px-3 sm:px-4">
-			<div className="py-6 space-y-6 flex flex-col min-h-full">
+		<div className="grid lg:grid-cols-[minmax(0,1fr)_260px] gap-4 min-h-full px-3 sm:px-4">
+			{/* LEFT COLUMN */}
+			<div className="py-6 space-y-6 flex flex-col min-h-full min-w-0">
 				{/* Header */}
 				<div className="flex gap-3 items-start">
 					<Link to="/">
@@ -149,7 +150,7 @@ export default function TransactionsHistoryPage() {
 				</div>
 			</div>
 
-			{/* Profile Card (hidden on small screens) */}
+			{/* RIGHT COLUMN — PROFILE CARD */}
 			<div className="hidden lg:block">
 				<UserProfileCard />
 			</div>
@@ -279,4 +280,3 @@ function TransactionCard({ transaction, index }: { transaction: Transaction; ind
 		</div>
 	);
 }
-// ------------------ End of TransactionsHistoryPage ------------------
