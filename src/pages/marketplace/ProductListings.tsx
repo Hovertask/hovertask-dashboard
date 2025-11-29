@@ -26,18 +26,33 @@ function ProductListings({ products, filter }: { products: any[]; filter: string
         >
           {/* Left: Image + Details */}
           <div className="flex items-center gap-4">
-            <img
-              src={p.image_url || "/placeholder.png"}
-              alt={p.name}
-              className="w-16 h-16 rounded-md object-cover border"
-            />
-
+  {p.product_images && p.product_images.length > 0 ? (
+    p.product_images[0].video_path ? (
+      <video
+        src={p.product_images[0].video_path}
+        className="w-16 h-16 rounded-md object-cover border"
+        controls
+      />
+    ) : (
+      <img
+        src={p.product_images[0].file_path}
+        alt={p.name}
+        className="w-16 h-16 rounded-md object-cover border"
+      />
+    )
+  ) : (
+    <img
+      src="/placeholder.png"
+      alt="placeholder"
+      className="w-16 h-16 rounded-md object-cover border"
+    />
+  )}
             <div>
               <h3 className="font-medium text-gray-900">{p.name}</h3>
               <p className="text-sm text-gray-600">${p.price}</p>
 
               <div className="flex items-center gap-2 mt-1">
-                {p.in_stock ? (
+                {p.stock ? (
                   <span className="px-2 py-1 text-xs rounded-full bg-blue-50 text-blue-600 border border-blue-200">
                     In Stock
                   </span>
