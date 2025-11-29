@@ -55,90 +55,39 @@ import TransactionsHistoryPage from "./pages/TransactionsHistory";
 import UpdateBankDetailsPage from "./pages/UpdateBankDetails";
 import UpdateLocationPage from "./pages/UpdateLocation";
 import store from "./redux/store";
-import updateUserApi from "./utils/updateUserApi";
+import { useEffect, useState } from "react";
+import getAuthUser from "./utils/getAuthUser";
 import { listenForUserUpdates } from "./utils/realtimeUserListener";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
+//import { toast } from "sonner";
 
 
 export default function App() {
-	const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any>(null);
 
-// Request Notification permission early (so the browser can prompt once)
-useEffect(() => {
-	if ("Notification" in window) {
-		try {
-			console.log("Notification permission at mount:", Notification.permission);
-			if (Notification.permission === 'default') {
-				Notification.requestPermission().then((p) => console.log('Notification permission result:', p));
-			}
-		} catch (e) {
-			console.warn('Notification API not available or blocked', e);
-		}
-	}
-}, []);
+    // Fetch user once when app loads
+    useEffect(() => {
+        getAuthUser().then(setUser);
+    }, []);
 
-// 1️⃣ Load logged-in user once
-useEffect(() => {
-    updateUserApi().then(setUser);
-}, []);
+    // Activate real-time listener once user is available
+    useEffect(() => {
+        if (!user?.id) return;
+        listenForUserUpdates(user.id);
+    }, [user?.id]);
 
-// 2️⃣ Start listening for realtime updates
-// in App component useEffect that starts realtime listening
-
-useEffect(() => {
-  if (!user?.id) {
-    console.info("Realtime listener not started — user not yet loaded");
-    return;
-  }
-
-  console.info("Starting realtime listener for user:", user.id);
-
-  const cleanup = listenForUserUpdates(user.id, (ev) => {
-    console.log("Realtime event received (callback):", ev);
-
-    try {
-      const payload = ev.payload || {};
-      const title =
-        payload.title || (ev.type === "wallet-updated" ? "Wallet updated" : "New notification");
-      const body = payload.body || payload.message || "";
-
-      toast(`${title}${body ? ` — ${body}` : ""}`);
-      console.info("Displayed toast for realtime event", { title, body });
-
-      // Browser notification
-      if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-          const notif = new Notification(title, {
-            body,
-            icon: payload.icon || "/images/logo192.png",
-          });
-          notif.onclick = () => {
-            window.focus();
-            const url = payload.url || "/notifications";
-            window.location.href = url;
-            notif.close();
-          };
-        }
-      }
-    } catch (e) {
-      console.error("Error handling realtime event in App:", e);
-      // optionally POST this error to your API remote logger
-      // fetch("/api/client-logs", { method: "POST", body: JSON.stringify({message: e.message, stack: e.stack}) })
-    }
-  });
-
-  return () => {
-    if (typeof cleanup === "function") cleanup();
-    console.info("Realtime listener cleaned up for user:", user.id);
-  };
-}, [user?.id]);
-	return (
-		<HeroUIProvider>
-			<Toaster richColors position="top-center" />
-			<Provider store={store}>
-				<BrowserRouter>
-					<Routes>
+    return (
+        <HeroUIProvider>
+            <Toaster richColors position="top-center" />
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Routes>
+                        {/* your page routes unchanged */}
+                    </Routes>
+                </BrowserRouter>
+            </Provider>
+        </HeroUIProvider>
+    );
+}
 						<Route element={<RootLayout />} path="*">
 							<Route path="logout" element={<Logout />} />
 							<Route index element={<Dashboard />} />
