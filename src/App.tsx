@@ -62,9 +62,9 @@ import { listenForUserUpdates } from "./utils/realtimeUserListener";
 
 
 export default function App() {
-    const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<any>(null);
 
-    // Fetch user once when app loads
+// Fetch user once when app loads
     useEffect(() => {
         getAuthUser().then(setUser);
     }, []);
@@ -75,19 +75,13 @@ export default function App() {
         listenForUserUpdates(user.id);
     }, [user?.id]);
 
-    return (
-        <HeroUIProvider>
-            <Toaster richColors position="top-center" />
-            <Provider store={store}>
-                <BrowserRouter>
-                    <Routes>
-                        {/* your page routes unchanged */}
-                    </Routes>
-                </BrowserRouter>
-            </Provider>
-        </HeroUIProvider>
-    );
-}
+
+	return (
+		<HeroUIProvider>
+			<Toaster richColors position="top-center" />
+			<Provider store={store}>
+				<BrowserRouter>
+					<Routes>
 						<Route element={<RootLayout />} path="*">
 							<Route path="logout" element={<Logout />} />
 							<Route index element={<Dashboard />} />
