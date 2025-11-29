@@ -11,7 +11,7 @@ export function listenForUserUpdates(
   }
 
   const publicChannelName = `user.${userId}`;
-  const privateChannelName = `App.Models.User.${userId}`;
+  //const privateChannelName = `App.Models.User.${userId}`;
 
   const publicCh = echo.channel(publicChannelName);
   publicCh
@@ -22,7 +22,7 @@ export function listenForUserUpdates(
       console.error(`Subscription error on ${publicChannelName}:`, err);
     });
 
-  let privateCh: any = null;
+  /*let privateCh: any = null;
   try {
     privateCh = echo.private(privateChannelName);
     privateCh.subscribed(() => {
@@ -33,7 +33,7 @@ export function listenForUserUpdates(
     });
   } catch (e) {
     console.warn("Failed to subscribe to private notifications channel:", e);
-  }
+  }*/
 
   const walletHandler = async (payload: any) => {
     console.log("Realtime wallet-updated received:", payload);
@@ -48,10 +48,10 @@ export function listenForUserUpdates(
     if (onEvent) onEvent({ type: "wallet-updated", payload });
   };
 
-  const notificationHandler = (notification: any) => {
+  /*const notificationHandler = (notification: any) => {
     console.log("Realtime Laravel Notification received:", notification);
     if (onEvent) onEvent({ type: "notification", payload: notification });
-  };
+  };*/
 
   try {
     publicCh.listen(".wallet-updated", walletHandler);
@@ -60,7 +60,7 @@ export function listenForUserUpdates(
     console.error("Failed to attach wallet-updated listeners on public channel:", e);
   }
 
-  if (privateCh) {
+  /*if (privateCh) {
     try {
       privateCh.notification(notificationHandler);
 
@@ -73,7 +73,7 @@ export function listenForUserUpdates(
     } catch (e) {
       console.error("Failed to attach notification listeners on private channel:", e);
     }
-  }
+  }*/
 
   return () => {
     try {
@@ -84,7 +84,7 @@ export function listenForUserUpdates(
       console.warn("Error cleaning up public channel listeners", e);
     }
 
-    if (privateCh) {
+    /*if (privateCh) {
       try {
         privateCh.stopListening(
           ".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated"
@@ -93,6 +93,6 @@ export function listenForUserUpdates(
       } catch (e) {
         console.warn("Error cleaning up private channel listeners", e);
       }
-    }
+    }*/
   };
 }
