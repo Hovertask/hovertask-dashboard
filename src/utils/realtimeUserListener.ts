@@ -1,5 +1,5 @@
 import { echo } from "../lib/echo";
-import updateUserApi from "./updateUserApi";
+import refreshUserApi from "./updateUserApi";
 
 export function listenForUserUpdates(
   userId: any,
@@ -38,7 +38,7 @@ export function listenForUserUpdates(
   const walletHandler = async (payload: any) => {
     console.log("Realtime wallet-updated received:", payload);
     try {
-      await updateUserApi(); // original logicawait refreshUserA
+      await refreshUserApi();; // original logicawait refreshUserA
      
       console.info("User reload after wallet update successful");
     } catch (err) {
