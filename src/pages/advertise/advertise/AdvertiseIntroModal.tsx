@@ -81,7 +81,7 @@ export default function AdvertiseIntroModal() {
             <div className="space-y-4">
               {/* ✅ Button 1: Link to product listing page */}
               <Link
-                to="/marketplace/list-product?type=advertise"
+                to="/marketplace/list-product?type=resell"
                 className="block w-full border border-primary text-primary rounded-2xl py-4 text-sm hover:bg-primary/5 transition"
               >
                 Advertise on the Hovertask Market <br />

@@ -398,6 +398,7 @@ const handleContactSeller = async () => {
             </div>
 
             {/* Reseller block */}
+            {product?.resell_budget && (
             <div className="space-y-2">
               <h2 className="text-primary text-sm font-medium">
                 Want to resell this Product and earn profit?
@@ -421,6 +422,7 @@ const handleContactSeller = async () => {
                 </button>
               </div>
             </div>
+            )}
           </>
         )}
       </div>

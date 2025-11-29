@@ -79,6 +79,7 @@ interface Product {
 	email?: string | null;
 	social_media_link?: string | null;
 	brand: string | null;
+	resell_budget?: number | null;
 }
 
 export interface ProductCardProps extends Product {
