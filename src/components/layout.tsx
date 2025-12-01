@@ -1,5 +1,5 @@
 // src/layouts/RootLayout.tsx
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom"; // removed useLocation
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect, useMemo, useState } from "react";
@@ -13,7 +13,6 @@ import type { AuthUserDTO } from "../../types";
 
 export default function RootLayout() {
   const dispatch = useDispatch();
-  const location = useLocation();
 
   const user = useSelector<{ auth: { value: AuthUserDTO | null } }, AuthUserDTO | null>(
     (s) => s.auth.value ?? null
@@ -21,7 +20,7 @@ export default function RootLayout() {
 
   const [initialLoading, setInitialLoading] = useState(!user);
 
-  // Fetch user initially (with retry on error)
+  // Fetch user initially (with retry)
   useEffect(() => {
     let mounted = true;
     async function fetchUserOnce() {
@@ -46,26 +45,44 @@ export default function RootLayout() {
     };
   }, [dispatch, user]);
 
-  // Compute requirements and unmet steps - memoized
+  // Compute requirements and unmet steps with dependencies
   const requirements = useMemo(() => {
     if (!user) return { unmet: [], total: 0, completed: 0 };
 
-    const checks = [
+    const checks: { key: string; label: string; ok: boolean; route: string; dependency?: string }[] = [
       { key: "email", label: "Verify your email", ok: Boolean(user.email_verified_at), route: "/VerifyEmail" },
-      { key: "membership", label: "Become a member", ok: Boolean(user.is_member), route: "/become-a-member" },
+      { key: "membership", label: "Become a member", ok: Boolean(user.is_member), route: "/become-a-member", dependency: "email" },
     ];
 
-    // Only show advertise/task step if membership is done
+    // Only add advertise step if membership is done, else mark as unmet with dependency
     if (user.is_member) {
       checks.push({
         key: "advertise",
         label: "Create your first advert or task",
         ok: !(user.advertise_count === 0 && user.task_count === 0),
         route: "/advertise",
+        dependency: "membership",
+      });
+    } else {
+      checks.push({
+        key: "advertise",
+        label: "Create your first advert or task",
+        ok: false,
+        route: "/advertise",
+        dependency: "membership",
       });
     }
 
-    const unmet = checks.filter(c => !c.ok);
+    const unmet = checks.filter((c) => !c.ok).map((c) => {
+      if (c.dependency) {
+        const depStep = checks.find((s) => s.key === c.dependency);
+        if (depStep && !depStep.ok) {
+          return { ...c, label: `${depStep.label} must be completed first` };
+        }
+      }
+      return c;
+    });
+
     const completed = checks.length - unmet.length;
     return { checks, unmet, total: checks.length, completed };
   }, [user]);
@@ -80,13 +97,13 @@ export default function RootLayout() {
     },
     conditionToStop: (u) => {
       if (!u) return false;
-      return Boolean(u.email_verified_at && u.is_member && !(u.advertise_count === 0 && u.task_count === 0));
+      return Boolean(
+        u.email_verified_at &&
+          u.is_member &&
+          !(u.advertise_count === 0 && u.task_count === 0)
+      );
     },
   });
-
-  // Determine if modal should display
-  const pagesToHideModal = ["/VerifyEmail", "/become-a-member", "/advertise"];
-  const shouldShowModal = requirements.unmet.length > 0 && !pagesToHideModal.includes(location.pathname);
 
   if (initialLoading) return <Loading fixed />;
 
@@ -102,7 +119,8 @@ export default function RootLayout() {
           <main className="overflow-hidden min-h-screen relative">
             <Outlet />
 
-            {shouldShowModal && (
+            {/* Show modal if there are unmet steps */}
+            {requirements.unmet.length > 0 && (
               <RequirementModal
                 unmetSteps={requirements.unmet}
                 totalSteps={requirements.total}
