@@ -105,15 +105,16 @@ export default function RootLayout() {
 
     const emailStep = requirements.checks.find(c => c.key === "email");
     const membershipStep = requirements.checks.find(c => c.key === "membership");
+	const path = location.pathname;
 
     // Email not verified: show modal on membership & advertise pages
     if (emailStep && !emailStep.ok) {
-      return true;
+      return path === "/become-a-member" || path === "/advertise";
     }
 
     // Email verified, membership not done: show modal on advertise page
     if (membershipStep && !membershipStep.ok) {
-      return true;
+      return path === "/advertise";
     }
 
     // Default: show modal on all pages with unmet steps
