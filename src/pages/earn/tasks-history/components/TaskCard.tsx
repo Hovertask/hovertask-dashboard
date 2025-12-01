@@ -11,22 +11,25 @@ const PLATFORMS_IMG_MAP = {
 export default function TaskCard(
 	props: NonNullable<ReturnType<typeof useAuthUserTasks>["tasks"]>[number],
 ) {
+	const platform = (props.social_media_url ?? "").toLowerCase();
+
+	const imgSrc =
+		PLATFORMS_IMG_MAP[platform as keyof typeof PLATFORMS_IMG_MAP] ||
+		"/images/default.png";
+
 	return (
 		<div className="border rounded-xl p-4 shadow-sm bg-white">
 			<div className="flex items-center justify-between gap-4">
 				<img
-					src={
-  PLATFORMS_IMG_MAP[
-    props.platforms.toLowerCase() as keyof typeof PLATFORMS_IMG_MAP
-  ] || "/images/default.png"
-}
-
-					alt={props.platforms}
+					src={imgSrc}
+					alt={platform}
 					className="w-8 h-8 mt-1"
 				/>
+
 				<div className="flex items-start gap-4 flex-1">
 					<div>
 						<h3 className="text-sm font-medium text-gray-800">{props.title}</h3>
+
 						<p className="text-xs text-gray-600 mt-1">
 							Earning:{" "}
 							<span className="font-medium text-gray-800">
@@ -34,38 +37,33 @@ export default function TaskCard(
 							</span>{" "}
 							per post engagement.
 						</p>
-						{props.link && (
+
+						{props.social_media_url && (
 							<p className="text-xs text-gray-600 mt-1">
 								Your Link:{" "}
 								<a
-									href={props.link}
+									href={props.social_media_url}
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-blue-600 underline"
 								>
-									{props.link}
+									{props.social_media_url}
 								</a>
 							</p>
 						)}
 					</div>
 				</div>
+
 				<div className="flex flex-col items-end justify-between gap-2 self-stretch">
 					<span className="text-xs uppercase">
 						{props.status || props.admin_approval_status}
 					</span>
+
 					<span className="text-xs text-gray-500">
 						{new Date(props.created_at).toLocaleString()}
 					</span>
 				</div>
 			</div>
-			{ /*<div className="flex justify-end">
-				<Link
-					to={`/advertise/task-performance/${props.id}`}
-					className="mt-2 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700"
-				>
-					See full Details
-				</Link>
-			</div> */}
 		</div>
 	);
 }
