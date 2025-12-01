@@ -110,15 +110,13 @@ export default function RootLayout() {
     // Email not verified: show modal on membership & advertise pages
     if (emailStep && !emailStep.ok) {
       return path === "/become-a-member" || path === "/advertise";
-    }
+    }else if (membershipStep && !membershipStep.ok) {
+      return path === "/advertise"; 
+    }else{
+	  return true; // show on all pages if only the advertise step is unmet
+	}
 
-    // Email verified, membership not done: show modal on advertise page
-    if (membershipStep && !membershipStep.ok) {
-      return path === "/advertise";
-    }
-
-    // Default: show modal on all pages with unmet steps
-    return true;
+    
   })();
 
   if (initialLoading) return <Loading fixed />;
