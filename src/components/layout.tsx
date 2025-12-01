@@ -101,21 +101,23 @@ export default function RootLayout() {
   const shouldShowModal = (() => {
     if (!user) return false;
     if (excludedPages.includes(location.pathname)) return false;
+    if (requirements.unmet.length === 0) return false;
 
     const emailStep = requirements.checks.find(c => c.key === "email");
     const membershipStep = requirements.checks.find(c => c.key === "membership");
 
     // Email not verified: show modal on membership & advertise pages
     if (emailStep && !emailStep.ok) {
-      return ["/become-a-member", "/advertise"].includes(location.pathname);
+      return true;
     }
 
-    // Email verified, membership not done: show modal only on advertise page
+    // Email verified, membership not done: show modal on advertise page
     if (membershipStep && !membershipStep.ok) {
-      return location.pathname === "/advertise";
+      return true;
     }
 
-    return false; // otherwise don't show
+    // Default: show modal on all pages with unmet steps
+    return true;
   })();
 
   if (initialLoading) return <Loading fixed />;
