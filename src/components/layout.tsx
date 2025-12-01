@@ -1,88 +1,108 @@
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+// src/layouts/RootLayout.tsx
+import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
 import Loading from "../shared/components/Loading";
+import RequirementModal from "./RequirementModal";
+import useRequirementPoll from "../hooks/useRequirementPoll";
 import type { AuthUserDTO } from "../../types";
 
 export default function RootLayout() {
-	const dispatch = useDispatch();
-	const user = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
-		(state) => state.auth.value,
-	);
-		const navigate = useNavigate();
-		const location = useLocation();
+  const dispatch = useDispatch();
+  const user = useSelector<{ auth: { value: AuthUserDTO | null } }, AuthUserDTO | null>(
+    (s) => s.auth.value ?? null
+  );
 
-	useEffect(() => {
-		async function fetchUser() {
-			try {
-				dispatch(setAuthUser(await getAuthUser()));
-			} catch {
-				setTimeout(fetchUser, 3000);
-			}
-		}
+  const [initialLoading, setInitialLoading] = useState(!user);
 
-		if (!user) fetchUser();
-	}, [dispatch, user]);
+  // Fetch user initially (with retry on error)
+  useEffect(() => {
+    let mounted = true;
+    async function fetchUserOnce() {
+      try {
+        const u = await getAuthUser();
+        if (!mounted) return;
+        dispatch(setAuthUser(u));
+      } catch {
+        // keep trying with a modest delay; once user interacts or polling runs they'll be fetched too
+        setTimeout(() => {
+          if (mounted) fetchUserOnce();
+        }, 3000);
+      } finally {
+        if (mounted) setInitialLoading(false);
+      }
+    }
 
-	useEffect(() => {
-		if (!user) return;
+    if (!user) fetchUserOnce();
+    else setInitialLoading(false);
 
-		const pathname = location.pathname;
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, user]);
 
-		// Step 1: Email verification must be completed first.
-		// If not verified, only allow the verification and payment callback flows.
-		if (!user.email_verified_at) {
-			const allowed = ["/VerifyEmail", "/payment/callback", "/choose-online-payment-method"];
-			if (!allowed.includes(pathname)) {
-				navigate("/VerifyEmail", { replace: true });
-			}
-			return;
-		}
+  // Compute requirements and unmet steps - memoized
+  const requirements = useMemo(() => {
+    if (!user) return { unmet: [], total: 0, completed: 0 };
+    const checks = [
+      { key: "email", label: "Verify your email", ok: Boolean(user.email_verified_at), route: "/VerifyEmail" },
+      { key: "membership", label: "Become a member", ok: Boolean(user.is_member), route: "/become-a-member" },
+      { key: "advertise", label: "Create your first advert or task", ok: !(user.advertise_count === 0 && user.task_count === 0), route: "/advertise" },
+    ];
+    const unmet = checks.filter(c => !c.ok);
+    const completed = checks.length - unmet.length;
+    return { checks, unmet, total: checks.length, completed };
+  }, [user]);
 
-		// Step 2: After email verified, require membership before other areas.
-		if (!user.is_member) {
-			const allowed = ["/become-a-member", "/choose-online-payment-method", "/payment/callback"];
-			if (!allowed.includes(pathname)) {
-				navigate("/become-a-member", { replace: true });
-			}
-			return;
-		}
+  // Polling hook that will refresh the user when something changes server-side.
+  // It won't start until we have an initial user object.
+  useRequirementPoll({
+    enabled: Boolean(user),
+    refreshUser: async () => {
+      const refreshed = await getAuthUser();
+      dispatch(setAuthUser(refreshed));
+      return refreshed;
+    },
+    conditionToStop: (u) => {
+      // stop polling when all requirements are satisfied
+      if (!u) return false;
+      return Boolean(u.email_verified_at && u.is_member && !(u.advertise_count === 0 && u.task_count === 0));
+    },
+  });
 
-		// Step 3: After membership, encourage creating adverts/tasks by routing to /advertise
-		if (user.advertise_count === 0 && user.task_count === 0) {
-			// allow any advertise sub-paths
-			if (!pathname.startsWith("/advertise")) {
-				navigate("/advertise", { replace: true });
-			}
-			return;
-		}
-	}, [user, navigate, location]);
+  if (initialLoading) return <Loading fixed />;
 
+  return (
+    <>
+      <Header />
+      <div className="bg-container">
+        <div className="grid grid-cols-1 mobile:grid-cols-[243px_1fr] max-w-[1181px] mx-auto mobile:px-4 gap-4">
+          <aside className="max-mobile:hidden">
+            <SideNav />
+          </aside>
 
-	return (
-		<>
-			{user ? (
-				<div>
-					<Header />
+          <main className="overflow-hidden min-h-screen relative">
+            <Outlet />
 
-					<div className="bg-container">
-						<div className="grid grid-cols-1 mobile:grid-cols-[243px_1fr] max-w-[1181px] mx-auto mobile:px-4 gap-4">
-							<aside className="max-mobile:hidden">
-								<SideNav />
-							</aside>
-							<main className="overflow-hidden min-h-screen">
-								<Outlet />
-							</main>
-						</div>
-					</div>
-				</div>
-			) : (
-				<Loading fixed />
-			)}
-		</>
-	);
-	}
+            {/* If there are unmet steps, show modal. It blocks interaction visually and via ARIA. */}
+            {requirements.unmet && requirements.unmet.length > 0 && (
+              <RequirementModal
+                unmetSteps={requirements.unmet}
+                totalSteps={requirements.total}
+                completedSteps={requirements.completed}
+                onManualRefresh={async () => {
+                  const u = await getAuthUser();
+                  dispatch(setAuthUser(u));
+                }}
+              />
+            )}
+          </main>
+        </div>
+      </div>
+    </>
+  );
+}
