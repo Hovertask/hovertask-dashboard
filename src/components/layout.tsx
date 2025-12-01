@@ -62,15 +62,15 @@ export default function RootLayout() {
       },
     ];
 
-    const unmet = checks.filter(c => !c.ok).map(c => {
-      if (c.dependency) {
+    const unmet = checks.map(c => {
+      if (!c.ok && c.dependency) {
         const depStep = checks.find(s => s.key === c.dependency);
         if (depStep && !depStep.ok) {
           return { ...c, label: `${depStep.label} must be completed first` };
         }
       }
       return c;
-    });
+    }).filter(c => !c.ok);
 
     const completed = checks.length - unmet.length;
     return { checks, unmet, total: checks.length, completed };
@@ -101,16 +101,16 @@ export default function RootLayout() {
   const shouldShowModal = (() => {
     if (!user) return false;
     if (excludedPages.includes(location.pathname)) return false;
-    if (requirements.unmet.length === 0) return false;
 
-    // Email step not done: show modal on membership & advertise pages
     const emailStep = requirements.checks.find(c => c.key === "email");
+    const membershipStep = requirements.checks.find(c => c.key === "membership");
+
+    // Email not verified: show modal on membership & advertise pages
     if (emailStep && !emailStep.ok) {
       return ["/become-a-member", "/advertise"].includes(location.pathname);
     }
 
-    // Email done, membership not done: show modal on advertise page only
-    const membershipStep = requirements.checks.find(c => c.key === "membership");
+    // Email verified, membership not done: show modal only on advertise page
     if (membershipStep && !membershipStep.ok) {
       return location.pathname === "/advertise";
     }
