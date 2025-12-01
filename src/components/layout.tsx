@@ -1,5 +1,5 @@
 // src/layouts/RootLayout.tsx
-import { Outlet } from "react-router-dom"; // removed useLocation
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { useEffect, useMemo, useState } from "react";
@@ -13,6 +13,7 @@ import type { AuthUserDTO } from "../../types";
 
 export default function RootLayout() {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const user = useSelector<{ auth: { value: AuthUserDTO | null } }, AuthUserDTO | null>(
     (s) => s.auth.value ?? null
@@ -45,37 +46,25 @@ export default function RootLayout() {
     };
   }, [dispatch, user]);
 
-  // Compute requirements and unmet steps with dependencies
+  // Compute requirements and unmet steps
   const requirements = useMemo(() => {
-    if (!user) return { unmet: [], total: 0, completed: 0 };
+    if (!user) return { checks: [], unmet: [], total: 0, completed: 0 };
 
     const checks: { key: string; label: string; ok: boolean; route: string; dependency?: string }[] = [
       { key: "email", label: "Verify your email", ok: Boolean(user.email_verified_at), route: "/VerifyEmail" },
       { key: "membership", label: "Become a member", ok: Boolean(user.is_member), route: "/become-a-member", dependency: "email" },
+      { 
+        key: "advertise", 
+        label: "Create your first advert or task", 
+        ok: !(user.advertise_count === 0 && user.task_count === 0), 
+        route: "/advertise", 
+        dependency: "membership" 
+      },
     ];
 
-    // Only add advertise step if membership is done, else mark as unmet with dependency
-    if (user.is_member) {
-      checks.push({
-        key: "advertise",
-        label: "Create your first advert or task",
-        ok: !(user.advertise_count === 0 && user.task_count === 0),
-        route: "/advertise",
-        dependency: "membership",
-      });
-    } else {
-      checks.push({
-        key: "advertise",
-        label: "Create your first advert or task",
-        ok: false,
-        route: "/advertise",
-        dependency: "membership",
-      });
-    }
-
-    const unmet = checks.filter((c) => !c.ok).map((c) => {
+    const unmet = checks.filter(c => !c.ok).map(c => {
       if (c.dependency) {
-        const depStep = checks.find((s) => s.key === c.dependency);
+        const depStep = checks.find(s => s.key === c.dependency);
         if (depStep && !depStep.ok) {
           return { ...c, label: `${depStep.label} must be completed first` };
         }
@@ -105,6 +94,30 @@ export default function RootLayout() {
     },
   });
 
+  // Pages where modal should never appear
+  const excludedPages = ["/choose-online-payment-method", "/fund-wallet", "/payment/callback"];
+
+  // Determine if modal should show on the current page
+  const shouldShowModal = (() => {
+    if (!user) return false;
+    if (excludedPages.includes(location.pathname)) return false;
+    if (requirements.unmet.length === 0) return false;
+
+    // Email step not done: show modal on membership & advertise pages
+    const emailStep = requirements.checks.find(c => c.key === "email");
+    if (emailStep && !emailStep.ok) {
+      return ["/become-a-member", "/advertise"].includes(location.pathname);
+    }
+
+    // Email done, membership not done: show modal on advertise page only
+    const membershipStep = requirements.checks.find(c => c.key === "membership");
+    if (membershipStep && !membershipStep.ok) {
+      return location.pathname === "/advertise";
+    }
+
+    return false; // otherwise don't show
+  })();
+
   if (initialLoading) return <Loading fixed />;
 
   return (
@@ -119,8 +132,7 @@ export default function RootLayout() {
           <main className="overflow-hidden min-h-screen relative">
             <Outlet />
 
-            {/* Show modal if there are unmet steps */}
-            {requirements.unmet.length > 0 && (
+            {shouldShowModal && (
               <RequirementModal
                 unmetSteps={requirements.unmet}
                 totalSteps={requirements.total}
