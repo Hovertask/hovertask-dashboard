@@ -55,7 +55,7 @@ export default function RootLayout() {
     };
   }, [dispatch, user]);
 
-  // Compute requirements and unmet steps (always return checks)
+  // Compute requirements and unmet steps
   const requirements = useMemo(() => {
     if (!user) return { checks: [] as Check[], unmet: [] as Check[], total: 0, completed: 0 };
 
@@ -65,7 +65,6 @@ export default function RootLayout() {
       { key: "advertise", label: "Create your first advert or task", ok: !(user.advertise_count === 0 && user.task_count === 0), route: "/advertise", dependency: "membership" },
     ];
 
-    // If a step is unmet but its dependency is unmet, annotate label (optional)
     const unmet = checks
       .map((c) => {
         if (!c.ok && c.dependency) {
@@ -82,7 +81,7 @@ export default function RootLayout() {
     return { checks, unmet, total: checks.length, completed };
   }, [user]);
 
-  // Polling hook to refresh user automatically
+  // Polling hook
   useRequirementPoll({
     enabled: Boolean(user),
     refreshUser: async () => {
@@ -103,40 +102,34 @@ export default function RootLayout() {
   // Pages where modal should never appear
   const excludedPages = ["/choose-online-payment-method", "/fund-wallet", "/payment/callback"];
 
-  // Final decision: should modal be shown on the current page?
+  // Should show modal?
   const shouldShowModal = (() => {
-    // no user => don't show
     if (!user) return false;
-
-    // explicitly excluded pages => don't show
     if (excludedPages.includes(path)) return false;
-
-    // no unmet requirements => don't show
     if (!requirements.unmet || requirements.unmet.length === 0) return false;
 
-    // If current path is the route for an unmet step, allow access ONLY if
-    // that step's dependencies are satisfied (so user can complete it).
-    // Otherwise (current path not a step route OR dependency not satisfied),
-    // the modal should show.
-    // Loop through unmet steps and check:
+    // Loop through unmet steps
     for (const step of requirements.unmet) {
-      if (step.route === path) {
-        // If the step has no dependency -> allow (hide modal) so user can complete it.
+
+      const isStepPage =
+        step.key === "advertise"
+          ? path.startsWith(step.route)       // wildcard support for /advertise/*
+          : step.route === path;
+
+      if (isStepPage) {
         if (!step.dependency) return false;
 
-        // If dependency exists, check that dependency step is OK
         const dep = requirements.checks.find((c) => c.key === step.dependency);
+
         if (dep && dep.ok) {
-          // dependency satisfied -> allow access to this step page
-          return false;
+          return false; // dependency satisfied
         } else {
-          // dependency not satisfied -> block (show modal)
-          return true;
+          return true; // dependency not satisfied
         }
       }
     }
 
-    // If current path is NOT the route for any unmet step, show modal
+    // If user is on a page unrelated to the unmet step → show modal
     return true;
   })();
 
