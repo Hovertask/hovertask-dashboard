@@ -116,32 +116,41 @@ function TaskCard(props: any) {
 	};
 
 	return (
-		<div className="border rounded-xl p-4 shadow-sm bg-white flex flex-col md:flex-row gap-3 md:gap-4">
-			{/* Platform Icon */}
-			<img
-				src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
-				alt={(props.platforms as string)?.toLowerCase()}
-				className="w-8 h-8 flex-shrink-0 mt-1"
-			/>
+		<div className="
+			bg-white border rounded-2xl p-4 shadow-sm 
+			hover:shadow-md hover:scale-[1.01] transition-all duration-200
+			flex flex-col gap-4
+		">
+			{/* Top Row */}
+			<div className="flex items-start gap-3">
+				<img
+					src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
+					alt={props.platforms}
+					className="w-10 h-10 rounded-xl bg-gray-100 p-1"
+				/>
 
-			{/* Task Details */}
-			<div className="flex-1 flex flex-col md:flex-row justify-between gap-2">
 				<div className="flex-1 min-w-0">
-					<h3 className="text-sm font-medium text-gray-800 truncate">{props.title}</h3>
-					<p className="text-xs text-gray-600 mt-1 truncate">
-						Earning: <span className="font-medium text-gray-800">₦20.00</span> per post
+					<h3 className="text-sm font-semibold text-gray-900 truncate">
+						{props.title}
+					</h3>
+
+					<p className="text-xs text-gray-600 mt-1">
+						Earning: <span className="font-semibold text-gray-800">₦20.00</span> per post
 					</p>
-					<p className="text-xs text-gray-600 mt-1 truncate">
-						Budget: <span className="font-medium text-gray-800">₦{props.task_amount ?? "0"}</span>
+
+					<p className="text-xs text-gray-600 mt-1">
+						Budget: <span className="font-semibold text-gray-800">
+							₦{props.task_amount ?? "0"}
+						</span>
 					</p>
+
 					{props.link && (
 						<p className="text-xs text-gray-600 mt-1 truncate">
 							Your Link:{" "}
 							<a
 								href={props.link}
 								target="_blank"
-								rel="noopener noreferrer"
-								className="text-blue-600 underline truncate"
+								className="text-blue-600 underline"
 							>
 								{props.link}
 							</a>
@@ -149,18 +158,51 @@ function TaskCard(props: any) {
 					)}
 				</div>
 
-				{/* Status & Date */}
-				<div className="flex flex-col items-start md:items-end justify-between gap-1 text-xs flex-shrink-0">
-					<span className="uppercase">{props.status}</span>
-					<span className="text-gray-500">{new Date(props.created_at).toLocaleString()}</span>
+				{/* Status badge (desktop) */}
+				<div className="hidden md:flex flex-col items-end text-xs flex-shrink-0">
+					<span
+						className={`
+							px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
+							${props.status === "success" ? "bg-green-500" : ""}
+							${props.status === "pending" ? "bg-yellow-500" : ""}
+							${props.status === "failed" || props.status === "rejected" ? "bg-red-500" : ""}
+							${props.status === "in_review" ? "bg-blue-500" : ""}
+						`}
+					>
+						{props.status.replace("_", " ").toUpperCase()}
+					</span>
+
+					<span className="text-gray-400 mt-1">{new Date(props.created_at).toLocaleString()}</span>
 				</div>
 			</div>
 
+			{/* Mobile Status */}
+			<div className="flex items-center justify-between text-xs md:hidden">
+				<span
+					className={`
+						px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
+						${props.status === "success" ? "bg-green-500" : ""}
+						${props.status === "pending" ? "bg-yellow-500" : ""}
+						${props.status === "failed" || props.status === "rejected" ? "bg-red-500" : ""}
+						${props.status === "in_review" ? "bg-blue-500" : ""}
+					`}
+				>
+					{props.status.replace("_", " ").toUpperCase()}
+				</span>
+
+				<span className="text-gray-400">{new Date(props.created_at).toLocaleString()}</span>
+			</div>
+
 			{/* Action Button */}
-			<div className="flex justify-end mt-2 md:mt-0">
+			<div className="flex">
 				<Link
 					to={`/advertise/engagement-task-performance/${props.id}`}
-					className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 truncate"
+					className="
+						w-full md:w-auto text-center 
+						px-3 py-2 text-xs bg-blue-600 text-white rounded-lg shadow-sm
+						hover:bg-blue-700 hover:shadow-md active:scale-[0.97]
+						transition-all duration-200 whitespace-normal
+					"
 				>
 					Track Your Engagement-Task Performance
 				</Link>
@@ -168,4 +210,5 @@ function TaskCard(props: any) {
 		</div>
 	);
 }
+
 // ------------------ End of TaskCard ------------------

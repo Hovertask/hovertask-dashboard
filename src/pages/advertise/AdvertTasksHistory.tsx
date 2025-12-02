@@ -38,21 +38,23 @@ export default function AdvertTasksHistoryPage() {
   }, [tasks, category]);
 
   return categoryTasks ? (
-    <div className="min-h-full p-2 md:p-4 grid grid-cols-1 md:grid-cols-[1fr_214px] gap-4">
-      <div className="bg-white shadow-md px-4 py-6 md:px-6 md:py-8 space-y-6 overflow-hidden min-h-full">
+    <div className="min-h-full p-2 md:p-4 grid grid-cols-1 md:grid-cols-[1fr_220px] gap-4">
+      <div className="bg-white shadow-md px-4 py-6 md:px-6 md:py-8 space-y-6 overflow-hidden min-h-full rounded-xl">
+
+        {/* Header */}
         <div className="flex gap-3 items-start">
-          <Link to="/advertise" className="mt-1">
+          <Link to="/advertise" className="mt-1 hover:opacity-80 transition">
             <ArrowLeft />
           </Link>
           <div className="space-y-1 truncate">
-            <h1 className="text-lg md:text-xl font-medium truncate">All Social Tasks</h1>
+            <h1 className="text-lg md:text-xl font-semibold truncate">All Advert Tasks</h1>
             <p className="text-xs md:text-sm text-zinc-900 truncate">
-              Track status and earnings from your completed tasks.
+              Track your advert performance and approval status.
             </p>
           </div>
         </div>
 
-        {/* Category Filter Buttons */}
+        {/* Category Buttons */}
         <div className="flex flex-wrap gap-2 p-4 rounded-2xl border border-gray-200 shadow-sm bg-white">
           {[
             { key: "pending", label: "Pending" },
@@ -62,15 +64,17 @@ export default function AdvertTasksHistoryPage() {
             { key: "rejected", label: "Rejected" },
           ].map((cat) => {
             const count = tasks?.filter((t) => t.status === cat.key)?.length || 0;
+
             return (
               <button
                 key={cat.key}
                 type="button"
                 onClick={() => setCategory(cat.key)}
                 className={cn(
-                  "px-4 py-2 rounded-lg flex flex-col gap-1 flex-1 min-w-[80px] border border-gray-300 text-gray-700 font-medium text-sm text-left truncate",
+                  "px-4 py-2 rounded-lg flex flex-col gap-1 flex-1 min-w-[80px] border border-gray-300 text-gray-700 font-medium text-sm text-left truncate transition-all duration-200 hover:bg-gray-50 active:scale-[0.97]",
                   {
-                    "bg-primary/10 text-primary border-gray-300": category === cat.key,
+                    "bg-blue-50 text-blue-600 border-blue-300 shadow-sm":
+                      category === cat.key,
                   }
                 )}
                 title={`${cat.label} (${count})`}
@@ -84,7 +88,7 @@ export default function AdvertTasksHistoryPage() {
 
         <hr className="border-dashed" />
 
-        {/* Tasks List */}
+        {/* Tasks */}
         <div className="space-y-3">
           {categoryTasks.length ? (
             categoryTasks.map((task) => <TaskCard key={task.id} {...task} />)
@@ -113,50 +117,110 @@ function TaskCard(props: any) {
   };
 
   return (
-    <div className="border rounded-xl p-4 shadow-sm bg-white flex flex-col md:flex-row gap-4">
-      {/* Platform Icon */}
-      <img
-        src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
-        alt={(props.platforms as string)?.toLowerCase()}
-        className="w-10 h-10 flex-shrink-0 mt-1"
-      />
+    <div
+      className="
+        bg-white border rounded-2xl p-4 shadow-sm 
+        hover:shadow-md hover:scale-[1.01] transition-all duration-200 
+        flex flex-col gap-4
+      "
+    >
+      <div className="flex items-start gap-4">
+        {/* Icon */}
+        <img
+          src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
+          alt="platform"
+          className="w-10 h-10 rounded-xl bg-gray-100 p-2"
+        />
 
-      {/* Task Info */}
-      <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-medium text-gray-800 truncate">{props.title}</h3>
-        <p className="text-xs text-gray-600 mt-1 truncate">
-          Earning: <span className="font-medium text-gray-800">₦20.00</span> per post engagement
-        </p>
-        <p className="text-xs text-gray-600 mt-1 truncate">
-          Budget: <span className="font-medium text-gray-800">₦{props.estimated_cost ?? "0"}</span>
-        </p>
-        {props.link && (
-          <p className="text-xs text-gray-600 mt-1 truncate">
-            Your Link:{" "}
-            <a
-              href={props.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline truncate"
-              title={props.link}
-            >
-              {props.link}
-            </a>
+        {/* Text */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-semibold text-gray-900 truncate">{props.title}</h3>
+
+          <p className="text-xs text-gray-600 mt-1">
+            Earning: <span className="font-semibold">₦20.00</span> per impression
           </p>
-        )}
+
+          <p className="text-xs text-gray-600 mt-1">
+            Budget:{" "}
+            <span className="font-semibold">₦{props.estimated_cost ?? "0"}</span>
+          </p>
+
+          {props.link && (
+            <p className="text-xs text-gray-600 mt-1 truncate">
+              Your Link:{" "}
+              <a
+                href={props.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline truncate"
+              >
+                {props.link}
+              </a>
+            </p>
+          )}
+        </div>
+
+        {/* Status (desktop) */}
+        <div className="hidden md:flex flex-col items-end gap-1 text-xs">
+          <span
+            className={`
+              px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
+              ${
+                props.admin_approval_status === "success"
+                  ? "bg-green-500"
+                  : props.admin_approval_status === "pending"
+                  ? "bg-yellow-500"
+                  : props.admin_approval_status === "in_review"
+                  ? "bg-blue-500"
+                  : "bg-red-500"
+              }
+            `}
+          >
+            {props.admin_approval_status.replace("_", " ").toUpperCase()}
+          </span>
+
+          <span className="text-gray-500 text-[11px]">
+            {new Date(props.created_at).toLocaleString()}
+          </span>
+        </div>
       </div>
 
-      {/* Status & Date */}
-      <div className="flex flex-col items-end justify-between gap-1 flex-shrink-0">
-        <span className="text-xs uppercase truncate">{props.admin_approval_status}</span>
-        <span className="text-xs text-gray-500 truncate">{new Date(props.created_at).toLocaleString()}</span>
-        <Link
-          to={`/advertise/advert-task-performance/${props.id}`}
-          className="mt-2 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 truncate text-center"
+      {/* Mobile status */}
+      <div className="md:hidden flex items-center justify-between">
+        <span
+          className={`
+            px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
+            ${
+              props.admin_approval_status === "success"
+                ? "bg-green-500"
+                : props.admin_approval_status === "pending"
+                ? "bg-yellow-500"
+                : props.admin_approval_status === "in_review"
+                ? "bg-blue-500"
+                : "bg-red-500"
+            }
+          `}
         >
-          Track Your Advert Performance
-        </Link>
+          {props.admin_approval_status.replace("_", " ").toUpperCase()}
+        </span>
+
+        <span className="text-gray-500 text-[11px]">
+          {new Date(props.created_at).toLocaleString()}
+        </span>
       </div>
+
+      {/* Action Button */}
+      <Link
+        to={`/advertise/advert-task-performance/${props.id}`}
+        className="
+          w-full md:w-auto text-center
+          px-4 py-2 text-xs bg-blue-600 text-white rounded-lg shadow-sm 
+          hover:bg-blue-700 hover:shadow-md active:scale-[0.97]
+          transition-all duration-200
+        "
+      >
+        Track Your Advert Performance
+      </Link>
     </div>
   );
 }

@@ -38,17 +38,29 @@ export default function SingleProductPage() {
   const [loadingContact, setLoadingContact] = useState(false);
 
 const resellerCodeFromURL = new URLSearchParams(window.location.search).get("reseller");
+const abortContactRef = useRef<AbortController | null>(null);
+
 
 const handleContactSeller = async () => {
   try {
+    // Cancel previous request if user clicks repeatedly
+    if (abortContactRef.current) abortContactRef.current.abort();
+
+    const controller = new AbortController();
+    abortContactRef.current = controller;
+
     setLoadingContact(true);
 
+    // Sanitize reseller code (basic whitelist to avoid injection)
+    const safeReseller = resellerCodeFromURL?.replace(/[^a-zA-Z0-9-_]/g, "") ?? "";
+
     const response = await fetch(
-      `${apiEndpointBaseURL}/track-conversion/${product?.id}?reseller=${resellerCodeFromURL}`,
+      `${apiEndpointBaseURL}/track-conversion/${product?.id}?reseller=${safeReseller}`,
       {
         method: "GET",
         credentials: "include",
-         headers: {
+        signal: controller.signal,
+        headers: {
           "Content-Type": "application/json",
           Authorization: getAuthorization(),
         },
@@ -57,17 +69,33 @@ const handleContactSeller = async () => {
 
     const data = await response.json();
 
-    if (data?.whatsapp_url) {
-      window.location.href = data.whatsapp_url;
-    } else {
-      console.error("WhatsApp link missing");
+    // Backend returned an error (but avoid showing backend internals)
+    if (!response.ok) {
+      toast.error(data?.message || "Unable to process request at the moment.");
+      return;
     }
-  } catch (error) {
-    console.error("Conversion tracking failed", error);
+
+    // Backend success
+    if (data?.whatsapp_url) {
+      toast.success("Redirecting you to WhatsApp…");
+      window.location.href = data.whatsapp_url;
+      return;
+    }
+
+    // No whatsapp link? Give safe generic error
+    toast.error("Seller contact link is currently unavailable.");
+  } catch (error: any) {
+    if (error?.name === "AbortError") return;
+
+    console.error("Contact seller failed:", error);
+
+    // Do not show technical errors to users
+    toast.error("Something went wrong. Please try again.");
   } finally {
     setLoadingContact(false);
   }
 };
+
 
 
       
