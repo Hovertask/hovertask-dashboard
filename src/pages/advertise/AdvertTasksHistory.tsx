@@ -137,7 +137,7 @@ function TaskCard(props: any) {
           <h3 className="text-sm font-semibold text-gray-900 truncate">{props.title}</h3>
 
           <p className="text-xs text-gray-600 mt-1">
-            Earning: <span className="font-semibold">₦20.00</span> per impression
+            Earning: <span className="font-semibold">₦{props.payment_per_task ?? "0"}</span> per impression
           </p>
 
           <p className="text-xs text-gray-600 mt-1">

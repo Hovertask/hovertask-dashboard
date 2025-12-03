@@ -8,6 +8,7 @@ import {
 	Target,
 	UserPlus,
 	Wallet,
+	BarChart2
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp,} from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
@@ -133,13 +134,19 @@ export default [
 				icon: <ListCheck size={13} />,
 			},
 			{
-				path: "/marketplace/performance",
-				label: "Track Performance",
+				path: "/marketplace/list-product?type=resell",
+				label: "Add Resell Product",
 				comingSoon: true,
 				icon: <Target size={13} />,
 			},
 		],
 	},
+	{
+    path: "/reseller-conversions",
+    label: "Reseller Conversions",
+    comingSoon: false,
+    icon: <BarChart2 size={13} />,
+    },
 	{
 		basePath: "#",
 		label: "Buy Followers",

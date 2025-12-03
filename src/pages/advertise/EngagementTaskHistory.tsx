@@ -135,7 +135,7 @@ function TaskCard(props: any) {
 					</h3>
 
 					<p className="text-xs text-gray-600 mt-1">
-						Earning: <span className="font-semibold text-gray-800">₦20.00</span> per post
+						Earning: <span className="font-semibold text-gray-800">₦{props.payment_per_task ?? "0"}</span> per post
 					</p>
 
 					<p className="text-xs text-gray-600 mt-1">
