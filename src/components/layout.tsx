@@ -2,7 +2,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
@@ -29,31 +29,6 @@ export default function RootLayout() {
   );
 
   const [initialLoading, setInitialLoading] = useState(!user);
-
-  // Fetch user initially (with retry)
-  useEffect(() => {
-    let mounted = true;
-    async function fetchUserOnce() {
-      try {
-        const u = await getAuthUser();
-        if (!mounted) return;
-        dispatch(setAuthUser(u));
-      } catch {
-        setTimeout(() => {
-          if (mounted) fetchUserOnce();
-        }, 3000);
-      } finally {
-        if (mounted) setInitialLoading(false);
-      }
-    }
-
-    if (!user) fetchUserOnce();
-    else setInitialLoading(false);
-
-    return () => {
-      mounted = false;
-    };
-  }, [dispatch, user]);
 
   // Compute requirements and unmet steps
   const requirements = useMemo(() => {
@@ -83,20 +58,22 @@ export default function RootLayout() {
 
   // Polling hook
   useRequirementPoll({
-    enabled: Boolean(user),
+    enabled: true,
     refreshUser: async () => {
       const refreshed = await getAuthUser();
       dispatch(setAuthUser(refreshed));
+      if (initialLoading) setInitialLoading(false); // set loading false after first fetch
       return refreshed;
     },
     conditionToStop: (u) => {
       if (!u) return false;
       return Boolean(
         u.email_verified_at &&
-          u.is_member &&
-          !(u.advertise_count === 0 && u.task_count === 0)
+        u.is_member &&
+        !(u.advertise_count === 0 && u.task_count === 0)
       );
     },
+    immediate: true,
   });
 
   // Pages where modal should never appear
@@ -108,29 +85,22 @@ export default function RootLayout() {
     if (excludedPages.includes(path)) return false;
     if (!requirements.unmet || requirements.unmet.length === 0) return false;
 
-    // Loop through unmet steps
     for (const step of requirements.unmet) {
-
       const isStepPage =
         step.key === "advertise"
-          ? path.startsWith(step.route)       // wildcard support for /advertise/*
+          ? path.startsWith(step.route) // wildcard support for /advertise/*
           : step.route === path;
 
       if (isStepPage) {
         if (!step.dependency) return false;
 
         const dep = requirements.checks.find((c) => c.key === step.dependency);
-
-        if (dep && dep.ok) {
-          return false; // dependency satisfied
-        } else {
-          return true; // dependency not satisfied
-        }
+        if (dep && dep.ok) return false; // dependency satisfied
+        else return true; // dependency not satisfied
       }
     }
 
-    // If user is on a page unrelated to the unmet step → show modal
-    return true;
+    return true; // page unrelated to unmet step → show modal
   })();
 
   if (initialLoading) return <Loading fixed />;
