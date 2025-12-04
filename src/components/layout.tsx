@@ -2,13 +2,13 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
-import Loading from "../shared/components/Loading";
+//import Loading from "../shared/components/Loading";
 import RequirementModal from "./RequirementModal";
-import useRequirementPoll from "../hooks/useRequirementPoll";
+//import useRequirementPoll from "../hooks/useRequirementPoll";
 import type { AuthUserDTO } from "../../types";
 
 type Check = {
