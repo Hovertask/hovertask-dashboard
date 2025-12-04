@@ -60,17 +60,7 @@ import getAuthUser from "./utils/getAuthUser";
 import { listenForUserUpdates } from "./utils/realtimeUserListener";
 
 
-// ✅ Pages that are "public" or must load WITHOUT redirect
-const PUBLIC_ROUTES = [
-  "/payment/callback",
-  "/VerifyEmail",
-  "/become-a-member",
-  "/choose-online-payment-method",
-  "/fund-wallet"
-];
-
-
-// Guard wrapper to safely redirect if no user
+// 🔒 Wrapper to protect ALL pages (no public routes)
 function AppAuthWrapper({ children }: { children: any }) {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -84,23 +74,21 @@ function AppAuthWrapper({ children }: { children: any }) {
     });
   }, []);
 
-  // Real-time listener
+  // Live updates
   useEffect(() => {
     if (!user?.id) return;
     listenForUserUpdates(user.id);
   }, [user?.id]);
 
-  // While loading user → show nothing (prevents flicker)
+  // Prevent instant redirect during load
   if (loading) return null;
 
-  // Public route → allow access even without login
-  const path = location.pathname;
-  if (PUBLIC_ROUTES.includes(path)) return children;
+  // Special case: Paystack callback MUST be public
+  if (location.pathname === "/payment/callback") return children;
 
-  // Not logged in → redirect safely
+  // Not logged in → redirect
   if (!user) return <Navigate to="/signin" replace />;
 
-  // Logged in → allow app
   return children;
 }
 
@@ -112,7 +100,6 @@ export default function App() {
       <Toaster richColors position="top-center" />
       <Provider store={store}>
         <BrowserRouter>
-          {/* Auth wrapper for safe redirect handling */}
           <AppAuthWrapper>
             <Routes>
               <Route element={<RootLayout />} path="*">
@@ -177,7 +164,7 @@ export default function App() {
                 <Route path="kyc" element={<KycVerification />} />
                 <Route path="kyc/start" element={<KycVerificationForm />} />
 
-                {/* Callback */}
+                {/* Callback MUST remain open */}
                 <Route path="payment/callback" element={<PaymentCallbackPage />} />
 
                 {/* Verify Email */}
