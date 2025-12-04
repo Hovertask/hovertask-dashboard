@@ -2,13 +2,13 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideNav from "./SideNav";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import getAuthUser from "../utils/getAuthUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "../redux/slices/auth";
-//import Loading from "../shared/components/Loading";
+import Loading from "../shared/components/Loading";
 import RequirementModal from "./RequirementModal";
-//import useRequirementPoll from "../hooks/useRequirementPoll";
+import useRequirementPoll from "../hooks/useRequirementPoll";
 import type { AuthUserDTO } from "../../types";
 
 type Check = {
@@ -28,7 +28,7 @@ export default function RootLayout() {
     (s) => s.auth.value ?? null
   );
 
-  //const [initialLoading, setInitialLoading] = useState(!user);
+  const [initialLoading, setInitialLoading] = useState(!user);
 
   // Compute requirements and unmet steps
   const requirements = useMemo(() => {
@@ -56,7 +56,25 @@ export default function RootLayout() {
     return { checks, unmet, total: checks.length, completed };
   }, [user]);
 
-  
+  // Polling hook
+  useRequirementPoll({
+    enabled: true,
+    refreshUser: async () => {
+      const refreshed = await getAuthUser();
+      dispatch(setAuthUser(refreshed));
+      if (initialLoading) setInitialLoading(false); // set loading false after first fetch
+      return refreshed;
+    },
+    conditionToStop: (u) => {
+      if (!u) return false;
+      return Boolean(
+        u.email_verified_at &&
+        u.is_member &&
+        !(u.advertise_count === 0 && u.task_count === 0)
+      );
+    },
+    immediate: true,
+  });
 
   // Pages where modal should never appear
   const excludedPages = ["/choose-online-payment-method", "/fund-wallet", "/payment/callback"];
@@ -85,7 +103,7 @@ export default function RootLayout() {
     return true; // page unrelated to unmet step → show modal
   })();
 
-  //if (initialLoading) return <Loading fixed />;
+  if (initialLoading) return <Loading fixed />;
 
   return (
     <>
