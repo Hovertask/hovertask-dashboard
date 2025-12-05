@@ -54,6 +54,7 @@ import TermsPage from "./pages/Terms";
 import TransactionsHistoryPage from "./pages/TransactionsHistory";
 import UpdateBankDetailsPage from "./pages/UpdateBankDetails";
 import UpdateLocationPage from "./pages/UpdateLocation";
+import ResellerConversionPage from "./pages/ResellerConversionsPage";
 import store from "./redux/store";
 import { useEffect, useState } from "react";
 import getAuthUser from "./utils/getAuthUser";
@@ -169,6 +170,7 @@ export default function App() {
 
                 {/* Verify Email */}
                 <Route path="VerifyEmail" element={<VerifyEmailPage />} />
+                <Route path="reseller-conversion" element={<ResellerConversionPage />} />
               </Route>
             </Routes>
           </AppAuthWrapper>

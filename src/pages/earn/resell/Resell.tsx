@@ -86,41 +86,47 @@ export default function ResellPage() {
 					<h2 className="font-medium text-lg">Top Products to Buy or Resell</h2>
 
 					{products ? (
-						products.length ? (
-							<div className="grid max-[380px]:grid-cols-1 max-[640px]:grid-cols-2 sm:grid-cols-3 p-4 rounded-3xl bg-primary/20 gap-x-2 gap-y-4">
-								{products?.map((product) => (
-									<ProductCard
-										responsive
-										key={product.id}
-										{...product}
-										buttonText="Generate Reseller Link"
-										onButtonClickAction={async () => {
-												// prepare reseller data, open reseller modal and prevent navigation
-												try {
-													const res: any = await generateResellerLink(String(product.id));
-													// API shape may be { data: { reseller_url, code } }
-													const url = (res && res.data && (res.data.reseller_url || res.data.url)) || `${window.location.origin}/marketplace/p/${product.id}`;
-													setResellerData({ product, reseller_url: url });
-												} catch (err) {
-													console.error("Failed to generate reseller link", err);
-													setResellerData({ product, reseller_url: `${window.location.origin}/marketplace/p/${product.id}` });
-												}
-												modalProps.onOpen();
-												return true; // returning true cancels navigation
-											}}
-									/>
-								))}
-							</div>
-						) : (
-							<EmptyMapErr
-								description="No products have been added yet"
-								buttonInnerText="Refresh"
-								onButtonClick={reload}
-							/>
-						)
-					) : (
-						<Loading />
-					)}
+    products.filter((p) => Number(p.resell_budget) >= 500).length ? (
+        <div className="grid max-[380px]:grid-cols-1 max-[640px]:grid-cols-2 sm:grid-cols-3 p-4 rounded-3xl bg-primary/20 gap-x-2 gap-y-4">
+            {products
+                .filter((p) => Number(p.resell_budget) >= 500)
+                .map((product) => (
+                    <ProductCard
+                        responsive
+                        key={product.id}
+                        {...product}
+                        buttonText="Generate Reseller Link"
+                        onButtonClickAction={async () => {
+                            try {
+                                const res: any = await generateResellerLink(String(product.id));
+                                const url =
+                                    (res && res.data && (res.data.reseller_url || res.data.url)) ||
+                                    `${window.location.origin}/marketplace/p/${product.id}`;
+                                setResellerData({ product, reseller_url: url });
+                            } catch (err) {
+                                console.error("Failed to generate reseller link", err);
+                                setResellerData({
+                                    product,
+                                    reseller_url: `${window.location.origin}/marketplace/p/${product.id}`,
+                                });
+                            }
+                            modalProps.onOpen();
+                            return true;
+                        }}
+                    />
+                ))}
+        </div>
+    ) : (
+        <EmptyMapErr
+            description="No products meet the minimum resell budget of ₦500"
+            buttonInnerText="Refresh"
+            onButtonClick={reload}
+        />
+    )
+) : (
+    <Loading />
+)}
+
 				</div>
 
 				<div>

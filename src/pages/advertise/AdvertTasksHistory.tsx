@@ -116,6 +116,29 @@ function TaskCard(props: any) {
     whatsapp: "/images/logos_whatsapp-icon.png",
   };
 
+  const isSuccess = props.status === "success";
+  const [loadingPayment, setLoadingPayment] = useState(false);
+
+async function handlePayment() {
+  try {
+    setLoadingPayment(true);
+
+    const initializePayment = (await import("../../utils/initializeCompletePayment")).default;
+
+    const url = await initializePayment({
+      type: "advert", // or "task" depending on task type
+      advertId: props.id,
+    });
+
+    window.location.href = url; // redirect to paystack/mono/whatever
+  } catch (err: any) {
+    alert(err.message || "Payment initialization failed.");
+  } finally {
+    setLoadingPayment(false);
+  }
+}
+
+
   return (
     <div
       className="
@@ -125,24 +148,21 @@ function TaskCard(props: any) {
       "
     >
       <div className="flex items-start gap-4">
-        {/* Icon */}
         <img
           src={platformsImgMap[(props.platforms as string)?.toLowerCase()]}
           alt="platform"
           className="w-10 h-10 rounded-xl bg-gray-100 p-2"
         />
 
-        {/* Text */}
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-semibold text-gray-900 truncate">{props.title}</h3>
 
           <p className="text-xs text-gray-600 mt-1">
-            Earning: <span className="font-semibold">₦{props.payment_per_task ?? "0"}</span> per impression
+            Earning: <span className="font-semibold">₦{props.payment_per_task ?? "0"}</span>
           </p>
 
           <p className="text-xs text-gray-600 mt-1">
-            Budget:{" "}
-            <span className="font-semibold">₦{props.estimated_cost ?? "0"}</span>
+            Budget: <span className="font-semibold">₦{props.estimated_cost ?? "0"}</span>
           </p>
 
           {props.link && (
@@ -160,23 +180,23 @@ function TaskCard(props: any) {
           )}
         </div>
 
-        {/* Status (desktop) */}
+        {/* Desktop Status */}
         <div className="hidden md:flex flex-col items-end gap-1 text-xs">
           <span
             className={`
               px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
               ${
-                props.admin_approval_status === "success"
+                props.status === "success"
                   ? "bg-green-500"
-                  : props.admin_approval_status === "pending"
+                  : props.status === "pending"
                   ? "bg-yellow-500"
-                  : props.admin_approval_status === "in_review"
+                  : props.status === "in_review"
                   ? "bg-blue-500"
                   : "bg-red-500"
               }
             `}
           >
-            {props.admin_approval_status.replace("_", " ").toUpperCase()}
+            {props.status.replace("_", " ").toUpperCase()}
           </span>
 
           <span className="text-gray-500 text-[11px]">
@@ -185,23 +205,23 @@ function TaskCard(props: any) {
         </div>
       </div>
 
-      {/* Mobile status */}
+      {/* Mobile Status */}
       <div className="md:hidden flex items-center justify-between">
         <span
           className={`
             px-2 py-0.5 rounded-full text-white text-[10px] font-semibold
             ${
-              props.admin_approval_status === "success"
+              props.status === "success"
                 ? "bg-green-500"
-                : props.admin_approval_status === "pending"
+                : props.status === "pending"
                 ? "bg-yellow-500"
-                : props.admin_approval_status === "in_review"
+                : props.status === "in_review"
                 ? "bg-blue-500"
                 : "bg-red-500"
             }
           `}
         >
-          {props.admin_approval_status.replace("_", " ").toUpperCase()}
+          {props.status.replace("_", " ").toUpperCase()}
         </span>
 
         <span className="text-gray-500 text-[11px]">
@@ -209,18 +229,39 @@ function TaskCard(props: any) {
         </span>
       </div>
 
-      {/* Action Button */}
-      <Link
-        to={`/advertise/advert-task-performance/${props.id}`}
-        className="
-          w-full md:w-auto text-center
-          px-4 py-2 text-xs bg-blue-600 text-white rounded-lg shadow-sm 
-          hover:bg-blue-700 hover:shadow-md active:scale-[0.97]
-          transition-all duration-200
-        "
-      >
-        Track Your Advert Performance
-      </Link>
+      {/* ACTION BUTTONS */}
+      <div className="flex flex-col gap-2">
+
+        {/* ❌ NOT SUCCESS → SHOW “Complete Payment” */}
+        {!isSuccess && (
+  <button
+    onClick={handlePayment}
+    disabled={loadingPayment}
+    className="
+      w-full text-center px-4 py-2 text-xs bg-red-600 text-white 
+      rounded-lg shadow-sm hover:bg-red-700 hover:shadow-md 
+      active:scale-[0.97] transition-all duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed
+    "
+  >
+    {loadingPayment ? "Processing..." : "Complete Payment"}
+  </button>
+)}
+
+        {/* ✅ SUCCESS → SHOW “Track Performance” */}
+        {isSuccess && (
+          <Link
+            to={`/advertise/advert-task-performance/${props.id}`}
+            className="
+              w-full text-center px-4 py-2 text-xs bg-blue-600 text-white 
+              rounded-lg shadow-sm hover:bg-blue-700 hover:shadow-md 
+              active:scale-[0.97] transition-all duration-200
+            "
+          >
+            Track Your Advert Performance
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

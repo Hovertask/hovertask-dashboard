@@ -115,6 +115,30 @@ function TaskCard(props: any) {
 		whatsapp: "/images/logos_whatsapp-icon.png",
 	};
 
+    const isSuccess = props.status === "success";
+  const [loadingPayment, setLoadingPayment] = useState(false);
+
+async function handlePayment() {
+  try {
+    setLoadingPayment(true);
+
+    const initializePayment = (await import("../../utils/initializeCompletePayment")).default;
+
+    const url = await initializePayment({
+      type: "advert", // or "task" depending on task type
+      advertId: props.id,
+    });
+
+    window.location.href = url; // redirect to paystack/mono/whatever
+  } catch (err: any) {
+    alert(err.message || "Payment initialization failed.");
+  } finally {
+    setLoadingPayment(false);
+  }
+}
+
+
+
 	return (
 		<div className="
 			bg-white border rounded-2xl p-4 shadow-sm 
@@ -193,8 +217,29 @@ function TaskCard(props: any) {
 				<span className="text-gray-400">{new Date(props.created_at).toLocaleString()}</span>
 			</div>
 
+
 			{/* Action Button */}
 			<div className="flex">
+
+                 {/* ❌ NOT SUCCESS → SHOW “Complete Payment” */}
+        {!isSuccess && (
+  <button
+    onClick={handlePayment}
+    disabled={loadingPayment}
+    className="
+      w-full text-center px-4 py-2 text-xs bg-red-600 text-white 
+      rounded-lg shadow-sm hover:bg-red-700 hover:shadow-md 
+      active:scale-[0.97] transition-all duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed
+    "
+  >
+    {loadingPayment ? "Processing..." : "Complete Payment"}
+  </button>
+)}
+
+
+                 {/* ✅ SUCCESS → SHOW “Track Performance” */}
+        {isSuccess && (
 				<Link
 					to={`/advertise/engagement-task-performance/${props.id}`}
 					className="
@@ -206,6 +251,7 @@ function TaskCard(props: any) {
 				>
 					Track Your Engagement-Task Performance
 				</Link>
+        )}
 			</div>
 		</div>
 	);
