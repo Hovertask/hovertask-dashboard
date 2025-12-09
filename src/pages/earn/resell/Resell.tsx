@@ -76,6 +76,7 @@ export default function ResellPage() {
 					<h2 className="font-medium text-lg">All Categories</h2>
 
 					<div className="flex gap-2 flex-wrap">
+						{/* MANUAL ALL BUTTON */}
 						<button
 							type="button"
 							onClick={() => setCurrentCategory("all")}
@@ -86,26 +87,29 @@ export default function ResellPage() {
 								},
 							)}
 						>
-							All
+							all
 						</button>
 
+						{/* CATEGORIES FROM API */}
 						{categories ? (
-							categories.map((category) => (
-								<button
-									type="button"
-									onClick={() => setCurrentCategory(String(category.id))}
-									className={cn(
-										"py-1 px-2 rounded-lg bg-zinc-200 border border-zinc-300 text-sm capitalize",
-										{
-											"bg-primary text-white":
-												String(category.id) === currentCategory,
-										},
-									)}
-									key={category.id}
-								>
-									{category.label}
-								</button>
-							))
+							categories
+								.filter((cat) => cat.key !== "all") // remove duplicate ALL
+								.map((category) => (
+									<button
+										type="button"
+										onClick={() => setCurrentCategory(String(category.key))}
+										className={cn(
+											"py-1 px-2 rounded-lg bg-zinc-200 border border-zinc-300 text-sm capitalize",
+											{
+												"bg-primary text-white":
+													String(category.key) === currentCategory,
+											},
+										)}
+										key={category.key}
+									>
+										{category.label}
+									</button>
+								))
 						) : categories === null ? (
 							<Loading />
 						) : (
