@@ -136,7 +136,6 @@ export default [
 			{
 				path: "/marketplace/list-product?type=resell",
 				label: "Add Resell Product",
-				comingSoon: true,
 				icon: <Target size={13} />,
 			},
 		],
