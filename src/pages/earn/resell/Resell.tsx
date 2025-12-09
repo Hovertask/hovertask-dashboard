@@ -11,15 +11,34 @@ import EmptyMapErr from "../../../shared/components/EmptyMapErr";
 import useProductCategories from "../../../hooks/useProductCategories";
 import ResellerLinkModal from "../../../shared/components/ResellerLinkModal";
 import generateResellerLink from "../../../utils/generateResellerLink";
-// import ProductInfoModal from "./components/ProductInfoModal";
 
 export default function ResellPage() {
 	const { categories, refresh } = useProductCategories();
-	const [currentCategory, setCurrentCategory] = useState<string>("all");
-	// removed unused currentlyViewedProduct state (resellerData holds product now)
 	const { products, reload } = useProducts();
+
+	// FILTER STATES
+	const [currentCategory, setCurrentCategory] = useState<string>("all");
+	const [searchTerm, setSearchTerm] = useState<string>("");
+
+	// reseller link modal
 	const modalProps = useDisclosure();
 	const [resellerData, setResellerData] = useState<any>(null);
+
+	// FILTER LOGIC
+	const filteredProducts = products
+		? products
+				.filter((p) => Number(p.resell_budget) >= 500)
+				.filter((p) =>
+					currentCategory === "all"
+						? true
+						: String(p.category_id) === String(currentCategory)
+				)
+				.filter((p) =>
+					searchTerm.trim().length === 0
+						? true
+						: p.name.toLowerCase().includes(searchTerm.toLowerCase())
+				)
+		: [];
 
 	return (
 		<div className="grid min-[1000px]:grid-cols-[1fr_200px] min-h-full gap-4">
@@ -45,27 +64,44 @@ export default function ResellPage() {
 					</div>
 
 					<div className="flex justify-center">
-						<MarketplaceSearchForm />
+						<MarketplaceSearchForm
+							onSearch={(value) => setSearchTerm(value)}
+							placeholder="Search for products..."
+						/>
 					</div>
 				</div>
 
+				{/* CATEGORY FILTER */}
 				<div className="space-y-2">
 					<h2 className="font-medium text-lg">All Categories</h2>
 
 					<div className="flex gap-2 flex-wrap">
+						<button
+							type="button"
+							onClick={() => setCurrentCategory("all")}
+							className={cn(
+								"py-1 px-2 rounded-lg bg-zinc-200 border border-zinc-300 text-sm capitalize",
+								{
+									"bg-primary text-white": currentCategory === "all",
+								},
+							)}
+						>
+							All
+						</button>
+
 						{categories ? (
 							categories.map((category) => (
 								<button
 									type="button"
-									onClick={() => setCurrentCategory(category.key)}
+									onClick={() => setCurrentCategory(String(category.id))}
 									className={cn(
 										"py-1 px-2 rounded-lg bg-zinc-200 border border-zinc-300 text-sm capitalize",
 										{
-											"bg-primary text-white transition-all active:scale-95":
-												category.key === currentCategory,
+											"bg-primary text-white":
+												String(category.id) === currentCategory,
 										},
 									)}
-									key={category.key}
+									key={category.id}
 								>
 									{category.label}
 								</button>
@@ -82,52 +118,54 @@ export default function ResellPage() {
 					</div>
 				</div>
 
+				{/* PRODUCT LIST */}
 				<div className="space-y-5">
 					<h2 className="font-medium text-lg">Top Products to Buy or Resell</h2>
 
 					{products ? (
-    products.filter((p) => Number(p.resell_budget) >= 500).length ? (
-        <div className="grid max-[380px]:grid-cols-1 max-[640px]:grid-cols-2 sm:grid-cols-3 p-4 rounded-3xl bg-primary/20 gap-x-2 gap-y-4">
-            {products
-                .filter((p) => Number(p.resell_budget) >= 500)
-                .map((product) => (
-                    <ProductCard
-                        responsive
-                        key={product.id}
-                        {...product}
-                        buttonText="Generate Reseller Link"
-						budget={product.resell_budget}
-                        onButtonClickAction={async () => {
-                            try {
-                                const res: any = await generateResellerLink(String(product.id));
-                                const url =
-                                    (res && res.data && (res.data.reseller_url || res.data.url)) ||
-                                    `${window.location.origin}/marketplace/p/${product.id}`;
-                                setResellerData({ product, reseller_url: url });
-                            } catch (err) {
-                                console.error("Failed to generate reseller link", err);
-                                setResellerData({
-                                    product,
-                                    reseller_url: `${window.location.origin}/marketplace/p/${product.id}`,
-                                });
-                            }
-                            modalProps.onOpen();
-                            return true;
-                        }}
-                    />
-                ))}
-        </div>
-    ) : (
-        <EmptyMapErr
-            description="No products meet the minimum resell budget of ₦500"
-            buttonInnerText="Refresh"
-            onButtonClick={reload}
-        />
-    )
-) : (
-    <Loading />
-)}
+						filteredProducts.length ? (
+							<div className="grid max-[380px]:grid-cols-1 max-[640px]:grid-cols-2 sm:grid-cols-3 p-4 rounded-3xl bg-primary/20 gap-x-2 gap-y-4">
+								{filteredProducts.map((product) => (
+									<ProductCard
+										responsive
+										key={product.id}
+										{...product}
+										budget={product.resell_budget}
+										buttonText="Generate Reseller Link"
+										onButtonClickAction={async () => {
+											try {
+												const res: any = await generateResellerLink(
+													String(product.id),
+												);
+												const url =
+													(res && res.data && (res.data.reseller_url || res.data.url)) ||
+													`${window.location.origin}/marketplace/p/${product.id}`;
 
+												setResellerData({ product, reseller_url: url });
+											} catch (err) {
+												console.error("Failed to generate reseller link", err);
+												setResellerData({
+													product,
+													reseller_url: `${window.location.origin}/marketplace/p/${product.id}`,
+												});
+											}
+
+											modalProps.onOpen();
+											return true;
+										}}
+									/>
+								))}
+							</div>
+						) : (
+							<EmptyMapErr
+								description="No products found for this filter"
+								buttonInnerText="Refresh"
+								onButtonClick={reload}
+							/>
+						)
+					) : (
+						<Loading />
+					)}
 				</div>
 
 				<div>
@@ -135,6 +173,7 @@ export default function ResellPage() {
 				</div>
 			</div>
 
+			{/* SIDEBAR */}
 			{products && (
 				<div>
 					<div className="p-4 bg-primary bg-opacity-20 max-[1000px]:hidden text-xs rounded-2xl mt-[552px] space-y-3">
@@ -146,6 +185,7 @@ export default function ResellPage() {
 							Add a new product or service to the marketplace. Include details,
 							set your price, and upload images to attract buyers.
 						</p>
+
 						<Link
 							to="/marketplace/list-product"
 							className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-primary text-white w-full justify-center"
@@ -156,14 +196,14 @@ export default function ResellPage() {
 				</div>
 			)}
 
-						<ResellerLinkModal
-							open={modalProps.isOpen}
-							onClose={() => {
-								modalProps.onClose();
-								setResellerData(null);
-							}}
-							data={resellerData}
-						/>
+			<ResellerLinkModal
+				open={modalProps.isOpen}
+				onClose={() => {
+					modalProps.onClose();
+					setResellerData(null);
+				}}
+				data={resellerData}
+			/>
 		</div>
 	);
 }

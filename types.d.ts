@@ -124,7 +124,8 @@ export interface CartProduct extends Product {
 
 export interface ProductStore {
 	value: Product[] | null;
-	categories: { key: string; label: string }[] | null;
+	categories: { key: string; label: string; id: string; }[] | null;
+	
 }
 
 export interface TransactionInitializationInfo {

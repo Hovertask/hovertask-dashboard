@@ -61,7 +61,7 @@ import getAuthUser from "./utils/getAuthUser";
 import { listenForUserUpdates } from "./utils/realtimeUserListener";
 
 
-// 🔒 Wrapper to protect ALL pages (no public routes)
+// 🔒 Wrapper to protect ALL pages (custom rules included)
 function AppAuthWrapper({ children }: { children: any }) {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -75,20 +75,41 @@ function AppAuthWrapper({ children }: { children: any }) {
     });
   }, []);
 
-  // Live updates
+  // Real-time updates
   useEffect(() => {
     if (!user?.id) return;
     listenForUserUpdates(user.id);
   }, [user?.id]);
 
-  // Prevent instant redirect during load
+  // Prevent redirect flicker
   if (loading) return null;
 
-  // Special case: Paystack callback MUST be public
+  // Paystack callback stays open
   if (location.pathname === "/payment/callback") return children;
 
-  // Not logged in → redirect
-  if (!user) return <Navigate to="https://hovertask.com/signin" replace />;
+  // User NOT logged in → check special reseller product route
+  if (!user) {
+    const params = new URLSearchParams(location.search);
+    const reseller = params.get("reseller");
+
+    // Match: /marketplace/p/:id
+    const match = location.pathname.match(/^\/marketplace\/p\/(\d+)/);
+
+    if (match && reseller) {
+      const productId = match[1];
+
+      // Redirect to the original reseller product URL
+      return (
+        <Navigate
+          to={`https://hovertask.com/marketplace/product/${productId}?reseller=${reseller}`}
+          replace
+        />
+      );
+    }
+
+    // Default redirect for all other unauthenticated pages
+    return <Navigate to="https://hovertask.com/signin" replace />;
+  }
 
   return children;
 }
