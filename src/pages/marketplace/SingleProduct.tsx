@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import useCartItem from "../../hooks/useCartItem";
 import { addProduct, removeProduct } from "../../redux/slices/cart";
-import Feedback from "../../shared/components/Feedback";
+//import Feedback from "../../shared/components/Feedback";
 import Loading from "../../shared/components/Loading";
 import SellerInfoAside from "../../shared/components/SellerInfoAside";
 import shareProduct from "../../utils/shareProduct";
@@ -408,7 +408,7 @@ const handleContactSeller = async () => {
               </div>
             </div>
 
-            {/* Feedback */}
+            {/* Feedback 
             <div className="space-y-3 sm:space-y-4">
               <h2 className="font-medium text-sm sm:text-base">Customer Feedback</h2>
               <Feedback
@@ -423,7 +423,7 @@ const handleContactSeller = async () => {
                 comment="Great product, but I wish it came in more colour options."
                 date="Dec.27,2024"
               />
-            </div>
+            </div>*/}
 
             {/* Reseller block */}
             {product?.resell_budget && (
@@ -439,7 +439,7 @@ const handleContactSeller = async () => {
                 <div>
                   <h3 className="text-sm sm:text-base font-semibold">💰 Commission Details:</h3>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    Earn ₦10,000 per sale through your reseller link.
+                    Earn ₦500 per sale through your reseller link.
                   </p>
                 </div>
                 <button

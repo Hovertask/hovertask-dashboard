@@ -91,6 +91,7 @@ export default function ProductCard(props: ProductCardProps) {
 						{props.discount && props.discount > 0 && (
 							<p className="text-[9.4px] text-[#77777A] line-through">
 								₦{props.price.toLocaleString()}
+								
 							</p>
 						)}
 						<p className="text-[11.28px]">
@@ -108,6 +109,21 @@ export default function ProductCard(props: ProductCardProps) {
 						<p className="text-[#77777A] text-[9.11px]">{props.stock} Units</p>
 					</div>
 				</div>
+				{/* Reseller Banner */}
+{props.resell_budget && props.resell_budget >= 500 && (
+	<div className="bg-gradient-to-r from-purple-600 to-pink-500 text-white text-[9.8px] rounded-lg p-2 shadow-md">
+		<p className="font-semibold leading-tight">
+			Resell & Earn up to{" "}
+			<span className="font-bold">
+				₦{props.resell_budget.toLocaleString()}
+			</span>
+		</p>
+		<p className="opacity-90">
+			Perfect for side hustle sellers — high margins & fast turnover!
+		</p>
+	</div>
+)}
+
 				<div className="flex items-center justify-between gap-2">
 				    <Link
 						to={props.linkOverrideURL ?? `/marketplace/p/${props.id}`}

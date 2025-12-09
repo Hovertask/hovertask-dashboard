@@ -144,7 +144,6 @@ export default [
 	{
     path: "/reseller-conversion",
     label: "Reseller Conversions",
-    comingSoon: false,
     icon: <BarChart2 size={13} />,
     },
 	{

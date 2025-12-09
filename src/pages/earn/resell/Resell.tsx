@@ -96,6 +96,7 @@ export default function ResellPage() {
                         key={product.id}
                         {...product}
                         buttonText="Generate Reseller Link"
+						budget={product.resell_budget}
                         onButtonClickAction={async () => {
                             try {
                                 const res: any = await generateResellerLink(String(product.id));

@@ -79,13 +79,14 @@ interface Product {
 	email?: string | null;
 	social_media_link?: string | null;
 	brand: string | null;
-	resell_budget?: number | null;
+	resell_budget?: number;
 }
 
 export interface ProductCardProps extends Product {
 	horizontal?: boolean;
 	responsive?: boolean;
 	version?: "bordered";
+	budget?: Number;
 	buttonText?: string;
 	onButtonClickAction?(): any;
 	linkOverrideURL?: string;

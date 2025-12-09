@@ -88,7 +88,7 @@ function AppAuthWrapper({ children }: { children: any }) {
   if (location.pathname === "/payment/callback") return children;
 
   // Not logged in → redirect
-  if (!user) return <Navigate to="/signin" replace />;
+  if (!user) return <Navigate to="https://hovertask.com/signin" replace />;
 
   return children;
 }
