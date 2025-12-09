@@ -115,7 +115,7 @@ export default function ProductCard(props: ProductCardProps) {
 		<p className="font-semibold leading-tight">
 			Resell & Earn up to{" "}
 			<span className="font-bold">
-				₦{props.resell_budget.toLocaleString()}
+				₦500
 			</span>
 		</p>
 		<p className="opacity-90">
