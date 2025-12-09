@@ -4,6 +4,7 @@ import {
   Conversion,
   PaginatedResponse,
 } from "../utils/getResellerConversions";
+
 import {
   BarChart,
   Bar,
@@ -14,12 +15,16 @@ import {
   CartesianGrid,
 } from "recharts";
 
+import EmptyMapErr from "../shared/components/EmptyMapErr";
+
 export default function ResellerConversionsPage() {
   const [data, setData] = useState<Conversion[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Conversion> | null>(null);
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const refresh = () => setPage((p) => p);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -44,7 +49,6 @@ export default function ResellerConversionsPage() {
   // --------------------------
 
   const totalConversions = data.length;
-
   const totalCommission = totalConversions * 500;
 
   const productStats = useMemo(() => {
@@ -60,7 +64,6 @@ export default function ResellerConversionsPage() {
 
     data.forEach((c) => {
       if (!c.product) return;
-
       const id = c.product.id;
 
       if (!map[id]) {
@@ -89,11 +92,23 @@ export default function ResellerConversionsPage() {
   }
 
   if (error) {
-    return <p className="text-red-500 p-4">{error}</p>;
+    return (
+      <EmptyMapErr
+        onButtonClick={refresh}
+        description="Failed to load conversions."
+        buttonInnerText="Try Again"
+      />
+    );
   }
 
   if (!data.length) {
-    return <p className="text-gray-500 p-4">No conversions found yet.</p>;
+    return (
+      <EmptyMapErr
+        onButtonClick={refresh}
+        description="No conversions found yet."
+        buttonInnerText="Refresh"
+      />
+    );
   }
 
   return (
@@ -122,6 +137,41 @@ export default function ResellerConversionsPage() {
           <h2 className="text-lg md:text-2xl font-bold">₦500 / conv.</h2>
         </div>
       </div>
+
+      {/* ⭐ TOP PERFORMING PRODUCT */}
+      {productStats.length > 0 && (
+        <div className="p-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-xl shadow-md">
+          <h2 className="text-lg md:text-xl font-semibold mb-2">Top Performing Product</h2>
+
+          {(() => {
+            const top = [...productStats].sort((a, b) => b.conversions - a.conversions)[0];
+            const percent = ((top.conversions / totalConversions) * 100).toFixed(1);
+
+            return (
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div>
+                  <p className="text-sm opacity-80">Product</p>
+                  <h3 className="text-xl md:text-2xl font-bold">{top.name}</h3>
+                </div>
+
+                <div>
+                  <p className="text-sm opacity-80">Conversions</p>
+                  <p className="text-lg md:text-xl font-semibold">
+                    {top.conversions} ({percent}%)
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm opacity-80">Commission Earned</p>
+                  <p className="text-lg md:text-xl font-semibold">
+                    ₦{top.commission.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
 
       {/* BAR CHART */}
       <div className="bg-white rounded-xl shadow border p-3 md:p-4">
@@ -173,8 +223,8 @@ export default function ResellerConversionsPage() {
       <div>
         <h2 className="text-base md:text-lg font-semibold mb-3">Visitor Logs</h2>
 
-        <div className="bg-white rounded-xl overflow-hidden border shadow-sm overflow-x-auto">
-          <table className="w-full text-xs md:text-sm min-w-[700px]">
+        <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
+          <table className="w-full text-xs md:text-sm min-w-[750px]">
             <thead>
               <tr className="bg-gray-100 text-left">
                 <th className="p-2 md:p-3">Product</th>
@@ -207,7 +257,7 @@ export default function ResellerConversionsPage() {
         </div>
       </div>
 
-      {/* Pagination */}
+      {/* PAGINATION */}
       {pagination && (
         <div className="flex gap-2 mt-4 justify-center">
           <button

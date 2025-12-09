@@ -1,7 +1,7 @@
 import { HeroUIProvider } from "@heroui/react";
 import "material-icons/iconfont/material-icons.css";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router";
 import { Toaster } from "sonner";
 import "./App.css";
 import RootLayout from "./components/layout";
@@ -60,8 +60,7 @@ import { useEffect, useState } from "react";
 import getAuthUser from "./utils/getAuthUser";
 import { listenForUserUpdates } from "./utils/realtimeUserListener";
 
-
-// 🔒 Wrapper to protect ALL pages (custom rules included)
+// 🔒 Wrapper securing all routes
 function AppAuthWrapper({ children }: { children: any }) {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -81,40 +80,34 @@ function AppAuthWrapper({ children }: { children: any }) {
     listenForUserUpdates(user.id);
   }, [user?.id]);
 
-  // Prevent redirect flicker
+  // While loading prevent flicker
   if (loading) return null;
 
   // Paystack callback stays open
   if (location.pathname === "/payment/callback") return children;
 
-  // User NOT logged in → check special reseller product route
+  // User NOT authenticated
   if (!user) {
     const params = new URLSearchParams(location.search);
     const reseller = params.get("reseller");
 
-    // Match: /marketplace/p/:id
+    // Match reseller URL: /marketplace/p/:id
     const match = location.pathname.match(/^\/marketplace\/p\/(\d+)/);
 
     if (match && reseller) {
       const productId = match[1];
-
-      // Redirect to the original reseller product URL
-      return (
-        <Navigate
-          to={`https://hovertask.com/marketplace/product/${productId}?reseller=${reseller}`}
-          replace
-        />
-      );
+      // Redirect externally
+      window.location.href = `https://hovertask.com/marketplace/product/${productId}?reseller=${reseller}`;
+      return null;
     }
 
-    // Default redirect for all other unauthenticated pages
-    return <Navigate to="https://hovertask.com/signin" replace />;
+    // Default redirect externally to Sign In
+    window.location.href = "https://hovertask.com/signin";
+    return null;
   }
 
   return children;
 }
-
-
 
 export default function App() {
   return (
@@ -186,11 +179,13 @@ export default function App() {
                 <Route path="kyc" element={<KycVerification />} />
                 <Route path="kyc/start" element={<KycVerificationForm />} />
 
-                {/* Callback MUST remain open */}
+                {/* Payment callback */}
                 <Route path="payment/callback" element={<PaymentCallbackPage />} />
 
-                {/* Verify Email */}
+                {/* Verify */}
                 <Route path="VerifyEmail" element={<VerifyEmailPage />} />
+
+                {/* Reseller conversions */}
                 <Route path="reseller-conversion" element={<ResellerConversionPage />} />
               </Route>
             </Routes>
