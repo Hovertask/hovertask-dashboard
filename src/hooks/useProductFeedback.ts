@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import apiEndpointBaseURL from "../utils/apiEndpointBaseURL";
-import getAuthorization from "../utils/getAuthorization";
+
 
 export interface ProductFeedback {
   id: number;
