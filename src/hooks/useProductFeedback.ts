@@ -48,7 +48,7 @@ export default function useProductFeedback(productId: string | number) {
             method: "GET",
             signal: controller.signal,
             headers: {
-              Authorization: getAuthorization(),
+              accept: "application/json",
             },
           }
         );

@@ -1,6 +1,7 @@
 // src/shared/components/FeedbackForm.tsx
 import { useState } from "react";
 import { toast } from "sonner";
+import apiEndpointBaseURL from "../../utils/apiEndpointBaseURL";
 
 export default function FeedbackForm({
   productId,
@@ -16,7 +17,7 @@ export default function FeedbackForm({
     try {
       setLoading(true);
 
-      const res = await fetch(`/api/products/${productId}/feedback`, {
+      const res = await fetch(`${apiEndpointBaseURL}/products/${productId}/feedback`, {
         method: "POST",
         credentials: "include",
         headers: {
