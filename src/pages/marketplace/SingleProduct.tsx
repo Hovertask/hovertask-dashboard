@@ -6,7 +6,9 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import useCartItem from "../../hooks/useCartItem";
 import { addProduct, removeProduct } from "../../redux/slices/cart";
-//import Feedback from "../../shared/components/Feedback";
+import FeedbackList from "../../shared/components/FeedbackList";
+import FeedbackForm from "../../shared/components/FeedbackForm";
+import useProductFeedback from "../../hooks/useProductFeedback";
 import Loading from "../../shared/components/Loading";
 import SellerInfoAside from "../../shared/components/SellerInfoAside";
 import shareProduct from "../../utils/shareProduct";
@@ -33,6 +35,24 @@ export default function SingleProductPage() {
       ? product.product_images.map((i) => i.file_path)
       : demoImages;
 
+    
+
+       // -----------------------------
+  // FEEDBACK: pagination + loading
+  // -----------------------------
+  const {
+    data: feedback,
+    loading: feedbackLoading,
+    error: feedbackError,
+    page,
+    lastPage,
+    setPage,
+    refetch,
+  } = useProductFeedback(Number(id));
+
+  const handleFeedbackSubmitted = () => {
+    refetch(); // Auto refresh after submit
+  };
 
 
   const [loadingContact, setLoadingContact] = useState(false);
@@ -408,22 +428,49 @@ const handleContactSeller = async () => {
               </div>
             </div>
 
-            {/* Feedback 
-            <div className="space-y-3 sm:space-y-4">
-              <h2 className="font-medium text-sm sm:text-base">Customer Feedback</h2>
-              <Feedback
-                name="Akeyande Nurudeen"
-                rating={5}
-                comment="Amazing sound quality and comfortable to wear!"
-                date="Dec.26,2024"
-              />
-              <Feedback
-                name="Abdullahi Bello Saidu"
-                rating={4}
-                comment="Great product, but I wish it came in more colour options."
-                date="Dec.27,2024"
-              />
-            </div>*/}
+            {/* -------------------------
+                FEEDBACK SECTION (NEW)
+            ------------------------- */}
+            <div className="space-y-4 mt-6">
+              <h2 className="font-medium text-base">Customer Feedback</h2>
+
+              {feedbackLoading ? (
+                <p>Loading feedback...</p>
+              ) : feedbackError ? (
+                <p className="text-red-500">{feedbackError}</p>
+              ) : (
+                <FeedbackList feedback={feedback} />
+              )}
+
+              {/* Pagination */}
+              {lastPage > 1 && (
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+
+                  <p className="text-sm">
+                    Page {page} of {lastPage}
+                  </p>
+
+                  <button
+                    disabled={page === lastPage}
+                    onClick={() => setPage(page + 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+
+              {/* Feedback form */}
+              <FeedbackForm productId={Number(id)} onSuccess={handleFeedbackSubmitted} />
+            </div>
+
 
             {/* Reseller block */}
             {product?.resell_budget && (
