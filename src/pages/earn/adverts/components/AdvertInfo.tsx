@@ -127,7 +127,9 @@ export default function AdvertInfoPage() {
           </div>
 
           {/* Completion Form */}
-          {advert?.id && <ProofOfAdvertCompletionForm advertId={advert.id} />}
+          {advert?.id && <ProofOfAdvertCompletionForm 
+          advertId={advert.id} 
+          platform={advert.platforms?.toLowerCase()} />}
         </div>
       </div>
 

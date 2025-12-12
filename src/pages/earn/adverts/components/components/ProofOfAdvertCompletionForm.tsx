@@ -7,7 +7,7 @@ import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
 import { toast } from "sonner";
 
-export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: number }) {
+export default function ProofOfAdvertCompletionForm({ advertId, platform, }: { advertId: number; platform?: string; }) {
   const [selectedMediaUrl, setSelectedMediaUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [social_media_url, setSocialMediaUrl] = useState("");
@@ -136,7 +136,8 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
             )
           )}
         </div>
-
+        
+        {platform !== "whatsapp" && (
         <div className="space-y-1">
           <p>
             Please enter the social media_account url  of the account you used to perform the
@@ -160,6 +161,7 @@ export default function ProofOfAdvertCompletionForm({ advertId }: { advertId: nu
             </button>
           </div>
         </div>
+        )}
       </div>
 
       {isSubmitting && <Loading fixed />}
