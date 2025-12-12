@@ -137,13 +137,16 @@ export default function ProofOfAdvertCompletionForm({ advertId, platform, }: { a
           )}
         </div>
         
-        {platform !== "whatsapp" && (
+        
         <div className="space-y-1">
+          {platform !== "whatsapp" && (
           <p>
             Please enter the social media_account url  of the account you used to perform the
             advert, e.g. Instagram .
           </p>
+            )}
           <div className="flex items-center gap-4">
+            {platform !== "whatsapp" && (
             <input
               placeholder="Enter your social media account Url of the promoted advert post " 
               className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
@@ -152,6 +155,7 @@ export default function ProofOfAdvertCompletionForm({ advertId, platform, }: { a
               onChange={(e) => setSocialMediaUrl(e.target.value)}
               required
             />
+           )}
             <button
               type="submit"
               disabled={isSubmitting}
@@ -161,7 +165,6 @@ export default function ProofOfAdvertCompletionForm({ advertId, platform, }: { a
             </button>
           </div>
         </div>
-        )}
       </div>
 
       {isSubmitting && <Loading fixed />}

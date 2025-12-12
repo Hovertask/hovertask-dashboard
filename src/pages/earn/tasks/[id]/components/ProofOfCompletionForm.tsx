@@ -136,13 +136,16 @@ export default function ProofOfAdvertCompletionForm({ taskId, platform, }: { tas
 			)
 		  )}
 		</div>
-        {platform !== "whatsapp" && (
+       
 		<div className="space-y-1">
+		 {platform !== "whatsapp" && (
 		  <p>
 			Please enter the social media_account url  of the account you used to perform the
             task.
 		  </p>
+		 )}
 		  <div className="flex items-center gap-4">
+			 {platform !== "whatsapp" && (
 			<input
 			  placeholder="Enter your social media account Url "
 			  className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
@@ -151,6 +154,7 @@ export default function ProofOfAdvertCompletionForm({ taskId, platform, }: { tas
 			  onChange={(e) => setSocialMediaUrl(e.target.value)}
 			  required
 			/>
+			 )}
 			<button
 			  type="submit"
 			  disabled={isSubmitting}
@@ -160,7 +164,7 @@ export default function ProofOfAdvertCompletionForm({ taskId, platform, }: { tas
 			</button>
 		  </div>
 		</div>
-		)};
+		
 	  </div>
 		
 
