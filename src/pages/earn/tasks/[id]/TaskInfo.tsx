@@ -124,7 +124,13 @@ export default function TaskInfoPage() {
 					</div>
 				</div>
 
-				{task?.id && <ProofOfTaskCompletionForm taskId={task.id} />}
+				{task?.id && (
+                  <ProofOfTaskCompletionForm
+                       taskId={task.id}
+                       platform={task.platforms?.toLowerCase()}
+                  />
+                )}
+
 
 
 				<div>

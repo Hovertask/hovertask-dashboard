@@ -7,7 +7,7 @@ import apiEndpointBaseURL from "../../../../../utils/apiEndpointBaseURL";
 import getAuthorization from "../../../../../utils/getAuthorization";
 import { toast } from "sonner";
 
-export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number }) {
+export default function ProofOfAdvertCompletionForm({ taskId, platform, }: { taskId: number; platform: string }) {
   const [selectedMediaUrl, setSelectedMediaUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [social_media_url, setSocialMediaUrl] = useState("");
@@ -136,15 +136,15 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 			)
 		  )}
 		</div>
-
+        {platform !== "whatsapp" && (
 		<div className="space-y-1">
 		  <p>
-			Please enter the username of the account you used to perform the
-			task, e.g. Instagram username.
+			Please enter the social media_account url  of the account you used to perform the
+            task.
 		  </p>
 		  <div className="flex items-center gap-4">
 			<input
-			  placeholder="Enter your username"
+			  placeholder="Enter your social media account Url "
 			  className="bg-zinc-200 border border-zinc-300 p-2 rounded-xl flex-1 min-w-0"
 			  type="text"
 			  value={social_media_url}
@@ -160,7 +160,9 @@ export default function ProofOfAdvertCompletionForm({ taskId }: { taskId: number
 			</button>
 		  </div>
 		</div>
+		)};
 	  </div>
+		
 
 	  {isSubmitting && <Loading fixed />}
 

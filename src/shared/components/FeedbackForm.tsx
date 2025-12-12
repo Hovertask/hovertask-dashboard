@@ -17,7 +17,7 @@ export default function FeedbackForm({
     try {
       setLoading(true);
 
-      const res = await fetch(`${apiEndpointBaseURL}/products/${productId}/feedback`, {
+      const res = await fetch(`${apiEndpointBaseURL}/products/${productId}/feedback-list`, {
         method: "POST",
         credentials: "include",
         headers: {
