@@ -32,17 +32,18 @@ export default function SellerInfoAside(
 					<div className="text-[#00B306] bg-[#00B3061A] text-[9.5px] px-2 py-1 rounded-full text-center">
 						Verified ID
 					</div>
-					<div className="text-[7.34px] flex items-center gap-1">
+
+					{/*<div className="text-[7.34px] flex items-center gap-1">
 						<Star size={12} color="#F5B300" /> 0
-					</div>
-					{props.hideChatBtn || (
+					</div>*/}
+					{/*{props.hideChatBtn || (
 						<button
 							type="button"
 							className="text-white bg-primary text-[9.5px] px-2 py-1 rounded-full text-center"
 						>
 							Follow
 						</button>
-					)}
+					)}*/}
 				</div>
 				<div className="h-1 border-t border-dashed border-[#66666666] w-[80%] mx-auto" />
 				{/*<div className="flex gap-2">
