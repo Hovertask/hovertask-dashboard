@@ -11,7 +11,7 @@ const PLATFORMS_IMG_MAP = {
 export default function TaskCard(
 	props: NonNullable<ReturnType<typeof useAuthUserTasks>["tasks"]>[number],
 ) {
-	const platform = (props.social_media_url ?? "").toLowerCase();
+	const platform = (props.platforms ?? "").toLowerCase();
 
 	const imgSrc =
 		PLATFORMS_IMG_MAP[platform as keyof typeof PLATFORMS_IMG_MAP] ||

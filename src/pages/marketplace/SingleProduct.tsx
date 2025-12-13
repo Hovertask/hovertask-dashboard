@@ -202,12 +202,13 @@ const handleContactSeller = async () => {
                   <h1 className="text-sm sm:text-base font-medium capitalize">
                     {seller.fname} {seller.lname}
                   </h1>
-                  <Link
+
+                  {/*<Link
                     className="text-primary text-xs sm:text-sm hover:underline"
                     to={`/marketplace/s/${seller.id}`}
                   >
                     View Profile
-                  </Link>
+                  </Link>*/}
                 </div>
               </div>
             </header>

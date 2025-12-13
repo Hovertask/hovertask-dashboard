@@ -45,7 +45,7 @@ export default function SellerInfoAside(
 					)}
 				</div>
 				<div className="h-1 border-t border-dashed border-[#66666666] w-[80%] mx-auto" />
-				<div className="flex gap-2">
+				{/*<div className="flex gap-2">
 					<div className="bg-[#EEF0FF] px-2 py-0.5 rounded-lg flex flex-col gap-0.5 border-1 border-[#66666666] flex-1">
 						<span className="text-[9.43px]">0</span>
 						<span className="text-[8px]">Referrals</span>
@@ -58,8 +58,8 @@ export default function SellerInfoAside(
 						<span className="text-[9.43px]">0</span>
 						<span className="text-[8px]">Following</span>
 					</div>
-				</div>
-				{props.hideChatBtn || (
+				</div>*/}
+				{/*{props.hideChatBtn || (
 					<div className="flex gap-2 flex-wrap justify-center items-center">
 						<button
 							type="button"
@@ -74,7 +74,7 @@ export default function SellerInfoAside(
 							Start Chat
 						</button>
 					</div>
-				)}
+				)}*/}
 			</div>
 			{props.showSafetyTips && (
 				<>
