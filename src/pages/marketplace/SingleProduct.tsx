@@ -6,9 +6,9 @@ import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import useCartItem from "../../hooks/useCartItem";
 import { addProduct, removeProduct } from "../../redux/slices/cart";
-import FeedbackList from "../../shared/components/FeedbackList";
-import FeedbackForm from "../../shared/components/FeedbackForm";
-import useProductFeedback from "../../hooks/useProductFeedback";
+//import FeedbackList from "../../shared/components/FeedbackList";
+//import FeedbackForm from "../../shared/components/FeedbackForm";
+//import useProductFeedback from "../../hooks/useProductFeedback";
 import Loading from "../../shared/components/Loading";
 import SellerInfoAside from "../../shared/components/SellerInfoAside";
 import shareProduct from "../../utils/shareProduct";
@@ -40,7 +40,7 @@ export default function SingleProductPage() {
        // -----------------------------
   // FEEDBACK: pagination + loading
   // -----------------------------
-  const {
+  /*const {
     data: feedback,
     loading: feedbackLoading,
     error: feedbackError,
@@ -52,7 +52,7 @@ export default function SingleProductPage() {
 
   const handleFeedbackSubmitted = () => {
     refetch(); // Auto refresh after submit
-  };
+  };*/
 
 
   const [loadingContact, setLoadingContact] = useState(false);
@@ -431,7 +431,7 @@ const handleContactSeller = async () => {
 
             {/* -------------------------
                 FEEDBACK SECTION (NEW)
-            ------------------------- */}
+            -------------------------
             <div className="space-y-4 mt-6">
               <h2 className="font-medium text-base">Customer Feedback</h2>
 
@@ -441,9 +441,9 @@ const handleContactSeller = async () => {
                 <p className="text-red-500">{feedbackError}</p>
               ) : (
                 <FeedbackList feedback={feedback} />
-              )}
+              )}*/}
 
-              {/* Pagination */}
+              {/* Pagination 
               {lastPage > 1 && (
                 <div className="flex justify-between items-center pt-2">
                   <button
@@ -466,11 +466,11 @@ const handleContactSeller = async () => {
                     Next
                   </button>
                 </div>
-              )}
+              )}*/}
 
-              {/* Feedback form */}
+              {/* Feedback form 
               <FeedbackForm productId={Number(id)} onSuccess={handleFeedbackSubmitted} />
-            </div>
+            </div>*/}
 
 
             {/* Reseller block */}

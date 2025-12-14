@@ -1,7 +1,8 @@
-import { Mail, Phone, Copy, MessageSquare, CheckCircle } from "lucide-react";
+import { Mail, Phone, Copy, CheckCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 import type { AuthUserDTO } from "../../../types";
 import { Link } from "react-router";
+//import { Mail, Phone, Copy, MessageSquare, CheckCircle } from "lucide-react";
 
 export default function UserProfileCard() {
 	const authUser = useSelector<{ auth: { value: AuthUserDTO } }, AuthUserDTO>(
@@ -37,16 +38,16 @@ export default function UserProfileCard() {
 					<CheckCircle className="w-4 h-4" />
 					Verified ID
 				</div>
+                {/* followers */}
+				<p className="text-sm text-gray-600 mb-3"></p>
 
-				<p className="text-sm text-gray-600 mb-3">6 Followers - 1 Following</p>
-
-				<button
+				{/*<button
 					type="button"
 					className="border border-blue-500 text-blue-500 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-blue-50 transition mx-auto mt-16"
 				>
 					<MessageSquare className="w-4 h-4" />
 					Start Chat
-				</button>
+				</button>*/}
 			</div>
 
 			<div className="mt-12 space-y-2 text-sm text-gray-700">
@@ -56,14 +57,14 @@ export default function UserProfileCard() {
 				</div>
 				<div className="flex items-center gap-2">
 					<Phone className="w-4 h-4 text-gray-500" />
-					<span>+2347069731575</span>
+					<span>{authUser.phone}</span>
 				</div>
 				<div className="flex items-center gap-2">
 					<a
-						href="https://referral.com/alayandenurudeen"
+						href={`https://hovertask.com/signup/?ref=${authUser.referral_code}`}
 						className="text-primary underline break-all text-sx px-2 p-1 rounded-full bg-primary/20 line-clamp-1"
 					>
-						https://referral.com/alayandenurudeen
+						{authUser.referral_code}
 					</a>
 					<Copy className="w-4 h-4 text-gray-500 cursor-pointer hover:text-gray-800" />
 				</div>

@@ -504,7 +504,7 @@ function ListingForm() {
 )}
 
 
-				<div className="pt-2">
+				{/*<div className="pt-2">
 					<label className="text-sm mb-1">Payment method</label>
 					<Select
 						variant="bordered"
@@ -521,10 +521,10 @@ function ListingForm() {
 							{errors["payment_method"].message as string}
 						</small>
 					)}
-				</div>
+				</div>*/}
 			</div>
 
-			<div className="text-sm space-y-4">
+			{/*<div className="text-sm space-y-4">
 				<div>
 					<h4 className="font-medium">Meetup Preference</h4>
 					<p>Buyers will be able to see your preferences on your listing.</p>
@@ -603,7 +603,7 @@ function ListingForm() {
 						</small>
 					)}
 				</div>
-			</div>
+			</div>*/}
 
 			<GradientHeader>Contact Information (Optional)</GradientHeader>
 
